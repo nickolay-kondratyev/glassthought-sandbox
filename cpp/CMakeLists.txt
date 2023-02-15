@@ -21,6 +21,3 @@ target_link_directories(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
   glfw
 )
-
-# Add executable target ${PROJECT_NAME} (MyMain) will be the name of the executable.
-

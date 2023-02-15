@@ -7,7 +7,6 @@
     <list default="true" id="2f1c9d69-dbd7-4a1e-8b7a-bfaebfbc911d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cpp/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cpp/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cpp/hi_world.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/cpp/hi_world.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
