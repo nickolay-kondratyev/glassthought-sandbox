@@ -4,14 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2f1c9d69-dbd7-4a1e-8b7a-bfaebfbc911d" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/shell/bash/common.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/shell/bash/main.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/shell/bash/second.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shell/bash/calls-failing-main.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/shell/bash/failing-main.sh" beforeDir="false" />
-    </list>
+    <list default="true" id="2f1c9d69-dbd7-4a1e-8b7a-bfaebfbc911d" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -42,6 +35,7 @@
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
@@ -101,6 +95,7 @@
       <updated>1676909378921</updated>
       <workItem from="1676909380195" duration="903000" />
       <workItem from="1676994661526" duration="4799000" />
+      <workItem from="1677950690009" duration="1730000" />
     </task>
     <servers />
   </component>
