@@ -1,5 +1,6 @@
 tasks.register<Exec>("runScript") {
-    commandLine("sh", "./example.sh")
+
+    commandLine("bash", "./example.sh")
 
     workingDir = File("../../some_dir")
 }
