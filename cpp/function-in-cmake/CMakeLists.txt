@@ -1,3 +1,9 @@
+function(my_function arg1 arg2)
+    message("arg1: ${arg1} arg2: ${arg2}")
+endfunction()
+
+my_function("value1" "value2")
+
 # Min versin cmake check
 cmake_minimum_required(VERSION 3.0)
 
