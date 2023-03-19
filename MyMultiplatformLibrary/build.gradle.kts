@@ -2,7 +2,7 @@ plugins {
     kotlin("multiplatform") version "1.6.0"
 }
 
-group = "com.example"
+group = "com.glassthought"
 version = "1.0.0"
 
 kotlin {
