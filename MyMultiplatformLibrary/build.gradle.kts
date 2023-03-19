@@ -1,5 +1,6 @@
 plugins {
     kotlin("multiplatform") version "1.6.0"
+    id("maven-publish")
 }
 
 group = "com.glassthought"
@@ -43,5 +44,11 @@ kotlin {
 
         val iosMain by getting
         val iosTest by getting
+    }
+}
+
+publishing {
+    repositories {
+        mavenLocal()
     }
 }
