@@ -6,12 +6,12 @@ package gt.kotlin.sandbox
 import kotlinx.coroutines.*
 
 
-suspend fun performNetworkRequest(msg:String): String {
+suspend fun performPrintWith500msSleep(msg:String): String {
     return withContext(Dispatchers.IO) {
-        ThreadUtils.printWithThreadInfo("Within withContext{} (before sleep) input: " + msg)
+        ThreadUtils.printWithThreadInfo("Within withContext{} (before sleep) input: $msg")
         ThreadUtils.sleep(500)
 
-        String.format("MessageResultAfterBlockinOperation for [%s]", msg)
+        String.format("MessageResultAfterBlockingOperation for [%s]", msg)
     }
 }
 
@@ -26,9 +26,9 @@ fun main() {
     runBlocking {
         ThreadUtils.printWithThreadInfo("1st print within runBlocking{}")
         ThreadUtils.printWithThreadInfo("2nd print within runBlocking{}")
-        val result1 = performNetworkRequest("1st-request")
+        val result1 = performPrintWith500msSleep("1st-request")
         ThreadUtils.printWithThreadInfo("print within main thread right after 1st-network request.")
-        val result2 = performNetworkRequest("2nd-request")
+        val result2 = performPrintWith500msSleep("2nd-request")
         ThreadUtils.printWithThreadInfo(result1)
         ThreadUtils.printWithThreadInfo(result2)
         ThreadUtils.printWithThreadInfo(
