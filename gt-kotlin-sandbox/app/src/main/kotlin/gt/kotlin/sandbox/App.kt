@@ -5,34 +5,26 @@ package gt.kotlin.sandbox
 
 import kotlinx.coroutines.*
 
+fun main() = runBlocking<Unit> {
 
-suspend fun performPrintWith500msSleep(msg:String): String {
-    return withContext(Dispatchers.IO) {
-        ThreadUtils.printWithThreadInfo("Within withContext{} (before sleep) input: $msg")
-        ThreadUtils.sleep(500)
+    val mainMillisStamp = System.currentTimeMillis()
 
-        String.format("MessageResultAfterBlockingOperation for [%s]", msg)
+    val promise1 = async {
+        ThreadUtils.printWithThreadInfo("print within 1st async {}")
+        delay(1000L) // simulate some long-running computation
+        ThreadUtils.printWithThreadInfo("print after sleep 1st async {}")
+        "1st async result"
     }
-}
 
-fun main() {
-
-    ThreadUtils.printWithThreadInfo("WarmUpStatement: Example showing main thread waiting for co-routine to finish before moving on to the next statement.")
-
-    val mainMillisStamp=System.currentTimeMillis();
-
-    ThreadUtils.printWithThreadInfo("within main() before runBlocking {}")
-
-    runBlocking {
-        ThreadUtils.printWithThreadInfo("1st print within runBlocking{}")
-        ThreadUtils.printWithThreadInfo("2nd print within runBlocking{}")
-        val result1 = performPrintWith500msSleep("1st-request")
-        ThreadUtils.printWithThreadInfo("print within main thread right after 1st-network request.")
-        val result2 = performPrintWith500msSleep("2nd-request")
-        ThreadUtils.printWithThreadInfo(result1)
-        ThreadUtils.printWithThreadInfo(result2)
-        ThreadUtils.printWithThreadInfo(
-            "Total time taken: " +
-                    (System.currentTimeMillis() - mainMillisStamp) + "ms")
+    val promise2 = async {
+        ThreadUtils.printWithThreadInfo("print after sleep 2nd async {}")
+        delay(1000L)
+        ThreadUtils.printWithThreadInfo("print after sleep 2nd async {}")
+        // e some long-running computation
+        "2nd async result"
     }
+    println(promise1.await())
+    println(promise2.await())
+
+    println("Elapsed time: ${System.currentTimeMillis() - mainMillisStamp} ms")
 }
