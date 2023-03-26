@@ -5,24 +5,25 @@ package gt.kotlin.sandbox
 
 import kotlinx.coroutines.*
 
-fun main() = runBlocking<Unit> {
+fun main() = runBlocking {
 
     val mainMillisStamp = System.currentTimeMillis()
 
     val promise1 = async {
         ThreadUtils.printWithThreadInfo("print within 1st async {}")
-        delay(1000L) // simulate some long-running computation
+        delay(500L) // simulate some long-running computation
         ThreadUtils.printWithThreadInfo("print after sleep 1st async {}")
         "1st async result"
     }
 
     val promise2 = async {
         ThreadUtils.printWithThreadInfo("print after sleep 2nd async {}")
-        delay(1000L)
+        delay(500L)
         ThreadUtils.printWithThreadInfo("print after sleep 2nd async {}")
         // e some long-running computation
         "2nd async result"
     }
+
     println(promise1.await())
     println(promise2.await())
 
