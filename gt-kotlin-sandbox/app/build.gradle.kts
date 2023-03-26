@@ -28,11 +28,12 @@ dependencies {
 
     // This dependency is used by the application.
     implementation("com.google.guava:guava:31.1-jre")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0")
 }
 
 application {
     // Define the main class for the application.
-    mainClass.set("kotlin.sandbox.AppKt")
+    mainClass.set("gt.kotlin.sandbox.AppKt")
 }
 
 tasks.named<Test>("test") {
