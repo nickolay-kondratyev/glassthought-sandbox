@@ -26,11 +26,13 @@ fun main() {
     runBlocking {
         ThreadUtils.printWithThreadInfo("1st print within runBlocking{}")
         ThreadUtils.printWithThreadInfo("2nd print within runBlocking{}")
-        val result1 = performLongRequest("1st-request")
+
+        val promise1 = async { performLongRequest("1st-request")}
         ThreadUtils.printWithThreadInfo("print within main thread right after 1st-network request.")
-        val result2 = performLongRequest("2nd-request")
-        ThreadUtils.printWithThreadInfo(result1)
-        ThreadUtils.printWithThreadInfo(result2)
+        val promise2 = async {performLongRequest("2nd-request")}
+
+        ThreadUtils.printWithThreadInfo(promise1.await())
+        ThreadUtils.printWithThreadInfo(promise2.await())
         ThreadUtils.printWithThreadInfo(
             "Total time taken: " +
                     (System.currentTimeMillis() - mainMillisStamp) + "ms")
