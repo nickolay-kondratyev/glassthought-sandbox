@@ -4,12 +4,14 @@
 package gt.kotlin.sandbox
 
 import kotlinx.coroutines.*
+import java.util.stream.IntStream
 
 
-suspend fun performLongRequest(msg:String): String {
+suspend fun performLongRequest(msg: String): String {
     return withContext(Dispatchers.IO) {
-        ThreadUtils.printWithThreadInfo("Within withContext{} (before sleep) input: " + msg)
+
         ThreadUtils.sleep(500)
+        ThreadUtils.printWithThreadInfo("Within subroutine input: $msg")
 
         String.format("MessageResultAfterBlockingOperation for [%s]", msg)
     }
@@ -17,24 +19,25 @@ suspend fun performLongRequest(msg:String): String {
 
 fun main() {
 
-    ThreadUtils.printWithThreadInfo("WarmUpStatement: Example showing main thread waiting for co-routine to finish before moving on to the next statement.")
+    ThreadUtils.printWithThreadInfo("Example using async with more requests than cores on a laptop")
 
-    val mainMillisStamp=System.currentTimeMillis();
+    val mainMillisStamp = System.currentTimeMillis();
 
-    ThreadUtils.printWithThreadInfo("within main() before runBlocking {}")
 
     runBlocking {
-        ThreadUtils.printWithThreadInfo("1st print within runBlocking{}")
-        ThreadUtils.printWithThreadInfo("2nd print within runBlocking{}")
 
-        val promise1 = async { performLongRequest("1st-request")}
-        ThreadUtils.printWithThreadInfo("print within main thread right after 1st-network request.")
-        val promise2 = async {performLongRequest("2nd-request")}
+        val deferredObjects = IntStream.range(0, 8).mapToObj { i ->
+            val deferred = async { performLongRequest("${i}-request") }
+            deferred
+        }
 
-        ThreadUtils.printWithThreadInfo(promise1.await())
-        ThreadUtils.printWithThreadInfo(promise2.await())
+        for(deferred in deferredObjects) {
+            ThreadUtils.printWithThreadInfo("Deferred result: " + deferred.await())
+        }
+
         ThreadUtils.printWithThreadInfo(
             "Total time taken: " +
-                    (System.currentTimeMillis() - mainMillisStamp) + "ms")
+                    (System.currentTimeMillis() - mainMillisStamp) + "ms"
+        )
     }
 }
