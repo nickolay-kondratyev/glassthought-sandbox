@@ -4,14 +4,19 @@
 package gt.kotlin.sandbox
 
 import kotlinx.coroutines.*
+import java.util.concurrent.Executors
+import java.util.stream.Collectors
 import java.util.stream.IntStream
 
 
+val threadPool = Executors.newFixedThreadPool(8)
+val myDispatcher = threadPool.asCoroutineDispatcher()
+
 suspend fun performLongRequest(msg: String): String {
-    return withContext(Dispatchers.IO) {
+    return withContext(myDispatcher) {
+        ThreadUtils.printWithThreadInfo("Within subroutine (before sleep) input: $msg")
 
         ThreadUtils.sleep(500)
-        ThreadUtils.printWithThreadInfo("Within subroutine input: $msg")
 
         String.format("MessageResultAfterBlockingOperation for [%s]", msg)
     }
@@ -40,4 +45,7 @@ fun main() {
                     (System.currentTimeMillis() - mainMillisStamp) + "ms"
         )
     }
+
+    myDispatcher.close();
+    threadPool.shutdown();
 }
