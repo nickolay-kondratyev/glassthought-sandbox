@@ -1,3 +1,4 @@
-
 rootProject.name = "demo"
-include("app", "list", "utilities")
+include("app")
+include("list")
+include("subDir:utilities") // Change this line

@@ -5,7 +5,7 @@ plugins {
 
 dependencies {
     implementation("org.apache.commons:commons-text")
-    implementation(project(":utilities"))
+    implementation(project(":subDir:utilities"))
 }
 
 application {
