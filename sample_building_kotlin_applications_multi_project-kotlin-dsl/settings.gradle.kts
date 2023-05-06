@@ -1,3 +1,3 @@
 
 rootProject.name = "demo"
-include("app", "list", "utilities")
+include("app", "list", "utilities", "mylib")
