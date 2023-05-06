@@ -15,8 +15,6 @@ plugins {
 // used, hence appears to be safer to use 'dev.asgard' since we don't own
 // either of the domain names.
 //
-// 'ReplaceMe': the group below potentially requires a different name. (or you can
-// just delete this line if you are happy with default group name).
 group = "dev.asgard"
 version = "1.0.0"
 

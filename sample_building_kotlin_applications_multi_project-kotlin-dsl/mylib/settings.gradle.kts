@@ -1,2 +1,2 @@
-rootProject.name = "ReplaceMeWithProjectNameLIKEthorgGit"
+rootProject.name = "mylib"
 
