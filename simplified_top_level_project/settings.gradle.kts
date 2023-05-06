@@ -1,3 +1,3 @@
 
 rootProject.name = "myTopLevelProject"
-include("myKotlinMPLib")
+include("myKotlinMPLib", "myDependencyLib")
