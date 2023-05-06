@@ -1,5 +1,5 @@
 package com.asgard
 
-interface AsgardStarterInterfaceReplaceMe {
+interface InterfaceFromDependency {
     fun getInteger(): Int;
 }

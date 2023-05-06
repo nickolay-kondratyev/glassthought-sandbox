@@ -1,6 +1,6 @@
 package com.asgard
 
-import asgard.AsgardStarterJVMImplementationReplaceMe
+import asgard.JVMImplementationFromDependency
 import io.kotest.core.spec.style.DescribeSpec
 
 class AsgardStarterTestReplaceMe : DescribeSpec({
@@ -12,7 +12,7 @@ class AsgardStarterTestReplaceMe : DescribeSpec({
         }
 
         it("WHEN calling start implementation THEN should respond with expected number") {
-            val starter = AsgardStarterJVMImplementationReplaceMe()
+            val starter = JVMImplementationFromDependency()
 
             assert(starter.getInteger() == 42)
         }
