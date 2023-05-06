@@ -1,6 +1,6 @@
 package com.asgard
 
-import asgard.JVMImplementationFromDependency
+import asgard.DependencyImplementation
 import io.kotest.core.spec.style.DescribeSpec
 
 class TestFromDependency : DescribeSpec({
@@ -12,9 +12,9 @@ class TestFromDependency : DescribeSpec({
         }
 
         it("WHEN calling start implementation THEN should respond with expected number") {
-            val starter = JVMImplementationFromDependency()
+            val starter = DependencyImplementation()
 
-            assert(starter.getInteger() == 42)
+            assert(starter.getInteger() == 42000)
         }
 
     }
