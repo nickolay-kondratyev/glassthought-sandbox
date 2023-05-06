@@ -44,10 +44,6 @@ kotlin {
             dependencies {
                 implementation(kotlin("test"))
 
-                // Add MockK for mocking in tests.
-                // https://mvnrepository.com/artifact/io.mockk/mockk
-                implementation("io.mockk:mockk:1.13.4")
-
                 // Adding Kotest as the testing framework. More info in
                 // http://localhost:8888/notes/i3fl4wmae0t35axabitiwvn/
                 val kotestVersion = "4.6.3"

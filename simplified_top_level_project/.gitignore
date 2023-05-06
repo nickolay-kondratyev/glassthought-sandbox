@@ -1,0 +1,30 @@
+# Gradle files
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# Ignore Gradle wrapper properties, but not the wrapper itself
+gradle-wrapper.properties
+
+# IntelliJ IDEA files
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Eclipse files
+.classpath
+.project
+.settings/
+
+# Mac OS files
+.DS_Store
+
+# Output directories
+out/
+
+# Other common files
+*.log
+*.bak
+*.swp
+*.tmp

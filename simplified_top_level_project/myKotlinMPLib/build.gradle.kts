@@ -35,6 +35,8 @@ kotlin {
             dependencies {
                 implementation(kotlin("stdlib-common"))
 
+                implementation(project(":myDependencyLib"))
+
                 // Co-routines support so that we perform long network operations
                 // outside the main thread.
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0")
@@ -43,10 +45,6 @@ kotlin {
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
-
-                // Add MockK for mocking in tests.
-                // https://mvnrepository.com/artifact/io.mockk/mockk
-                implementation("io.mockk:mockk:1.13.4")
 
                 // Adding Kotest as the testing framework. More info in
                 // http://localhost:8888/notes/i3fl4wmae0t35axabitiwvn/
