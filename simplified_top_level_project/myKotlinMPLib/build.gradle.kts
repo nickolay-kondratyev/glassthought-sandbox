@@ -45,6 +45,11 @@ kotlin {
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
+            }
+        }
+        val jvmMain by getting
+        val jvmTest by getting {
+            dependencies {
 
                 // Adding Kotest as the testing framework. More info in
                 // http://localhost:8888/notes/i3fl4wmae0t35axabitiwvn/
@@ -54,12 +59,6 @@ kotlin {
                 implementation("io.kotest:kotest-runner-junit5:$kotestVersion")
             }
         }
-        val jvmMain by getting {
-            dependencies {
-                // Place to add the JVM specific dependencies.
-            }
-        }
-        val jvmTest by getting
         val iosMain by getting
         val iosTest by getting
     }
