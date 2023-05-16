@@ -8,9 +8,16 @@ public class AlphabetUtil {
 
     static String alphabetItemToString(final Map<String, AttributeValue> item) {
 
-        return "sort_key: " + item.get("sort_key").s() +
-               ", letter: " + item.get("letter").s() +
-               ", value: " + item.get("value").s().substring(0, 10) +
-               "... value length=(" + item.get("value").s().length() + ")";
+        StringBuilder sb = new StringBuilder();
+
+        sb.append( "sort_key: " + item.get("sort_key").s() +
+                   ", letter: " + item.get("letter").s() +
+                   ", value: " + item.get("value").s().substring(0, 10) +
+                   "... value length=(" + item.get("value").s().length() + ")");
+
+        if (item.containsKey("timestamp")){
+            sb.append(", timestamp: " + item.get("timestamp").s());
+        }
+        return sb.toString();
     }
 }
