@@ -1,16 +1,13 @@
 package aws.ddb.snippets;
 
-import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.*;
 
-    public class DynamoDBCreateTable {
+public class DynamoDBCreateTable {
 
     public static void main(String[] args) {
 
-        final DynamoDbClient ddb = DynamoDbClient.builder()
-            .region(Region.US_WEST_2)
-            .build();
+        final DynamoDbClient ddb = Factory.getClient();
 
         final CreateTableRequest request = CreateTableRequest.builder()
             .attributeDefinitions(
@@ -39,4 +36,5 @@ import software.amazon.awssdk.services.dynamodb.model.*;
         System.out.println("Successful create response for table: " + response.tableDescription().tableName());
         System.out.println("Note running this will fail since the table already excists.");
     }
+
 }
