@@ -23,6 +23,9 @@ dependencies {
     // This dependency is exported to consumers, that is to say found on their compile classpath.
     api("org.apache.commons:commons-math3:3.6.1")
 
+    implementation(platform("software.amazon.awssdk:bom:2.17.52")) // Replace with the latest version
+    implementation("software.amazon.awssdk:dynamodb")
+
     // This dependency is used internally, and not exposed to consumers on their own compile classpath.
     implementation("com.google.guava:guava:31.1-jre")
 }
