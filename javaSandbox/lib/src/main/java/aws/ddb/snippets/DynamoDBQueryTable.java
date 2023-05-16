@@ -13,7 +13,7 @@ import software.amazon.awssdk.services.dynamodb.model.QueryResponse;
 public class DynamoDBQueryTable {
 
     private static final String TABLE_NAME = Constants.HashKeyRangeKeyTable.TABLE_NAME;
-    private static final String HASH_KEY_VALUE = "alphabet_200KB_per_row";
+    private static final String HASH_KEY_VALUE = "alphabet_200KB_per_row_with_GUID_in_SortKey";
     private static final DynamoDbClient ddb;
 
     static {

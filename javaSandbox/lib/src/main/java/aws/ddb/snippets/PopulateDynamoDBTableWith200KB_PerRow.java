@@ -2,6 +2,7 @@ package aws.ddb.snippets;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.IntStream;
 
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
@@ -12,9 +13,10 @@ public class PopulateDynamoDBTableWith200KB_PerRow {
 
 
     public static void main(String[] args) {
+
         final DynamoDbClient ddb = Factory.getClient();
 
-        final char[] alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
+        final char[] alphabet = getUppercaseAlphabet();
 
         // Generate a 200KB string for each letter
         for (final char letter : alphabet) {
@@ -22,8 +24,9 @@ public class PopulateDynamoDBTableWith200KB_PerRow {
             final String value = repeatChar(letter, 200 * 1024);
 
             final Map<String, AttributeValue> item = new HashMap<>();
-            item.put("hash_key", AttributeValue.builder().s("alphabet_200KB_per_row").build());
-            item.put("sort_key", AttributeValue.builder().s(String.valueOf((int) letter)).build());
+            item.put("hash_key", AttributeValue.builder().s("alphabet_200KB_per_row_with_GUID_in_SortKey").build());
+            final String sortKey = (int) letter + "__" + UUID.randomUUID();
+            item.put("sort_key", AttributeValue.builder().s(sortKey).build());
             item.put("letter", AttributeValue.builder().s(String.valueOf(letter)).build());
             item.put("value", AttributeValue.builder().s(value).build());
 
@@ -38,7 +41,13 @@ public class PopulateDynamoDBTableWith200KB_PerRow {
         }
     }
 
+    private static char[] getUppercaseAlphabet() {
+
+        return "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
+    }
+
     private static String repeatChar(char c, int size) {
+
         StringBuilder sb = new StringBuilder(size);
         IntStream.range(0, size).forEach(i -> sb.append(c));
         return sb.toString();
