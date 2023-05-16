@@ -45,12 +45,7 @@ public class DynamoDBQueryTable {
 
         final QueryResponse queryResponse = ddb.query(queryRequest);
 
-        queryResponse.items().forEach(item -> {
-            System.out.println(
-                "sort_key: " + item.get("sort_key").s() +
-                ", letter: " + item.get("letter").s() +
-                ", value: " + item.get("value").s().substring(0, 10) +
-                "... value length=(" + item.get("value").s().length() + ")");
-        });
+        AlphabetOutUtil.printAll(queryResponse);
     }
+
 }
