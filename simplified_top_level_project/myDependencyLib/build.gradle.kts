@@ -1,5 +1,6 @@
 plugins {
     kotlin("multiplatform") version "1.8.0"
+    kotlin("plugin.serialization") version "1.5.31"
 
     id("org.jetbrains.kotlinx.kover") version "0.7.0-Beta"
 
@@ -44,6 +45,9 @@ kotlin {
             dependencies {
                 implementation(kotlin("test"))
 
+                implementation("io.kotest:kotest-framework-engine:4.6.3")
+                implementation("io.kotest:kotest-assertions-core:4.6.3")
+                implementation("io.kotest:kotest-runner-junit5:4.6.3")
             }
         }
         val jvmMain by getting {
