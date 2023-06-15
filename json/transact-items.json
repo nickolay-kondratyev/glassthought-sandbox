@@ -1,0 +1,18 @@
+[
+  {
+    "Update":{
+      "TableName":"counter",
+      "Key":{
+        "pk":{
+          "S":"abc123"
+        }
+      },
+      "UpdateExpression":"ADD quantity :change",
+      "ExpressionAttributeValues":{
+        ":change":{
+          "N":"-7"
+        }
+      }
+    }
+  }
+]

@@ -6,7 +6,7 @@ import software.amazon.awssdk.services.dynamodb.model.*;
 
 public class CreateHashKeyTable {
 
-    public static final String TABLE_NAME = "PrimaryKeyOnlyTable";
+    public static final String TABLE_NAME = "counter";
 
     public static void main(String[] args) {
 
