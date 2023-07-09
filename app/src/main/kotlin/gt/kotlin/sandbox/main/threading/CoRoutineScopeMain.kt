@@ -21,10 +21,9 @@ class ServerImpl(
         get() = Dispatchers.Default + job
 
     override fun start() {
-        out.println("Starting server")
+        out.printlnRed("Starting server")
 
         launch {
-
             out.printlnBlue("Running server work in thread: ${Thread.currentThread().name}")
             delay(2000)
             out.printlnBlue("Server work completed")
