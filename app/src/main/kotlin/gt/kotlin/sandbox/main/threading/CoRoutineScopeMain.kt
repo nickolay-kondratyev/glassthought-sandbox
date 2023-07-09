@@ -1,6 +1,5 @@
 package gt.kotlin.sandbox.main.threading
 
-
 import gt.kotlin.sandbox.internal.output.Out
 import gt.kotlin.sandbox.internal.output.impl.OutImpl
 import kotlinx.coroutines.*
@@ -36,6 +35,10 @@ class ServerImpl(
         }
     }
 
+    suspend fun joinOnJob() {
+        job.join()
+    }
+
     override fun stop() {
         out.printlnRed("Stopping server")
         job.cancel()
@@ -43,23 +46,22 @@ class ServerImpl(
 }
 
 
-fun main() {
-    val out = OutImpl()
+fun main() = runBlocking {
+    go()
+}
 
+
+private suspend fun go() {
+    val out = OutImpl()
 
     println("--------------------------------------------------------------------------------")
     out.println("Example where there server is aborted prior to finishing:")
-    runWithDelayBeforeStopping(1000, out)
-
-    println("--------------------------------------------------------------------------------")
-    out.println("Example where the server has time to finish:")
-    runWithDelayBeforeStopping(3000, out)
-}
-
-private fun runWithDelayBeforeStopping(delayBeforeStopping: Long, out: OutImpl) {
     val server = ServerImpl(out)
-
     server.start()
-    Thread.sleep(delayBeforeStopping)
-    server.stop()
+
+    println("Waiting on job to finish")
+    server.joinOnJob()
+
+    out.printlnRed("Server done processing")
 }
+
