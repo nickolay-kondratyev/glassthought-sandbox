@@ -31,7 +31,7 @@ class ServerImpl(
 
         launch {
             out.printlnGreen("Running additional server work in thread: ${Thread.currentThread().name}")
-            delay(1000)
+            delay(1500)
             out.printlnGreen("Additional server work completed")
         }
     }
@@ -45,9 +45,21 @@ class ServerImpl(
 
 fun main() {
     val out = OutImpl()
+
+
+    println("--------------------------------------------------------------------------------")
+    out.println("Example where there server is aborted prior to finishing:")
+    runWithDelayBeforeStopping(1000, out)
+
+    println("--------------------------------------------------------------------------------")
+    out.println("Example where the server has time to finish:")
+    runWithDelayBeforeStopping(3000, out)
+}
+
+private fun runWithDelayBeforeStopping(delayBeforeStopping: Long, out: OutImpl) {
     val server = ServerImpl(out)
 
     server.start()
-    Thread.sleep(5000)
+    Thread.sleep(delayBeforeStopping)
     server.stop()
 }
