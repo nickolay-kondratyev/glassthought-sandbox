@@ -5,9 +5,6 @@ import gt.kotlin.sandbox.internal.output.impl.OutImpl
 interface Out {
     fun print(msg: String)
     fun println(msg: String)
-    fun printWithThreadInfo(msg: String)
-    fun printlnWithThreadInfo(msg: String)
-
     fun printInGreen(msg: String)
     fun printInRed(msg: String)
     fun printInBlue(msg: String)

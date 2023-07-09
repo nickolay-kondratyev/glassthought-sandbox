@@ -1,30 +1,32 @@
 package gt.kotlin.sandbox.internal.output.impl
 
 import gt.kotlin.sandbox.internal.output.Out
+import java.time.Instant
+
+class OutSettings {
+    val printThreadInfo: Boolean = true
+    val printTimestamp: Boolean = true
+    val printElapsedTime: Boolean = true
+}
 
 class OutImpl : Out {
+    val outSettings = OutSettings()
+    var outInstantiationTime: Long = System.currentTimeMillis()
+
     override fun print(msg: String) {
-        kotlin.io.print(msg)
+        kotlin.io.print(formatMsg(msg))
     }
 
     override fun println(msg: String) {
-        kotlin.io.println(msg)
-    }
-
-    override fun printWithThreadInfo(msg: String) {
-        kotlin.io.print("${Thread.currentThread().name}: $msg")
-    }
-
-    override fun printlnWithThreadInfo(msg: String) {
-        kotlin.io.println("${Thread.currentThread().name}: $msg")
+        kotlin.io.println(formatMsg(msg))
     }
 
     override fun printInGreen(msg: String) {
-        kotlin.io.print("\u001B[32m$msg\u001B[0m")
+        kotlin.io.print("\u001B[32m${formatMsg(msg)}\u001B[0m")
     }
 
     override fun printInRed(msg: String) {
-        kotlin.io.print("\u001B[31m$msg\u001B[0m")
+        kotlin.io.print("\u001B[31m${formatMsg(msg)}\u001B[0m")
     }
 
     override fun printInBlue(msg: String) {
@@ -32,14 +34,27 @@ class OutImpl : Out {
     }
 
     override fun printlnBlue(msg: String) {
-        kotlin.io.println("\u001B[34m$msg\u001B[0m")
+        kotlin.io.println("\u001B[34m${formatMsg(msg)}\u001B[0m")
     }
 
     override fun printlnGreen(msg: String) {
-        kotlin.io.println("\u001B[32m$msg\u001B[0m")
+        kotlin.io.println("\u001B[32m${formatMsg(msg)}\u001B[0m")
     }
 
     override fun printlnRed(msg: String) {
-        kotlin.io.println("\u001B[31m$msg\u001B[0m")
+        kotlin.io.println("\u001B[31m${formatMsg(msg)}\u001B[0m")
+    }
+
+    private fun formatMsg(msg: String): String {
+        val timestamp = if (outSettings.printTimestamp) "[${Instant.now()}]" else ""
+        val threadInfo = if (outSettings.printThreadInfo) "[${Thread.currentThread().name}]" else ""
+
+        val elapsedMillisSinceStart =
+            if (outSettings.printElapsedTime)
+                "[${System.currentTimeMillis() - outInstantiationTime}]"
+            else
+                ""
+
+        return "$timestamp$elapsedMillisSinceStart$threadInfo $msg"
     }
 }
