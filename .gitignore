@@ -1,7 +1,6 @@
 out
 out_runnable
-# Ignore Gradle project-specific cache directory
-gt-kotlin-sandbox/.gradle
-
-# Ignore Gradle build output directory
 build
+# Ignore Gradle project-specific cache directory
+.gradle
+
