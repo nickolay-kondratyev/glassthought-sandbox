@@ -47,7 +47,7 @@ class OutImpl : Out {
 
     private fun formatMsg(msg: String): String {
         val timestamp = if (outSettings.printTimestamp) "[${Instant.now()}]" else ""
-        val threadInfo = if (outSettings.printThreadInfo) "[${Thread.currentThread().name}]" else ""
+        val threadInfo = if (outSettings.printThreadInfo) "[tid:${Thread.currentThread().name}]" else ""
 
         val elapsedMillisSinceStart =
             if (outSettings.printElapsedTime)
