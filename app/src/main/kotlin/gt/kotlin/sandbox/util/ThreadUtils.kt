@@ -1,4 +1,4 @@
-package gt.kotlin.sandbox
+package gt.kotlin.sandbox.util
 
 import java.text.SimpleDateFormat
 import java.util.*
