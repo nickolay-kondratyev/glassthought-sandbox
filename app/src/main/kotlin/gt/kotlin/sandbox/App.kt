@@ -3,38 +3,8 @@
  */
 package gt.kotlin.sandbox
 
-import kotlinx.coroutines.*
-
-
-suspend fun performLongRequest(msg:String): String {
-    return withContext(Dispatchers.IO) {
-        ThreadUtils.printWithThreadInfo("Within withContext{} (before sleep) input: " + msg)
-        ThreadUtils.sleep(500)
-
-        String.format("MessageResultAfterBlockingOperation for [%s]", msg)
-    }
-}
 
 fun main() {
 
-    ThreadUtils.printWithThreadInfo("WarmUpStatement: Example showing main thread waiting for co-routine to finish before moving on to the next statement.")
-
-    val mainMillisStamp=System.currentTimeMillis();
-
-    ThreadUtils.printWithThreadInfo("within main() before runBlocking {}")
-
-    runBlocking {
-        ThreadUtils.printWithThreadInfo("1st print within runBlocking{}")
-        ThreadUtils.printWithThreadInfo("2nd print within runBlocking{}")
-
-        val promise1 = async { performLongRequest("1st-request")}
-        ThreadUtils.printWithThreadInfo("print within main thread right after 1st-network request.")
-        val promise2 = async {performLongRequest("2nd-request")}
-
-        ThreadUtils.printWithThreadInfo(promise1.await())
-        ThreadUtils.printWithThreadInfo(promise2.await())
-        ThreadUtils.printWithThreadInfo(
-            "Total time taken: " +
-                    (System.currentTimeMillis() - mainMillisStamp) + "ms")
-    }
+    println("Hello, Kotlin!")
 }
