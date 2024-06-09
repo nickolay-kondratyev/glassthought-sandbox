@@ -15,7 +15,7 @@ fun main(): Unit = runBlocking {
     val availableCores = Runtime.getRuntime().availableProcessors()
     out.println("Number of available cores: $availableCores")
 
-    for (i in 1..availableCores + 2) {
+    for (i in 1..(availableCores* 2) + 2) {
         launch(Dispatchers.IO) {
             fetchData("task $i")
         }
