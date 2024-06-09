@@ -12,6 +12,7 @@ suspend fun fetchData(s: String) {
 }
 
 fun main(): Unit = runBlocking {
+    // 
     launch {
         fetchData("a-1")
         fetchData("a-2")
