@@ -12,14 +12,12 @@ suspend fun fetchData(s: String) {
 }
 
 fun main(): Unit = runBlocking {
-    launch(Dispatchers.IO) {
-        fetchData("a-1")
-        fetchData("a-2")
-    }
-    launch(Dispatchers.IO) {
-        fetchData("b")
-    }
-    launch(Dispatchers.IO) {
-        fetchData("c")
+    val availableCores = Runtime.getRuntime().availableProcessors()
+    out.println("Number of available cores: $availableCores")
+
+    for (i in 1..availableCores + 2) {
+        launch(Dispatchers.IO) {
+            fetchData("task $i")
+        }
     }
 }
