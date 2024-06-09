@@ -37,18 +37,18 @@ application {
     mainClass.set(MAIN_CLASS)
 }
 
-tasks.register<JavaExec>("runMainQuietly") {
-    group = "application"
-    description = "Runs the main class quietly"
-    mainClass.set(MAIN_CLASS)
-    classpath = sourceSets["main"].runtimeClasspath
-
-    doFirst {
-        // Set the logging level to quiet before running the task
-        logging.captureStandardOutput(LogLevel.QUIET)
-        logging.captureStandardError(LogLevel.QUIET)
-    }
-}
+//tasks.register<JavaExec>("runMainQuietly") {
+//    group = "application"
+//    description = "Runs the main class quietly"
+//    mainClass.set(MAIN_CLASS)
+//    classpath = sourceSets["main"].runtimeClasspath
+//
+//    doFirst {
+//        // Set the logging level to quiet before running the task
+//        logging.captureStandardOutput(LogLevel.QUIET)
+//        logging.captureStandardError(LogLevel.QUIET)
+//    }
+//}
 tasks.named<Test>("test") {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()

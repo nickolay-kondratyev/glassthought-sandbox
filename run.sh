@@ -1,5 +1,5 @@
 main() {
-  ./gradlew runMainQuietly
+  ./gradlew run
 }
 
 main "${@}" || exit 1
