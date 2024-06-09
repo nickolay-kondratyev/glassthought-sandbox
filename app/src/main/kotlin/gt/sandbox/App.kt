@@ -19,4 +19,7 @@ fun main(): Unit = runBlocking {
     launch {
         fetchData("b")
     }
+    launch {
+        fetchData("c")
+    }
 }
