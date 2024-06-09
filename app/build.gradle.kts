@@ -31,11 +31,24 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0")
 }
 
+val MAIN_CLASS = "gt.kotlin.sandbox.AppKt"
 application {
     // Define the main class for the application.
-    mainClass.set("gt.kotlin.sandbox.AppKt")
+    mainClass.set(MAIN_CLASS)
 }
 
+tasks.register<JavaExec>("runMainQuietly") {
+    group = "application"
+    description = "Runs the main class quietly"
+    mainClass.set(MAIN_CLASS)
+    classpath = sourceSets["main"].runtimeClasspath
+
+    doFirst {
+        // Set the logging level to quiet before running the task
+        logging.captureStandardOutput(LogLevel.QUIET)
+        logging.captureStandardError(LogLevel.QUIET)
+    }
+}
 tasks.named<Test>("test") {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()

@@ -1,5 +1,5 @@
 main() {
-  gt.snapshot "gradle run"
+  gt.snapshot "./gradlew runMainQuietly"
 }
 
 main "${@}" || exit 1
