@@ -1,6 +1,6 @@
-package gt.kotlin.sandbox.internal.output.impl
+package gt.sandbox.internal.output.impl
 
-import gt.kotlin.sandbox.internal.output.Out
+import gt.sandbox.internal.output.Out
 import java.time.Instant
 
 class OutSettings {
@@ -47,11 +47,18 @@ class OutImpl : Out {
 
     private fun formatMsg(msg: String): String {
         val timestamp = if (outSettings.printTimestamp) "[${Instant.now()}]" else ""
-        val threadInfo = if (outSettings.printThreadInfo) "[tid:${Thread.currentThread().name}]" else ""
+        val threadInfo = if (outSettings.printThreadInfo) {
+            val currentThread = Thread.currentThread()
+
+            // /id:${currentThread.threadId()}
+            "[tname:${currentThread.name}]"
+        } else ""
 
         val elapsedMillisSinceStart =
             if (outSettings.printElapsedTime)
-                "[${System.currentTimeMillis() - outInstantiationTime}]"
+                "[ms-elapsed-since-start:" +
+                        String.format("%5d", System.currentTimeMillis() - outInstantiationTime) +
+                        "]"
             else
                 ""
 

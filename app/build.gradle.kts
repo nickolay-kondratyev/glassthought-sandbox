@@ -31,7 +31,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0")
 }
 
-val MAIN_CLASS = "gt.kotlin.sandbox.AppKt"
+val MAIN_CLASS = "gt.sandbox.AppKt"
 application {
     // Define the main class for the application.
     mainClass.set(MAIN_CLASS)

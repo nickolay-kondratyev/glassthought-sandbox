@@ -1,6 +1,6 @@
-package gt.kotlin.sandbox.internal.output
+package gt.sandbox.internal.output
 
-import gt.kotlin.sandbox.internal.output.impl.OutImpl
+import gt.sandbox.internal.output.impl.OutImpl
 
 interface Out {
     fun print(msg: String)
