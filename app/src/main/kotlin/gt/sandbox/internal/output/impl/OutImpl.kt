@@ -50,8 +50,8 @@ class OutImpl : Out {
         val threadInfo = if (outSettings.printThreadInfo) {
             val currentThread = Thread.currentThread()
 
-            // /id:${currentThread.threadId()}
-            "[tname:${currentThread.name}]"
+
+            "[tname:${currentThread.name}/tid:${currentThread.threadId()}]"
         } else ""
 
         val elapsedMillisSinceStart =

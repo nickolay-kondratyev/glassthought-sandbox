@@ -8,10 +8,20 @@
 
 plugins {
     // Apply the org.jetbrains.kotlin.jvm Plugin to add support for Kotlin.
-    id("org.jetbrains.kotlin.jvm") version "1.7.10"
+    //
+    // https://mvnrepository.com/artifact/org.jetbrains.kotlin.jvm/org.jetbrains.kotlin.jvm.gradle.plugin
+    id("org.jetbrains.kotlin.jvm") version "2.0.0"
 
     // Apply the application plugin to add support for building a CLI application in Java.
     application
+}
+
+val majorJdkVersion=19
+
+kotlin {
+    jvmToolchain {
+        languageVersion.set(JavaLanguageVersion.of(majorJdkVersion))
+    }
 }
 
 repositories {
