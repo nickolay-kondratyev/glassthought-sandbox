@@ -1,6 +1,6 @@
 package gt.sandbox
 
-import gt.sandbox.internal.output.Out
+import gt.sandbox.util.output.Out
 import kotlinx.coroutines.*
 
 val out = Out.standard()

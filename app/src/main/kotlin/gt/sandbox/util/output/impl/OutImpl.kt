@@ -1,6 +1,6 @@
-package gt.sandbox.internal.output.impl
+package gt.sandbox.util.output.impl
 
-import gt.sandbox.internal.output.Out
+import gt.sandbox.util.output.Out
 import java.time.Instant
 
 class OutSettings {

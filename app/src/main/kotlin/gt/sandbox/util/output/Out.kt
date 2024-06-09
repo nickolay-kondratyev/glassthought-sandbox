@@ -1,6 +1,6 @@
-package gt.sandbox.internal.output
+package gt.sandbox.util.output
 
-import gt.sandbox.internal.output.impl.OutImpl
+import gt.sandbox.util.output.impl.OutImpl
 
 interface Out {
     fun print(msg: String)
