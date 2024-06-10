@@ -1,5 +1,5 @@
 main() {
-  echo hi
+  echo "echo-val"
 }
 
 main "${@}" || exit 1

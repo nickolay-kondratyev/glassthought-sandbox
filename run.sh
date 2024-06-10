@@ -1,7 +1,7 @@
-main() {
+run_main() {
   ei cd ./bash
 
   ./main.sh
 }
 
-main "${@}" || exit 1
+run_main "${@}" || exit 1
