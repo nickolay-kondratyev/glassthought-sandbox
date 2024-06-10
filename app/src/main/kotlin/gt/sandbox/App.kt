@@ -1,23 +1,29 @@
 package gt.sandbox
 
 import gt.sandbox.util.output.Out
-import kotlinx.coroutines.*
 
 val out = Out.standard()
 
-suspend fun fetchData(s: String) {
-    out.println("Fetching data... $s")
-    delay(1000) // This suspends the coroutine for 1 second without blocking the thread
-    out.println("Data fetched $s")
+class ComplexCalculation {
+    // A lazily initialized property
+    val expensiveValue: Int by lazy {
+        out.println("Computing the value...")
+        performComplexCalculation()
+    }
+
+    private fun performComplexCalculation(): Int {
+        // Simulate a complex calculation
+        Thread.sleep(1000) // simulate a delay
+        return 42 // return some computed value
+    }
 }
 
-fun main(): Unit = runBlocking {
-    val availableCores = Runtime.getRuntime().availableProcessors()
-    out.println("Number of available cores: $availableCores")
+fun main() {
+    val calculation = ComplexCalculation()
 
-    for (i in 1..(availableCores* 2) + 2) {
-        launch(Dispatchers.IO) {
-            fetchData("task $i")
-        }
-    }
+    // The expensiveValue is not computed until it's accessed for the first time
+    out.println("Before accessing expensiveValue")
+    out.println("The value is: ${calculation.expensiveValue}") // This triggers the calculation
+    out.println("After accessing expensiveValue")
+    out.println("Access it again does not trigger re-calculation: ${calculation.expensiveValue}") // This does not trigger the calculation
 }
