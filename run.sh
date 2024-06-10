@@ -1,5 +1,7 @@
 main() {
-  ./gradlew run
+  ei cd ./bash
+
+  ./main.sh
 }
 
 main "${@}" || exit 1

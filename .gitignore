@@ -1,6 +1,3 @@
 out
 out_runnable
 build
-# Ignore Gradle project-specific cache directory
-.gradle
-
