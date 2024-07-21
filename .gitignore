@@ -3,4 +3,6 @@ out_runnable
 build
 # Ignore Gradle project-specific cache directory
 .gradle
+.idea
+local.properties
 
