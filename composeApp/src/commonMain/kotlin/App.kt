@@ -21,7 +21,7 @@ fun App() {
         var showContent by remember { mutableStateOf(false) }
         Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
             Button(onClick = { showContent = !showContent }) {
-                Text("Click me-5!")
+                Text("Click me-6!")
             }
             AnimatedVisibility(showContent) {
                 val greeting = remember { Greeting().greet() }
