@@ -5,8 +5,8 @@ Code compose-ui branch for glassthought.com and others.
 [Init notes](doc/creation-notes.md)
 
 ### Helpful scripts:
-- [snapshot.sh](snapshot.sh) - Snapshots the change assuming you have the already ran the application in Android Studio. `gt.snapshot --help` for more info. 
-  - Note you can provide an optional custom message to use as commit heading with `./snapshot.sh "Custom message"`
+- [snapshot.sh](snapshot.sh) - Snapshots the change assuming you have the already ran the application in Android Studio and happy with current state. `gt.snapshot --help` for more info.
+  - Note you can provide an optional custom message to use as the first line in commit with `./snapshot.sh "Custom message"`
 - [git.push.sh](git.push.sh) - Pushes the current branch to the remote repository.
 
 ### Changing code:
