@@ -63,3 +63,17 @@ tasks.register("myTask") {
         println(greeting.get())
     }
 }
+
+
+tasks.register("processData") {
+    // Declare input and output for the task
+    inputs.file("src/data/input.txt")   // Input file
+    outputs.file("build/output.txt")    // Output file
+
+    doLast {
+        val inputFile = file("src/data/input.txt")
+        val outputFile = file("build/output.txt")
+        outputFile.writeText(inputFile.readText().toUpperCase())
+        println("Task executed: Input processed.")
+    }
+}
