@@ -53,6 +53,7 @@ tasks.register("hello") {
 
 tasks.register("go") {
     doLast {
+        
         println("Project version: ${project.version}")
     }
 }
