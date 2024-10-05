@@ -49,3 +49,20 @@ tasks.register("hello") {
     }
 }
 
+// Eager task creation - always configured
+tasks.create("eagerTask") {
+    println("Eager task: configuration")
+
+    doLast {
+        println("Eager task")
+    }
+}
+
+// Lazy task registration - configured only when needed
+tasks.register("lazyTask") {
+    println("Lazy task: configuration")
+
+    doLast {
+        println("Lazy task")
+    }
+}
