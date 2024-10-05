@@ -51,15 +51,15 @@ tasks.register("hello") {
 
 tasks.register("actionsEg") {
     doFirst {
-        println("doFirst-1")
+        println("doFirst-3 will be executed THIRD")
     }
     doFirst {
-        println("doFirst-3")
+        println("doFirst-2 will be executed SECOND")
     }
     doLast {
-        println("Do Last")
+        println("doLast will be executed FOURTH")
     }
     doFirst {
-        println("doFirst-2")
+        println("doFirst-1 - will be executed FIRST")
     }
 }
