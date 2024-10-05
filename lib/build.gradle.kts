@@ -66,9 +66,8 @@ tasks.register("myTask") {
     }
 }
 
-
 tasks.register("processData") {
-    
+
     // Declare input and output for the task
     inputs.file("src/data/input.txt")   // Input file
     outputs.file("build/output.txt")    // Output file
