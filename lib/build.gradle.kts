@@ -48,3 +48,18 @@ tasks.register("hello") {
         println("Hello, Gradle!")
     }
 }
+
+tasks.register("actionsEg") {
+    doFirst {
+        println("doFirst-1")
+    }
+    doFirst {
+        println("doFirst-3")
+    }
+    doLast {
+        println("Do Last")
+    }
+    doFirst {
+        println("doFirst-2")
+    }
+}
