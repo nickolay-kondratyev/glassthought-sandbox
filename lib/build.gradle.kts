@@ -51,9 +51,15 @@ tasks.register("hello") {
     }
 }
 
-tasks.register("go") {
+tasks.register("myTask") {
+    // Define a custom task property
+    val greeting = project.objects.property(String::class.java)
+
+    // Configure the property during the Configuration phase
+    greeting.set("Hello, Gradle!")
+
     doLast {
-        
-        println("Project version: ${project.version}")
+        // Access and use the property during the Execution phase
+        println(greeting.get())
     }
 }
