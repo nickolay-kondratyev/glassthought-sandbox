@@ -51,16 +51,8 @@ tasks.register("hello") {
     }
 }
 
-tasks.register("compile") {
+tasks.register("go") {
     doLast {
-        println("Compiling code...")
-    }
-}
-
-tasks.register("build-stuff") {
-    dependsOn("compile")  // 'build' will run after 'compile'
-
-    doLast {
-        println("Building project...")
+        println("Project version: ${project.version}")
     }
 }
