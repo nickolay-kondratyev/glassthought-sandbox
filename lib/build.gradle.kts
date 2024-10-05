@@ -44,25 +44,23 @@ tasks.named<Test>("test") {
 }
 
 tasks.register("hello") {
+    println("Configuration of 'hello' task")
+
     doLast {
-        println("Hello, Gradle!")
+        println("Execution of 'hello': Hello, Gradle!")
     }
 }
 
-// Eager task creation - always configured
-tasks.create("eagerTask") {
-    println("Eager task: configuration")
-
+tasks.register("compile") {
     doLast {
-        println("Eager task")
+        println("Compiling code...")
     }
 }
 
-// Lazy task registration - configured only when needed
-tasks.register("lazyTask") {
-    println("Lazy task: configuration")
+tasks.register("build-stuff") {
+    dependsOn("compile")  // 'build' will run after 'compile'
 
     doLast {
-        println("Lazy task")
+        println("Building project...")
     }
 }
