@@ -11,6 +11,7 @@ plugins {
 abstract class ProcessFilesTask : DefaultTask() {
 
   @get:InputDirectory
+  @get:PathSensitive(PathSensitivity.RELATIVE)
   abstract val inputDir: DirectoryProperty
 
   @get:OutputDirectory
@@ -43,7 +44,8 @@ abstract class ProcessFilesTask : DefaultTask() {
 
     changedFiles.forEach { change ->
       val inputFile = change.file
-      val outputFile = outputDir.get().file(inputDir.get().asFile.toPath().relativize(inputFile.toPath()).toString()).asFile
+      val relativePath = inputDir.get().asFile.toPath().relativize(inputFile.toPath()).toString()
+      val outputFile = outputDir.get().file(relativePath).asFile
 
       when (change.changeType) {
         ChangeType.ADDED, ChangeType.MODIFIED -> {
