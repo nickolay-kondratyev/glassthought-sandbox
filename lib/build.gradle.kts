@@ -66,17 +66,17 @@ tasks.register("myTask") {
     }
 }
 
-tasks.register("printSysProp") {
-    val sysProp = System.getProperty("myProperty")
+tasks.register("saveEnvVarToFile") {
+    val envVar = System.getenv("MY_ENV_VAR")
 
-    // Declare the system property as an input
-    inputs.property("myProperty", sysProp)
+    // Without declaring the property as input and relying on env variable.
+    // inputs.property("MY_ENV_VAR", envVar)
     outputs.file("build/output.txt")    // Output file
 
     doLast {
         val outputFile = file("build/output.txt")
-        outputFile.writeText("System property: $sysProp")
+        outputFile.writeText("Environment property: $envVar \n")
 
-        println("doLast is running... System property: $sysProp")
+        println("Environment variable: $envVar")
     }
 }
