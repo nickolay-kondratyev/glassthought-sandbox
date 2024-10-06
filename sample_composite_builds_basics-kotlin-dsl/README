@@ -1,6 +1,7 @@
 :samples-dir: /home/tcagent1/agent/work/2822076975d89a59/promote-projects/gradle/build/git-checkout/platforms/documentation/docs/build/working/samples/install/composite-builds-basics
 :gradle-version: 8.10.2
 
+
 = Composite Builds Basics Sample
 
 [.download]
