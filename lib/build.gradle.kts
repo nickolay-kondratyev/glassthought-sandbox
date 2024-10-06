@@ -66,17 +66,17 @@ tasks.register("myTask") {
     }
 }
 
-tasks.register("processData") {
+tasks.register("printSysProp") {
+    val sysProp = System.getProperty("myProperty")
 
-    // Declare input and output for the task
-    inputs.file("src/data/input.txt")   // Input file
+    // Declare the system property as an input
+    inputs.property("myProperty", sysProp)
     outputs.file("build/output.txt")    // Output file
 
     doLast {
-        println("doLast Task executing, Processing input...")
-        val inputFile = file("src/data/input.txt")
         val outputFile = file("build/output.txt")
-        outputFile.writeText("""${Instant.now()} ${inputFile.readText().toUpperCase()}""")
-        println("Task executed: Input processed.")
+        outputFile.writeText("System property: $sysProp")
+
+        println("doLast is running... System property: $sysProp")
     }
 }
