@@ -1,0 +1,1 @@
+gt.snapshot.last-command
