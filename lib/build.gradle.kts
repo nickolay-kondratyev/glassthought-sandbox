@@ -1,5 +1,3 @@
-// build.gradle.kts
-
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.tasks.*
@@ -12,7 +10,6 @@ plugins {
 
 abstract class ProcessFilesTask : DefaultTask() {
 
-  // Using DirectoryProperty to support task configuration and input handling
   @get:InputDirectory
   abstract val inputDir: DirectoryProperty
 
@@ -21,13 +18,15 @@ abstract class ProcessFilesTask : DefaultTask() {
 
   @TaskAction
   fun process(inputChanges: InputChanges) {
-    processImpl(inputChanges)
-  }
-
-  fun postInitVerification() {
-    if (!inputDir.asFile.isPresent) {
-      throw IllegalStateException("inputDir is not set for task=[$name], we verified it in the constructor ourselves")
+    if (!inputDir.isPresent) {
+      throw IllegalStateException("inputDir is not set for task: [$name]")
     }
+
+    if (!outputDir.isPresent) {
+      throw IllegalStateException("outputDir is not set for task: [$name]")
+    }
+
+    processImpl(inputChanges)
   }
 
   private fun processImpl(inputChanges: InputChanges) {
@@ -44,7 +43,7 @@ abstract class ProcessFilesTask : DefaultTask() {
 
     changedFiles.forEach { change ->
       val inputFile = change.file
-      val outputFile = outputDir.get().file(inputDir.asFile.get().toPath().relativize(inputFile.toPath()).toString()).asFile
+      val outputFile = outputDir.get().file(inputDir.get().asFile.toPath().relativize(inputFile.toPath()).toString()).asFile
 
       when (change.changeType) {
         ChangeType.ADDED, ChangeType.MODIFIED -> {
@@ -72,6 +71,4 @@ abstract class ProcessFilesTask : DefaultTask() {
 tasks.register<ProcessFilesTask>("processFiles") {
   inputDir.set(layout.projectDirectory.dir("src/input"))
   outputDir.set(layout.buildDirectory.dir("output"))
-
-  this.postInitVerification()
 }
