@@ -73,7 +73,7 @@ tasks.register("generateFiles") {
 
     doLast {
         val inputFile = file("src/data/input.txt")
-        val outputDir = file("build/generated")
+        val outputDir = file("build/generated/d1/d2/d3")
 
         // Ensure the output directory exists
         if (!outputDir.exists()) {
