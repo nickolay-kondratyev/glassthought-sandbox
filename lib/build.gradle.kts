@@ -1,76 +1,41 @@
-import org.gradle.api.DefaultTask
-import org.gradle.api.file.DirectoryProperty
-import org.gradle.api.tasks.*
-import org.gradle.work.ChangeType
-import org.gradle.work.InputChanges
-
-plugins {
-  base
-}
-
-abstract class ProcessFilesTask : DefaultTask() {
-
+abstract class IncrementalReverseTask : DefaultTask() {
+  @get:Incremental
+  @get:PathSensitive(PathSensitivity.NAME_ONLY)
   @get:InputDirectory
-  @get:PathSensitive(PathSensitivity.RELATIVE)
   abstract val inputDir: DirectoryProperty
 
   @get:OutputDirectory
   abstract val outputDir: DirectoryProperty
 
+  @get:Input
+  abstract val inputProperty: Property<String>
+
   @TaskAction
-  fun process(inputChanges: InputChanges) {
-    if (!inputDir.isPresent) {
-      throw IllegalStateException("inputDir is not set for task: [$name]")
-    }
+  fun execute(inputChanges: InputChanges) {
+    println(
+      if (inputChanges.isIncremental) {
+        "Executing incrementally"
+      } else {
+        "Executing non-incrementally"
+      }
+    )
 
-    if (!outputDir.isPresent) {
-      throw IllegalStateException("outputDir is not set for task: [$name]")
-    }
+    inputChanges.getFileChanges(inputDir).forEach { change ->
+      if (change.fileType == FileType.DIRECTORY) return@forEach
 
-    processImpl(inputChanges)
-  }
-
-  private fun processImpl(inputChanges: InputChanges) {
-    // Ensure the output directory exists
-    outputDir.get().asFile.mkdirs()
-
-    // Get the list of changed files from inputDir
-    val changedFiles = inputChanges.getFileChanges(inputDir)
-
-    if (!changedFiles.iterator().hasNext()) {
-      println("No changes detected. Nothing to process.")
-      return
-    }
-
-    changedFiles.forEach { change ->
-      val inputFile = change.file
-      val relativePath = inputDir.get().asFile.toPath().relativize(inputFile.toPath()).toString()
-      val outputFile = outputDir.get().file(relativePath).asFile
-
-      when (change.changeType) {
-        ChangeType.ADDED, ChangeType.MODIFIED -> {
-          if (inputFile.isFile) {
-            // Read content, process it, and write to the output file
-            val content = inputFile.readText().toUpperCase()
-            outputFile.parentFile.mkdirs() // Ensure parent directories exist
-            outputFile.writeText(content)
-            println("Processed file: ${inputFile.name}")
-          }
-        }
-
-        ChangeType.REMOVED -> {
-          if (outputFile.exists()) {
-            outputFile.delete()
-            println("Deleted output file for removed input file: ${inputFile.name}")
-          }
-        }
+      println("${change.changeType}: ${change.normalizedPath}")
+      val targetFile = outputDir.file(change.normalizedPath).get().asFile
+      if (change.changeType == ChangeType.REMOVED) {
+        targetFile.delete()
+      } else {
+        targetFile.writeText(change.file.readText().reversed())
       }
     }
   }
 }
 
-// Register the task
-tasks.register<ProcessFilesTask>("processFiles") {
-  inputDir.set(layout.projectDirectory.dir("src/input"))
-  outputDir.set(layout.buildDirectory.dir("output"))
+tasks.register<IncrementalReverseTask>("incrementalReverse") {
+  inputDir = file("src/inputs")
+  outputDir = layout.buildDirectory.dir("outputs")
+  inputProperty = project.findProperty("taskInputProperty") as String? ?: "original"
 }
