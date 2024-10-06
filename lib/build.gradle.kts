@@ -66,17 +66,26 @@ tasks.register("myTask") {
     }
 }
 
-tasks.register("processData") {
-
-    // Declare input and output for the task
-    inputs.file("src/data/input.txt")   // Input file
-    outputs.file("build/output.txt")    // Output file
+tasks.register("generateFiles") {
+    // Declare input and output
+    inputs.file("src/data/input.txt")  // Input file
+    outputs.dir("build/generated")     // Output directory
 
     doLast {
-        println("doLast Task executing, Processing input...")
         val inputFile = file("src/data/input.txt")
-        val outputFile = file("build/output.txt")
-        outputFile.writeText("""${Instant.now()} ${inputFile.readText().toUpperCase()}""")
-        println("Task executed: Input processed.")
+        val outputDir = file("build/generated")
+
+        // Ensure the output directory exists
+        if (!outputDir.exists()) {
+            outputDir.mkdirs()
+        }
+
+        // Generate some files in the output directory based on input file content
+        val lines = inputFile.readLines()
+        lines.forEachIndexed { index, line ->
+            val outputFile = File(outputDir, "output_$index.txt")
+            outputFile.writeText("Processed: $line")
+            println("Generated ${outputFile.name}")
+        }
     }
 }
