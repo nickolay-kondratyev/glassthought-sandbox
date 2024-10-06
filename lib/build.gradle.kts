@@ -69,13 +69,13 @@ tasks.register("myTask") {
 tasks.register("saveEnvVarToFile") {
     val envVar = System.getenv("MY_ENV_VAR")
 
-    // Without declaring the property as input and relying on env variable.
-    // inputs.property("MY_ENV_VAR", envVar)
+    // Declare the environment variable as input:
+    inputs.property("MY_ENV_VAR", envVar)
     outputs.file("build/output.txt")    // Output file
 
     doLast {
         val outputFile = file("build/output.txt")
-        outputFile.writeText("Environment property: $envVar \n")
+        outputFile.writeText("Environment variable saved in file: $envVar \n")
 
         println("Environment variable: $envVar")
     }
