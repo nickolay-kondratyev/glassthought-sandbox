@@ -65,27 +65,3 @@ tasks.register("myTask") {
         println(greeting.get())
     }
 }
-
-tasks.register("generateFiles") {
-    // Declare input and output
-    inputs.file("src/data/input.txt")  // Input file
-    outputs.dir("build/generated")     // Output directory
-
-    doLast {
-        val inputFile = file("src/data/input.txt")
-        val outputDir = file("build/generated/d1/d2/d3")
-
-        // Ensure the output directory exists
-        if (!outputDir.exists()) {
-            outputDir.mkdirs()
-        }
-
-        // Generate some files in the output directory based on input file content
-        val lines = inputFile.readLines()
-        lines.forEachIndexed { index, line ->
-            val outputFile = File(outputDir, "output_$index.txt")
-            outputFile.writeText("Processed: $line")
-            println("Generated ${outputFile.name}")
-        }
-    }
-}
