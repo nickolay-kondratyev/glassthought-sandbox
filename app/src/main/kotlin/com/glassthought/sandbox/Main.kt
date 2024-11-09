@@ -1,9 +1,11 @@
 package com.glassthought.sandbox
 
+import gt.sandbox.util.output.Out
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
+val out = Out.standard();
 
 class RaceConditionInducer {
   private var value = 0
@@ -16,9 +18,9 @@ class RaceConditionInducer {
 
       // Coroutine-friendly delay, instead of Thread.sleep
       // [delay](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/delay.html)
-      delay(10)
+      delay(100)
+      out.println("Incrementing value from $storedValue to ${storedValue + 1}")
 
-      println("Incrementing value from storedValue=$storedValue to ${storedValue + 1}")
       value = storedValue + 1
     }
   }
@@ -29,13 +31,23 @@ class RaceConditionInducer {
 fun main() = runBlocking {
   val raceConditionInducer = RaceConditionInducer()
 
-  // Launch coroutines instead of creating threads
-  coroutineScope {
-    val jobs = (1..10).map {
-      launch { raceConditionInducer.incrementValue() }
+  val dispatchers = listOf(
+    Dispatchers.Default,
+    Dispatchers.IO,
+    newFixedThreadPoolContext(3, "CustomThreadPool")
+  )
+
+  val jobs = dispatchers.mapIndexed { index, dispatcher ->
+    launch(dispatcher) {
+      out.println("Starting scope $index on dispatcher $dispatcher")
+      repeat(5) { i ->
+        raceConditionInducer.incrementValue()
+      }
+      println("Finished scope $index on dispatcher $dispatcher")
     }
-    jobs.forEach { it.join() } // Wait for all coroutines to complete
   }
 
-  println("Value: ${raceConditionInducer.getValue()}")
+  jobs.forEach { it.join() }
+
+  println("Final Value: ${raceConditionInducer.getValue()}")
 }
