@@ -3,9 +3,30 @@
  */
 package com.glassthought.sandbox
 
-import gt.sandbox.util.output.Out
+class RaceConditionInducer {
+  private var value = 0
 
+  // @Synchronized // would fix this example race condition.
+  fun incrementValue() {
+    val storedValue = value
+
+    Thread.sleep(10)
+
+    println("Incrementing value from storedValue=$storedValue to ${storedValue + 1}")
+    value = storedValue + 1
+  }
+
+  fun getValue() = value
+}
 
 fun main() {
-    Out.standard().print("Hello, World!")
+  val raceConditionInducer = RaceConditionInducer()
+
+  val threads = (1..10).map {
+    Thread { raceConditionInducer.incrementValue() }
+  }
+  threads.forEach { it.start() }
+  threads.forEach { it.join() }
+
+  println("Value: ${raceConditionInducer.getValue()}")
 }
