@@ -11,16 +11,25 @@ fun main() = runBlocking {
   val deferredTwo = async { fetchDataTwo() }
 
   // Wait for results
-  val resultOne = deferredOne.await()
-  val resultTwo = deferredTwo.await()
 
-  out.println("Combined result: ${resultOne + resultTwo}")
+  try {
+    val resultOne = deferredOne.await()
+    out.println("Result one: $resultOne")
+    val resultTwo = deferredTwo.await()
+    out.println("Combined result: ${resultOne + resultTwo}")
+  } catch (e: Exception) {
+
+    out.printlnRed("Caught exception on main thread: ${e.message}")
+  }
 }
 
 // Simulated data fetch function
 suspend fun fetchDataOne(): Int {
-  delay(1000)  // Simulate a network or heavy computation delay
-  out.println("Fetched data one")
+  delay(2000)  // Simulate a network or heavy computation delay
+
+
+  out.println("Fetched data one, but throwing exception")
+  throw RuntimeException("Failed to fetch data one")
   return 10
 }
 
