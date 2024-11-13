@@ -6,10 +6,13 @@ import kotlinx.coroutines.*
 val out = Out.standard()
 
 fun main() = runBlocking {
-  // If you call suspend functions without async, then the first one will
-  // need to finish. Before the second one starts.
-  val resultOne = fetchDataOne()
-  val resultTwo =  fetchDataTwo()
+  // Start two async operations in parallel
+  val deferredOne = async { fetchDataOne() }
+  val deferredTwo = async { fetchDataTwo() }
+
+  // Wait for results
+  val resultOne = deferredOne.await()
+  val resultTwo = deferredTwo.await()
 
   out.println("Combined result: ${resultOne + resultTwo}")
 }
