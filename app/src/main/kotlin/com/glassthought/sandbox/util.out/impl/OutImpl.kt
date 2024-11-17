@@ -31,19 +31,19 @@ class OutImpl(private val outSettings: OutSettings) : Out {
     kotlin.io.print("\u001B[34m${msg}\u001B[0m")
   }
 
-  override suspend fun println(msg: String) {
+  override suspend fun info(msg: String) {
     kotlin.io.println(formatMsg(msg))
   }
 
-  override suspend fun printlnBlue(msg: String) {
+  override suspend fun infoBlue(msg: String) {
     kotlin.io.println("\u001B[34m${msg}\u001B[0m")
   }
 
-  override suspend fun printlnGreen(msg: String) {
+  override suspend fun infoGreen(msg: String) {
     kotlin.io.println("\u001B[32m${formatMsg(msg)}\u001B[0m")
   }
 
-  override suspend fun printlnRed(msg: String) {
+  override suspend fun infoRed(msg: String) {
     kotlin.io.println("\u001B[31m${formatMsg(msg)}\u001B[0m")
   }
 

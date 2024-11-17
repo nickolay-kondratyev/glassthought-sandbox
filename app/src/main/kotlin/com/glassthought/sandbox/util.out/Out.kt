@@ -9,10 +9,10 @@ interface Out {
   fun printRed(msg: String)
   fun printBlue(msg: String)
 
-  suspend fun println(msg: String)
-  suspend fun printlnBlue(msg: String)
-  suspend fun printlnGreen(msg: String)
-  suspend fun printlnRed(msg: String)
+  suspend fun info(msg: String)
+  suspend fun infoBlue(msg: String)
+  suspend fun infoGreen(msg: String)
+  suspend fun infoRed(msg: String)
 
   companion object {
     fun standard(outSettings: OutSettings = OutSettings()): Out {
