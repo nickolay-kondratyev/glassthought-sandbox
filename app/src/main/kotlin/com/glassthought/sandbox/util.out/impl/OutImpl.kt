@@ -8,7 +8,7 @@ import kotlin.coroutines.coroutineContext
 class OutSettings {
     val printThreadInfo: Boolean = true
     val printCoroutineInfo: Boolean = true
-    val printTimestamp: Boolean = true
+    val printTimestamp: Boolean = false
     val printElapsedTime: Boolean = true
 }
 
@@ -61,7 +61,7 @@ class OutImpl : Out {
 
         val elapsedMillisSinceStart =
             if (outSettings.printElapsedTime)
-                "[elapsed-since-start:" +
+                "[elapsed:" +
                         String.format("%5dms", System.currentTimeMillis() - outInstantiationTime) +
                         "]"
             else
