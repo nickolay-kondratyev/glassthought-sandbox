@@ -1,86 +1,23 @@
 package com.glassthought.sandbox
 
-import gt.sandbox.util.output.Out
 import kotlinx.coroutines.*
-import kotlin.random.Random
+import kotlin.collections.List
 
-// Simulating a View interface for displaying data
-interface View {
-  suspend fun showNews(news: List<String>)
-  suspend fun showUser(user: String)
-  suspend fun showProgressBar()
-  suspend fun hideProgressBar()
+val out = gt.sandbox.util.output.Out.standard()
+
+suspend fun fetchData(id: Int): String {
+  // Simulate some time-consuming operation like fetching data (e.g., network request)
+  delay(1000L)
+
+  return "Data $id"
 }
 
-val out = Out.standard()
-
-// A simple implementation of the View interface
-class ConsoleView : View {
-  override suspend fun showNews(news: List<String>) {
-    out.printlnGreen("News: $news")
-  }
-
-  override suspend fun showUser(user: String) {
-    out.printlnGreen("User: $user")
-  }
-
-  override suspend fun showProgressBar() {
-    out.printlnBlue("Loading...")
-  }
-
-  override suspend fun hideProgressBar() {
-    out.printlnBlue("Done loading.")
-  }
-}
-
-// Simulated functions to fetch data
-suspend fun getNewsFromApi(): List<String> {
-  out.println("Starting news fetch...")
-  delay(1000L) // Simulating network delay
-  out.println("News fetch complete.")
-  return listOf("News 1", "News 2", "News 3")
-}
-
-suspend fun getUserData(): String {
-  out.println("Starting user data fetch...")
-  delay(800L) // Simulating network delay
-  out.println("User data fetch complete.")
-
-  return "John Doe"
-}
-
-
-// Suspending functions to update news and profile
-suspend fun updateNews(view: View) {
-  view.showProgressBar()
-  val news = getNewsFromApi()
-  val sortedNews = news.sortedByDescending { Random.nextInt(1, 100) } // Simulated sorting
-  view.showNews(sortedNews)
-  view.hideProgressBar()
-}
-
-suspend fun updateProfile(view: View) {
-  val user = getUserData()
-  view.showUser(user)
-}
-
-// Main function
 fun main() = runBlocking {
-  out.println("Starting the program...")
-
-  val view = ConsoleView()
-  val scope = CoroutineScope(Dispatchers.Default)
-
-  scope.launch(CoroutineName("UpdateNews")) {
-    updateNews(view)
-  }
-
-  scope.launch(CoroutineName("UpdateProfile")) {
-    updateProfile(view)
-  }
-
-  // Keep the program alive long enough to see the output
-  delay(2000L)
-
-  out.println("Program finished.")
+  // Launch multiple asynchronous tasks in parallel
+  List(5) {
+    async {
+      // Call fetchData in parallel
+      fetchData(it)
+    }
+  }.map { it.await() }.forEach { out.println(it) }
 }
