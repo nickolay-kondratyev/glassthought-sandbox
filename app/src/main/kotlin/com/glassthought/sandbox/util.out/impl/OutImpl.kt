@@ -15,24 +15,24 @@ data class OutSettings(
 class OutImpl(private val outSettings: OutSettings) : Out {
   var outInstantiationTime: Long = System.currentTimeMillis()
 
-  override suspend fun print(msg: String) {
+  override fun print(msg: String) {
     kotlin.io.print(msg)
+  }
+
+  override fun printGreen(msg: String) {
+    kotlin.io.print("\u001B[32m${msg}\u001B[0m")
+  }
+
+  override fun printRed(msg: String) {
+    kotlin.io.print("\u001B[31m${msg}\u001B[0m")
+  }
+
+  override fun printBlue(msg: String) {
+    kotlin.io.print("\u001B[34m${msg}\u001B[0m")
   }
 
   override suspend fun println(msg: String) {
     kotlin.io.println(formatMsg(msg))
-  }
-
-  override suspend fun printGreen(msg: String) {
-    kotlin.io.print("\u001B[32m${msg}\u001B[0m")
-  }
-
-  override suspend fun printRed(msg: String) {
-    kotlin.io.print("\u001B[31m${msg}\u001B[0m")
-  }
-
-  override suspend fun printBlue(msg: String) {
-    kotlin.io.print("\u001B[34m${msg}\u001B[0m")
   }
 
   override suspend fun printlnBlue(msg: String) {
