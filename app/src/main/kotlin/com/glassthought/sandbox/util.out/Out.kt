@@ -5,6 +5,7 @@ import gt.sandbox.util.output.impl.OutSettings
 
 interface Out {
   fun print(msg: String)
+  fun println(msg: String)
   fun printGreen(msg: String)
   fun printRed(msg: String)
   fun printBlue(msg: String)
@@ -19,4 +20,21 @@ interface Out {
       return OutImpl(outSettings)
     }
   }
+}
+
+val out = Out.standard(OutSettings(printCoroutineName = true))
+
+fun <T> T.printGreen(): T {
+  out.printGreen(this.toString())
+  return this
+}
+
+fun <T> T.print(): T {
+  out.print(this.toString())
+  return this
+}
+
+fun <T> T.println(): T {
+  out.println(this.toString())
+  return this
 }

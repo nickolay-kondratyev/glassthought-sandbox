@@ -12,11 +12,16 @@ data class OutSettings(
   val printElapsedTime: Boolean = true
 )
 
+
 class OutImpl(private val outSettings: OutSettings) : Out {
   var outInstantiationTime: Long = System.currentTimeMillis()
 
   override fun print(msg: String) {
     kotlin.io.print(msg)
+  }
+
+  override fun println(msg: String) {
+    kotlin.io.println(msg)
   }
 
   override fun printGreen(msg: String) {
