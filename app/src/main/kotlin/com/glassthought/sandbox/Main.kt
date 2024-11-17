@@ -17,11 +17,11 @@ val out = Out.standard()
 // A simple implementation of the View interface
 class ConsoleView : View {
   override suspend fun showNews(news: List<String>) {
-    out.println("News: $news")
+    out.printlnGreen("News: $news")
   }
 
   override suspend fun showUser(user: String) {
-    out.println("User: $user")
+    out.printlnGreen("User: $user")
   }
 
   override suspend fun showProgressBar() {
@@ -35,16 +35,19 @@ class ConsoleView : View {
 
 // Simulated functions to fetch data
 suspend fun getNewsFromApi(): List<String> {
+  out.println("Starting news fetch...")
   delay(1000L) // Simulating network delay
+  out.println("News fetch complete.")
   return listOf("News 1", "News 2", "News 3")
 }
 
 suspend fun getUserData(): String {
+  out.println("Starting user data fetch...")
   delay(800L) // Simulating network delay
+  out.println("User data fetch complete.")
 
   return "John Doe"
 }
-
 
 
 // Suspending functions to update news and profile
@@ -63,18 +66,21 @@ suspend fun updateProfile(view: View) {
 
 // Main function
 fun main() = runBlocking {
+  out.println("Starting the program...")
+
   val view = ConsoleView()
-  val scope = CoroutineScope(Dispatchers.Default + Job())
+  val scope = CoroutineScope(Dispatchers.Default)
 
   scope.launch(CoroutineName("UpdateNews")) {
     updateNews(view)
   }
 
-  scope.launch {
+  scope.launch(CoroutineName("UpdateProfile")) {
     updateProfile(view)
   }
 
-
   // Keep the program alive long enough to see the output
   delay(2000L)
+
+  out.println("Program finished.")
 }
