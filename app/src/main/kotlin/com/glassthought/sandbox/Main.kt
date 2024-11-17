@@ -6,30 +6,30 @@ import kotlin.random.Random
 
 // Simulating a View interface for displaying data
 interface View {
-  fun showNews(news: List<String>)
-  fun showUser(user: String)
-  fun showProgressBar()
-  fun hideProgressBar()
+  suspend fun showNews(news: List<String>)
+  suspend fun showUser(user: String)
+  suspend fun showProgressBar()
+  suspend fun hideProgressBar()
 }
 
 val out = Out.standard()
 
 // A simple implementation of the View interface
 class ConsoleView : View {
-  override fun showNews(news: List<String>) {
+  override suspend fun showNews(news: List<String>) {
     out.println("News: $news")
   }
 
-  override fun showUser(user: String) {
+  override suspend fun showUser(user: String) {
     out.println("User: $user")
   }
 
-  override fun showProgressBar() {
-    out.println("Loading...")
+  override suspend fun showProgressBar() {
+    out.printlnBlue("Loading...")
   }
 
-  override fun hideProgressBar() {
-    out.println("Done loading.")
+  override suspend fun hideProgressBar() {
+    out.printlnBlue("Done loading.")
   }
 }
 
@@ -41,6 +41,7 @@ suspend fun getNewsFromApi(): List<String> {
 
 suspend fun getUserData(): String {
   delay(800L) // Simulating network delay
+
   return "John Doe"
 }
 
@@ -65,13 +66,14 @@ fun main() = runBlocking {
   val view = ConsoleView()
   val scope = CoroutineScope(Dispatchers.Default + Job())
 
-  scope.launch {
+  scope.launch(CoroutineName("UpdateNews")) {
     updateNews(view)
   }
 
   scope.launch {
     updateProfile(view)
   }
+
 
   // Keep the program alive long enough to see the output
   delay(2000L)

@@ -3,15 +3,15 @@ package gt.sandbox.util.output
 import gt.sandbox.util.output.impl.OutImpl
 
 interface Out {
-    fun print(msg: String)
-    fun println(msg: String)
-    fun printInGreen(msg: String)
-    fun printInRed(msg: String)
-    fun printInBlue(msg: String)
+    suspend fun print(msg: String)
+    suspend fun println(msg: String)
+    suspend fun printInGreen(msg: String)
+    suspend fun printInRed(msg: String)
+    suspend fun printInBlue(msg: String)
 
-    fun printlnBlue(msg: String)
-    fun printlnGreen(msg: String)
-    fun printlnRed(msg: String)
+    suspend fun printlnBlue(msg: String)
+    suspend fun printlnGreen(msg: String)
+    suspend fun printlnRed(msg: String)
 
     companion object {
         fun standard(): Out {
