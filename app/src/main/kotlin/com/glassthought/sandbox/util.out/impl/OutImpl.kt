@@ -16,27 +16,27 @@ class OutImpl(private val outSettings: OutSettings) : Out {
   var outInstantiationTime: Long = System.currentTimeMillis()
 
   override suspend fun print(msg: String) {
-    kotlin.io.print(formatMsg(msg))
+    kotlin.io.print(msg)
   }
 
   override suspend fun println(msg: String) {
     kotlin.io.println(formatMsg(msg))
   }
 
-  override suspend fun printInGreen(msg: String) {
-    kotlin.io.print("\u001B[32m${formatMsg(msg)}\u001B[0m")
+  override suspend fun printGreen(msg: String) {
+    kotlin.io.print("\u001B[32m${msg}\u001B[0m")
   }
 
-  override suspend fun printInRed(msg: String) {
-    kotlin.io.print("\u001B[31m${formatMsg(msg)}\u001B[0m")
+  override suspend fun printRed(msg: String) {
+    kotlin.io.print("\u001B[31m${msg}\u001B[0m")
   }
 
-  override suspend fun printInBlue(msg: String) {
-    kotlin.io.print("\u001B[34m$msg\u001B[0m")
+  override suspend fun printBlue(msg: String) {
+    kotlin.io.print("\u001B[34m${msg}\u001B[0m")
   }
 
   override suspend fun printlnBlue(msg: String) {
-    kotlin.io.println("\u001B[34m${formatMsg(msg)}\u001B[0m")
+    kotlin.io.println("\u001B[34m${msg}\u001B[0m")
   }
 
   override suspend fun printlnGreen(msg: String) {
