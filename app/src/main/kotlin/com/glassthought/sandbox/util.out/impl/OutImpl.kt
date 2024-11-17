@@ -7,13 +7,12 @@ import kotlin.coroutines.coroutineContext
 
 data class OutSettings(
   val printThreadInfo: Boolean = true,
-  val printCoroutineInfo: Boolean = true,
+  val printCoroutineName: Boolean = true,
   val printTimestamp: Boolean = false,
   val printElapsedTime: Boolean = true
 )
 
-class OutImpl : Out {
-  val outSettings = OutSettings()
+class OutImpl(private val outSettings: OutSettings) : Out {
   var outInstantiationTime: Long = System.currentTimeMillis()
 
   override suspend fun print(msg: String) {
@@ -56,7 +55,7 @@ class OutImpl : Out {
       "[tname:${currentThread.name}/tid:${currentThread.threadId()}]"
     } else ""
 
-    val coroutineInfo = if (outSettings.printCoroutineInfo) getCurrentCoroutineName() else ""
+    val coroutineInfo = if (outSettings.printCoroutineName) getCurrentCoroutineName() else ""
 
 
     val elapsedMillisSinceStart =

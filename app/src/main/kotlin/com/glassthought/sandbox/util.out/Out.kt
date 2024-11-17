@@ -1,6 +1,7 @@
 package gt.sandbox.util.output
 
 import gt.sandbox.util.output.impl.OutImpl
+import gt.sandbox.util.output.impl.OutSettings
 
 interface Out {
     suspend fun print(msg: String)
@@ -14,8 +15,8 @@ interface Out {
     suspend fun printlnRed(msg: String)
 
     companion object {
-        fun standard(): Out {
-            return OutImpl()
+        fun standard(outSettings: OutSettings = OutSettings()): Out {
+            return OutImpl(outSettings)
         }
     }
 }
