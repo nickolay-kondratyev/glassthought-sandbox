@@ -46,6 +46,8 @@ fun main() = runBlocking {
   val directoryToWatch = Files.createTempDirectory("watch")
   out.info("Watching directory: $directoryToWatch")
 
+  DirectoryWatchingUtility(directoryToWatch).watch()
+
   thread {
     for (i in 1..5) {
       val file = Files.createTempFile(directoryToWatch, "file-${i}-", ".txt")
@@ -54,7 +56,6 @@ fun main() = runBlocking {
     }
   }
 
-  DirectoryWatchingUtility(directoryToWatch).watch()
 
   delay(5500)
 
