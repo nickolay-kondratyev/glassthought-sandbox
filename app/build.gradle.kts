@@ -29,6 +29,9 @@ dependencies {
 
     // Core library for Kotlin coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+
+    // https://mvnrepository.com/artifact/io.methvin/directory-watcher
+    implementation("io.methvin:directory-watcher:0.18.0")
 }
 
 // Apply a specific Java toolchain to ease working on different environments.

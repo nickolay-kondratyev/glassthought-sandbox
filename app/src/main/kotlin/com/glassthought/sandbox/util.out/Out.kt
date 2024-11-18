@@ -1,19 +1,20 @@
 package gt.sandbox.util.output
 
-import gt.sandbox.util.output.impl.OutImpl
-import gt.sandbox.util.output.impl.OutSettings
+import com.glassthought.sandbox.util.out.impl.OutImpl
+import com.glassthought.sandbox.util.out.impl.OutSettings
 
 interface Out {
   fun print(msg: String)
   fun println(msg: String)
+  fun printlnGreen(msg: String)
   fun printGreen(msg: String)
   fun printRed(msg: String)
   fun printBlue(msg: String)
 
-  suspend fun info(msg: String)
-  suspend fun infoBlue(msg: String)
-  suspend fun infoGreen(msg: String)
-  suspend fun infoRed(msg: String)
+  fun info(msg: String)
+  fun infoBlue(msg: String)
+  fun infoGreen(msg: String)
+  fun infoRed(msg: String)
 
   companion object {
     fun standard(outSettings: OutSettings = OutSettings()): Out {
@@ -22,7 +23,7 @@ interface Out {
   }
 }
 
-val out = Out.standard(OutSettings(printCoroutineName = true))
+val out = Out.standard(OutSettings())
 
 fun <T> T.printGreen(): T {
   out.printGreen(this.toString())
