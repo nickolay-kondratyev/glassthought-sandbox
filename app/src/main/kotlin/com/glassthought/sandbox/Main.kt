@@ -1,11 +1,14 @@
 package com.glassthought.sandbox
 
+import gt.sandbox.util.output.println
 import kotlinx.coroutines.runBlocking
 
 fun main() = runBlocking {
-  val seedValue = 1
-  
-  generateSequence(seedValue) { it + 1 }
-    .take(10)
-    .forEach { print("$it, ") }
+  val seq = sequence {
+    yield(1)
+    yield(2)
+    yield(3)
+  }
+
+  println(seq.toList())
 }
