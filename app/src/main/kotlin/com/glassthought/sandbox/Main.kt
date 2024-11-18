@@ -48,7 +48,7 @@ fun main() = runBlocking {
 
   thread {
     for (i in 1..5) {
-      val file = Files.createTempFile(directoryToWatch, "file", ".txt")
+      val file = Files.createTempFile(directoryToWatch, "file-${i}-", ".txt")
       out.info("Created file: $file")
       Thread.sleep(500)
     }
