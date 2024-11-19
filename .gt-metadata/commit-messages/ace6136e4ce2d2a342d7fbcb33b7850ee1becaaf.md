@@ -1,0 +1,68 @@
+### Code
+```kotlin
+package com.glassthought.sandbox
+
+import io.kotest.core.spec.style.DescribeSpec
+
+class DescribeSpecExample : DescribeSpec({
+  var counter = 0
+  
+
+  describe("Counter example for DescribeSpec") {
+    counter++
+    println("Counter in describe: $counter")
+
+    it("First IT block") {
+      println("Counter in First IT: $counter")
+    }
+
+    it("Second IT block") {
+      println("Counter in Second IT: $counter")
+    }
+
+    describe("Nested Describe") {
+      it("Nested IT block") {
+        println("Counter in Nested IT: $counter")
+      }
+    }
+  }
+})
+```
+
+### Command to reproduce:
+```bash
+gt.sandbox.checkout.commit ace6136e4ce2d2a342d7 \
+&& cd "${GT_SANDBOX_REPO}" \
+&& cmd.run.announce "./gradlew test --rerun-tasks"
+```
+
+### Recorded output of command:
+```txt
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :app:processResources NO-SOURCE
+> Task :app:processTestResources NO-SOURCE
+> Task :app:compileKotlin
+> Task :app:compileJava NO-SOURCE
+> Task :app:classes UP-TO-DATE
+> Task :app:compileTestKotlin
+> Task :app:compileTestJava NO-SOURCE
+> Task :app:testClasses UP-TO-DATE
+
+> Task :app:test
+
+com.glassthought.sandbox.DescribeSpecExample > Counter example for DescribeSpec > First IT block STARTED
+
+com.glassthought.sandbox.DescribeSpecExample > Counter example for DescribeSpec > First IT block PASSED
+
+com.glassthought.sandbox.DescribeSpecExample > Counter example for DescribeSpec > Second IT block STARTED
+
+com.glassthought.sandbox.DescribeSpecExample > Counter example for DescribeSpec > Second IT block PASSED
+
+com.glassthought.sandbox.DescribeSpecExample > Counter example for DescribeSpec > Nested Describe > com.glassthought.sandbox.DescribeSpecExample.Nested IT block STARTED
+
+com.glassthought.sandbox.DescribeSpecExample > Counter example for DescribeSpec > Nested Describe > com.glassthought.sandbox.DescribeSpecExample.Nested IT block PASSED
+
+BUILD SUCCESSFUL in 1s
+3 actionable tasks: 3 executed
+```
+
