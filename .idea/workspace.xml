@@ -90,7 +90,7 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RunManager" selected="Kotest.DescribeSpecExample: Second IT block (1)">
+  <component name="RunManager" selected="Kotest.DescribeSpecExample: Counter example for DescribeSpec">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="WIDTH" value="400" />
       <option name="HEIGHT" value="300" />
@@ -262,6 +262,21 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="DescribeSpecExample: Counter example for DescribeSpec" type="ioKotest" factoryName="Kotest" temporary="true" defaultName="singleModule">
+      <module name="glassthought-sandbox.app.test" />
+      <option name="jrePath" value="" />
+      <option name="jrePathEnabled" value="false" />
+      <option name="passParentEnvs" value="true" />
+      <option name="workingDirectory" value="$MODULE_WORKING_DIR$" />
+      <option name="programParameters" value="" />
+      <option name="specName" value="com.glassthought.sandbox.DescribeSpecExample" />
+      <option name="testPath" value="Counter example for DescribeSpec" />
+      <option name="packageName" value="" />
+      <option name="vmparams" value="" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="DescribeSpecExample: First IT block" type="ioKotest" factoryName="Kotest" temporary="true" defaultName="singleModule">
       <module name="glassthought-sandbox.app.test" />
       <option name="jrePath" value="" />
@@ -292,28 +307,13 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="DescribeSpecExample: Second IT block" type="ioKotest" factoryName="Kotest" temporary="true" defaultName="singleModule">
-      <module name="glassthought-sandbox.app.test" />
-      <option name="jrePath" value="" />
-      <option name="jrePathEnabled" value="false" />
-      <option name="passParentEnvs" value="true" />
-      <option name="workingDirectory" value="$MODULE_WORKING_DIR$" />
-      <option name="programParameters" value="" />
-      <option name="specName" value="com.glassthought.DescribeSpecExample" />
-      <option name="testPath" value="Counter example for DescribeSpec -- Second IT block" />
-      <option name="packageName" value="" />
-      <option name="vmparams" value="" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Kotest.DescribeSpecExample: Counter example for DescribeSpec" />
         <item itemvalue="Kotest.DescribeSpecExample: Second IT block (1)" />
         <item itemvalue="Gradle.DescribeSpecExample" />
         <item itemvalue="Kotest.DescribeSpecExample" />
         <item itemvalue="Kotest.DescribeSpecExample: First IT block" />
-        <item itemvalue="Kotest.DescribeSpecExample: Second IT block" />
       </list>
     </recent_temporary>
   </component>

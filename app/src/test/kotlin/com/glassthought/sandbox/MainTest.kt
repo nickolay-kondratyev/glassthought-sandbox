@@ -2,12 +2,16 @@ package com.glassthought.sandbox
 
 import io.kotest.core.spec.style.DescribeSpec
 
+var counter = 0
+
 class DescribeSpecExample : DescribeSpec({
-  var counter = 0
 
   describe("Counter example for DescribeSpec") {
-    counter++
-    println("Counter in describe: $counter")
+    beforeTest {
+      counter++
+    }
+
+    println("Counter in outer describe: $counter")
 
     it("First IT block") {
       println("Counter in First IT: $counter")
@@ -18,8 +22,14 @@ class DescribeSpecExample : DescribeSpec({
     }
 
     describe("Nested Describe") {
+      println("Counter in nested describe: $counter")
+
+      it("Nested IT block-1") {
+        println("Counter in Nested IT-1: $counter")
+      }
+
       it("Nested IT block") {
-        println("Counter in Nested IT: $counter")
+        println("Counter in Nested IT-2: $counter")
       }
     }
   }
