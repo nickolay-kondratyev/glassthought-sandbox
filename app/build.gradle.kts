@@ -47,12 +47,9 @@ tasks.named<Test>("test") {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
 
-    // Show test names and their results in the console
+    // Show test names and results in the console
     testLogging {
         events("started", "passed", "skipped", "failed")
-        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
-        showExceptions = true
-        showCauses = true
-        showStackTraces = true
+        showStandardStreams = true // Enable console output from tests
     }
 }

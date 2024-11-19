@@ -4,7 +4,6 @@ import io.kotest.core.spec.style.DescribeSpec
 
 class DescribeSpecExample : DescribeSpec({
   var counter = 0
-  
 
   describe("Counter example for DescribeSpec") {
     counter++
