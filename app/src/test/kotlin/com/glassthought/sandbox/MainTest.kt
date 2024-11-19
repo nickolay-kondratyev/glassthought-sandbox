@@ -1,4 +1,4 @@
-package com.glassthought
+package com.glassthought.sandbox
 
 import io.kotest.core.spec.style.DescribeSpec
 
