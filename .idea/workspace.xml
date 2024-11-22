@@ -5,6 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4a1b8b7c-d37b-405c-bf40-3761af1fd6ae" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/test/kotlin/com/glassthought/sandbox/MainTest.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/test/kotlin/com/glassthought/sandbox/MainTest.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -23,6 +24,9 @@
   <component name="ExternalProjectsManager">
     <system id="GRADLE">
       <state>
+        <task path="$PROJECT_DIR$">
+          <activation />
+        </task>
         <projects_view>
           <tree_state>
             <expand>
@@ -69,9 +73,20 @@
     "Gradle.Build glassthought-sandbox2.executor": "Run",
     "Gradle.DescribeSpecExample (1).executor": "Run",
     "Gradle.DescribeSpecExample.executor": "Debug",
+    "Gradle.ExampleDescribeSpecTest (1).executor": "Debug",
+    "Gradle.ExampleDescribeSpecTest.executor": "Debug",
     "Kotest.DescribeSpecExample.executor": "Run",
+    "Kotest.DescribeSpecExample: Counter example for DescribeSpec.executor": "Run",
     "Kotest.DescribeSpecExample: First IT block.executor": "Run",
+    "Kotest.DescribeSpecExample: Second IT block (1).executor": "Run",
     "Kotest.DescribeSpecExample: Second IT block.executor": "Run",
+    "Kotest.ExampleDescribeSpecTest (1).executor": "Run",
+    "Kotest.ExampleDescribeSpecTest.executor": "Run",
+    "Kotest.ExampleDescribeSpecTest: Mathematical operations (1).executor": "Run",
+    "Kotest.ExampleDescribeSpecTest: Mathematical operations (2).executor": "Run",
+    "Kotest.ExampleDescribeSpecTest: Mathematical operations.executor": "Run",
+    "Kotest.ExampleDescribeSpecTest: inner describe block.executor": "Debug",
+    "Kotest.ExampleDescribeSpecTest: should multiply two numbers.executor": "Run",
     "Kotlin.AppKt.executor": "Run",
     "Kotlin.MainKt (1).executor": "Run",
     "Kotlin.MainKt.executor": "Run",
@@ -90,7 +105,7 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RunManager" selected="Kotest.DescribeSpecExample: Counter example for DescribeSpec">
+  <component name="RunManager">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="WIDTH" value="400" />
       <option name="HEIGHT" value="300" />
@@ -113,7 +128,7 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="DescribeSpecExample" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="ExampleDescribeSpecTest (1)" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -126,7 +141,7 @@
           <list>
             <option value=":app:test" />
             <option value="--tests" />
-            <option value="&quot;com.glassthought.sandbox.DescribeSpecExample&quot;" />
+            <option value="&quot;com.glassthought.sandbox.ExampleDescribeSpecTest&quot;" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -247,14 +262,14 @@
       <option name="docutils_open_in_browser" value="false" />
       <method v="2" />
     </configuration>
-    <configuration name="DescribeSpecExample" type="ioKotest" factoryName="Kotest" temporary="true" defaultName="singleModule">
+    <configuration name="ExampleDescribeSpecTest (1)" type="ioKotest" factoryName="Kotest" temporary="true" defaultName="singleModule">
       <module name="glassthought-sandbox.app.test" />
       <option name="jrePath" value="" />
       <option name="jrePathEnabled" value="false" />
       <option name="passParentEnvs" value="true" />
       <option name="workingDirectory" value="$MODULE_WORKING_DIR$" />
       <option name="programParameters" value="" />
-      <option name="specName" value="com.glassthought.DescribeSpecExample" />
+      <option name="specName" value="com.glassthought.sandbox.ExampleDescribeSpecTest" />
       <option name="testPath" value="" />
       <option name="packageName" value="" />
       <option name="vmparams" value="" />
@@ -262,45 +277,45 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="DescribeSpecExample: Counter example for DescribeSpec" type="ioKotest" factoryName="Kotest" temporary="true" defaultName="singleModule">
+    <configuration name="ExampleDescribeSpecTest" type="ioKotest" factoryName="Kotest" temporary="true" defaultName="singleModule">
       <module name="glassthought-sandbox.app.test" />
       <option name="jrePath" value="" />
       <option name="jrePathEnabled" value="false" />
       <option name="passParentEnvs" value="true" />
       <option name="workingDirectory" value="$MODULE_WORKING_DIR$" />
       <option name="programParameters" value="" />
-      <option name="specName" value="com.glassthought.sandbox.DescribeSpecExample" />
-      <option name="testPath" value="Counter example for DescribeSpec" />
+      <option name="specName" value="com.glassthought.sandbox.ExampleDescribeSpecTest" />
+      <option name="testPath" value="" />
       <option name="packageName" value="" />
       <option name="vmparams" value="" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="DescribeSpecExample: First IT block" type="ioKotest" factoryName="Kotest" temporary="true" defaultName="singleModule">
+    <configuration name="ExampleDescribeSpecTest: inner describe block" type="ioKotest" factoryName="Kotest" temporary="true" defaultName="singleModule">
       <module name="glassthought-sandbox.app.test" />
       <option name="jrePath" value="" />
       <option name="jrePathEnabled" value="false" />
       <option name="passParentEnvs" value="true" />
       <option name="workingDirectory" value="$MODULE_WORKING_DIR$" />
       <option name="programParameters" value="" />
-      <option name="specName" value="com.glassthought.DescribeSpecExample" />
-      <option name="testPath" value="Counter example for DescribeSpec -- First IT block" />
+      <option name="specName" value="com.glassthought.sandbox.ExampleDescribeSpecTest" />
+      <option name="testPath" value="Mathematical operations -- inner describe block" />
       <option name="packageName" value="" />
       <option name="vmparams" value="" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="DescribeSpecExample: Second IT block (1)" type="ioKotest" factoryName="Kotest" temporary="true" defaultName="singleModule">
+    <configuration name="ExampleDescribeSpecTest: should multiply two numbers" type="ioKotest" factoryName="Kotest" temporary="true" defaultName="singleModule">
       <module name="glassthought-sandbox.app.test" />
       <option name="jrePath" value="" />
       <option name="jrePathEnabled" value="false" />
       <option name="passParentEnvs" value="true" />
       <option name="workingDirectory" value="$MODULE_WORKING_DIR$" />
       <option name="programParameters" value="" />
-      <option name="specName" value="com.glassthought.sandbox.DescribeSpecExample" />
-      <option name="testPath" value="Counter example for DescribeSpec -- Second IT block" />
+      <option name="specName" value="com.glassthought.sandbox.ExampleDescribeSpecTest" />
+      <option name="testPath" value="Mathematical operations -- inner describe block -- should multiply two numbers" />
       <option name="packageName" value="" />
       <option name="vmparams" value="" />
       <method v="2">
@@ -309,11 +324,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Kotest.DescribeSpecExample: Counter example for DescribeSpec" />
-        <item itemvalue="Kotest.DescribeSpecExample: Second IT block (1)" />
-        <item itemvalue="Gradle.DescribeSpecExample" />
-        <item itemvalue="Kotest.DescribeSpecExample" />
-        <item itemvalue="Kotest.DescribeSpecExample: First IT block" />
+        <item itemvalue="Gradle.ExampleDescribeSpecTest (1)" />
+        <item itemvalue="Kotest.ExampleDescribeSpecTest: inner describe block" />
+        <item itemvalue="Kotest.ExampleDescribeSpecTest" />
+        <item itemvalue="Kotest.ExampleDescribeSpecTest: should multiply two numbers" />
+        <item itemvalue="Kotest.ExampleDescribeSpecTest (1)" />
       </list>
     </recent_temporary>
   </component>
@@ -334,11 +349,22 @@
       <option name="presentableId" value="Default" />
       <updated>1731182233521</updated>
       <workItem from="1731182235341" duration="1185000" />
-      <workItem from="1731983525725" duration="997000" />
+      <workItem from="1731983525725" duration="2206000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/app/src/test/kotlin/com/glassthought/sandbox/MainTest.kt</url>
+          <line>12</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

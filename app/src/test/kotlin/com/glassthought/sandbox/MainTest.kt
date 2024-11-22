@@ -1,36 +1,31 @@
 package com.glassthought.sandbox
 
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.shouldBe
 
-var counter = 0
 
-class DescribeSpecExample : DescribeSpec({
+var afterInnerSpecCounter = 0
 
-  describe("Counter example for DescribeSpec") {
-    beforeTest {
-      counter++
-    }
-
-    println("Counter in outer describe: $counter")
-
-    it("First IT block") {
-      println("Counter in First IT: $counter")
-    }
-
-    it("Second IT block") {
-      println("Counter in Second IT: $counter")
-    }
-
-    describe("Nested Describe") {
-      println("Counter in nested describe: $counter")
-
-      it("Nested IT block-1") {
-        println("Counter in Nested IT-1: $counter")
+class ExampleDescribeSpecTest : DescribeSpec({
+  describe("Mathematical operations") {
+    describe("inner describe block") {
+      afterContainer {
+        println("Cleaning up after the inner describe block: called ${++afterInnerSpecCounter} times")
       }
 
-      it("Nested IT block") {
-        println("Counter in Nested IT-2: $counter")
+      it("test1") {
+        println("test1")
       }
+
+      it("test2") {
+        println("test2")
+
+      }
+    }
+
+
+    it("should subtract two numbers") {
+      println("hi")
     }
   }
 })
