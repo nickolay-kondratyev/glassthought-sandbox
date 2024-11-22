@@ -15,7 +15,6 @@ fun main() = runBlocking {
     "Jon Snow"
   }
 
-
   future.handle { result: String, ex: Throwable? ->
     if (ex != null) {
       return@handle "Error handling: " + ex.message
