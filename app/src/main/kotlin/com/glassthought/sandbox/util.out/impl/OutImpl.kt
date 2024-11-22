@@ -9,12 +9,21 @@ data class OutSettings(
   val printThreadInfo: Boolean = true,
   val printCoroutineName: Boolean = true,
   val printTimestamp: Boolean = false,
-  val printElapsedTime: Boolean = true
+  val printElapsedTime: Boolean = true,
+  val printColorPerCoroutine: Boolean = true
 )
 
-
 class OutImpl(private val outSettings: OutSettings) : Out {
-  var outInstantiationTime: Long = System.currentTimeMillis()
+  private var outInstantiationTime: Long = System.currentTimeMillis()
+  private val coroutineNameToColor = mutableMapOf<String, String>()
+
+  private val colors = listOf(
+    "\u001B[32m", // green
+    "\u001B[33m", // yellow
+    "\u001B[34m", // blue
+    "\u001B[35m", // purple
+    "\u001B[36m", // cyan
+  )
 
   override fun print(msg: String) {
     kotlin.io.print(msg)
@@ -37,11 +46,11 @@ class OutImpl(private val outSettings: OutSettings) : Out {
   }
 
   override suspend fun info(msg: String) {
-    kotlin.io.println(formatMsg(msg))
+    kotlin.io.println(optionallyColorPerCoroutine(formatMsg(msg)))
   }
 
   override suspend fun infoBlue(msg: String) {
-    kotlin.io.println("\u001B[34m${msg}\u001B[0m")
+    kotlin.io.println("\u001B[34m${formatMsg(msg)}\u001B[0m")
   }
 
   override suspend fun infoGreen(msg: String) {
@@ -52,16 +61,35 @@ class OutImpl(private val outSettings: OutSettings) : Out {
     kotlin.io.println("\u001B[31m${formatMsg(msg)}\u001B[0m")
   }
 
+  private suspend fun optionallyColorPerCoroutine(msg: String): String {
+    if (!outSettings.printColorPerCoroutine) {
+      return msg
+    }
+
+    val coroutineName = coroutineContext[CoroutineName]?.name ?: return msg
+
+    synchronized(coroutineNameToColor) {
+      if (!coroutineNameToColor.containsKey(coroutineName)) {
+        if (coroutineNameToColor.size < colors.size) {
+          coroutineNameToColor[coroutineName] = colors[coroutineNameToColor.size]
+        } else {
+          return msg // No color available, print in plain text
+        }
+      }
+    }
+
+    val color = coroutineNameToColor[coroutineName]
+    return "$color$msg\u001B[0m"
+  }
+
   private suspend fun formatMsg(msg: String): String {
     val timestamp = if (outSettings.printTimestamp) "[${Instant.now()}]" else ""
     val threadInfo = if (outSettings.printThreadInfo) {
       val currentThread = Thread.currentThread()
-
       "[tname:${currentThread.name}/tid:${currentThread.threadId()}]"
     } else ""
 
     val coroutineInfo = if (outSettings.printCoroutineName) getCurrentCoroutineName() else ""
-
 
     val elapsedMillisSinceStart =
       if (outSettings.printElapsedTime)
@@ -74,9 +102,7 @@ class OutImpl(private val outSettings: OutSettings) : Out {
     return "${timestamp}${elapsedMillisSinceStart}${threadInfo}${coroutineInfo} $msg"
   }
 
-
   private suspend fun getCurrentCoroutineName(): String {
-    // Access the current coroutine's name if available
     val currentCoroutineName = coroutineContext[CoroutineName]?.name
     return if (currentCoroutineName != null) {
       "[coroutine:$currentCoroutineName]"
