@@ -10,6 +10,9 @@ val out = Out.standard()
 
 fun main() = runBlocking {
   val future = CompletableFuture.supplyAsync {
+    // WHEN I PRINT THIS LINE
+    //  WITHIN THE FEATURE
+    // THEN thenAccept runs on ForkJoinPool.commonPool-worker-1
     out.println("supplyAsync")
 
     throw RuntimeException("original-exc-msg-from-supplyAsync-future-block")
@@ -23,9 +26,9 @@ fun main() = runBlocking {
       return@handle result.uppercase(Locale.getDefault())
     }
   }.thenApply { x: String -> out.println("thenApply"); x + "!" }
-    .thenAccept { x: String -> out.println(x) }
+    .thenAccept { x: String -> out.println("thenAccept: " + x) }
 
-  
+
   delay(100)
   println()
 }
