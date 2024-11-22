@@ -10,10 +10,10 @@ val out = Out.standard()
 
 fun main() = runBlocking {
   val future = CompletableFuture.supplyAsync {
-    // WHEN I PRINT THIS LINE
+    // WHEN I do NOT PRINT THIS LINE
     //  WITHIN THE FEATURE
-    // THEN thenAccept runs on ForkJoinPool.commonPool-worker-1
-    out.println("supplyAsync")
+    // THEN thenAccept runs on main thread.
+    // out.println("supplyAsync")
 
     throw RuntimeException("original-exc-msg-from-supplyAsync-future-block")
     "Jon Snow"
