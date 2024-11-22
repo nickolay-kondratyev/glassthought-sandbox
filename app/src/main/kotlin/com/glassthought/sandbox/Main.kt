@@ -12,7 +12,12 @@ fun main() {
   val future = CompletableFuture.supplyAsync {
     out.println("supplyAsync: Task started")
     try {
+      out.println("Starting 5 second sleep")
       Thread.sleep(5000) // Simulate a long-running task
+      out.println("Slept for 5 seconds, will sleep for just 100ms more")
+      Thread.sleep(100)
+      out.println("supplyAsync: Task completed")
+
       "Task completed"
     } catch (e: InterruptedException) {
       out.println("Task was interrupted")
@@ -38,5 +43,6 @@ fun main() {
     out.println("Exception occurred: ${e.message}")
   }
 
+  Thread.sleep(6000)
   out.println("Main thread ends")
 }
