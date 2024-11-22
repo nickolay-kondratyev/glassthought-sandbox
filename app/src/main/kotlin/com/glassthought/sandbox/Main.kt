@@ -11,6 +11,7 @@ val out = Out.standard()
 fun main() = runBlocking {
   val future = CompletableFuture.supplyAsync {
     out.println("supplyAsync")
+
     throw RuntimeException("original-exc-msg-from-supplyAsync-future-block")
     "Jon Snow"
   }
@@ -28,6 +29,3 @@ fun main() = runBlocking {
   println()
 }
 
-private fun fallbackMaker(ex: Throwable?): String {
-  return "Fallback Result (${ex?.message})"
-}
