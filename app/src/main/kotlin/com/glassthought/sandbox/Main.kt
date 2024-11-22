@@ -1,17 +1,23 @@
 package com.glassthought.sandbox
 
-import kotlinx.coroutines.runBlocking
+import gt.sandbox.util.output.Out
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
-val seq = sequence {
-  println("Generating first")
-  yield(1)
-  println("Generating second")
-  yield(2)
-  println("Generating third")
-  yield(3)
-  println("Done")
-}
+val out = Out.standard()
 
-fun main() = runBlocking {
-  println(seq.take(1).toList())
+suspend fun main(): Unit = coroutineScope {
+  val job = launch {
+    repeat(1_000) { i ->
+      delay(200)
+      out.println("Printing $i")
+    }
+  }
+
+  delay(1100)
+  job.cancel()
+  job.join()
+
+  out.println("Cancelled successfully")
 }
