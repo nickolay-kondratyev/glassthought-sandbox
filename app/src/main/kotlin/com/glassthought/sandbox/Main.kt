@@ -17,7 +17,6 @@ fun main() {
       out.println("Slept for 5 seconds, will sleep for just 100ms more")
       Thread.sleep(100)
       out.println("supplyAsync: Task completed")
-
       "Task completed"
     } catch (e: InterruptedException) {
       out.println("Task was interrupted")
@@ -31,7 +30,9 @@ fun main() {
     out.println("Starting a new thread to cancel the future...")
     Thread.sleep(2000) // Wait 2 seconds before canceling
     out.println("Cancelling the future...")
+
     val cancelled = future.cancel(true)
+
     out.println("Future cancelled: $cancelled")
   }.start()
 
