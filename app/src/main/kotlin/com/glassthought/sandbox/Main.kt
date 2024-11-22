@@ -25,6 +25,7 @@ fun main() = runBlocking {
   }.thenApply { x: String -> out.println("thenApply"); x + "!" }
     .thenAccept { x: String -> out.println(x) }
 
+  
   delay(100)
   println()
 }
