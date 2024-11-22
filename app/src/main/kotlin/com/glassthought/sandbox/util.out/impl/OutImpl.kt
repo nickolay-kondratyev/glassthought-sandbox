@@ -3,15 +3,15 @@ package gt.sandbox.util.output.impl
 import gt.sandbox.util.output.Out
 import java.time.Instant
 
-class OutSettings {
-  val printColorPerThread: Boolean = false
-  val printThreadInfo: Boolean = true
-  val printTimestamp: Boolean = true
+data class OutSettings(
+  val printColorPerThread: Boolean = false,
+  val printThreadInfo: Boolean = true,
+  val printTimestamp: Boolean = true,
   val printElapsedTime: Boolean = true
-}
+)
 
-class OutImpl : Out {
-  val outSettings = OutSettings()
+class OutImpl(private val outSettings: OutSettings = OutSettings()) : Out {
+
   var outInstantiationTime: Long = System.currentTimeMillis()
 
   override fun print(msg: String) {

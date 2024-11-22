@@ -1,9 +1,10 @@
 package com.glassthought.sandbox
 
 import gt.sandbox.util.output.Out
+import gt.sandbox.util.output.impl.OutSettings
 import java.util.concurrent.CompletableFuture
 
-val out = Out.standard()
+val out = Out.standard(outSettings = OutSettings(printColorPerThread = true))
 
 
 fun main() {
@@ -19,6 +20,7 @@ fun main() {
     }
   }
 
+  Thread.sleep(100)
   // Simulate cancellation after 2 seconds
   Thread {
     out.println("Starting a new thread to cancel the future...")
