@@ -9,7 +9,7 @@ val out = Out.standard()
 fun main() {
   // Create a CompletableFuture that simulates a long-running task
   val future = CompletableFuture.supplyAsync {
-    out.println("Task started: ${Thread.currentThread().name}")
+    out.println("supplyAsync: Task started")
     try {
       Thread.sleep(5000) // Simulate a long-running task
       "Task completed"
@@ -21,6 +21,7 @@ fun main() {
 
   // Simulate cancellation after 2 seconds
   Thread {
+    out.println("Starting a new thread to cancel the future...")
     Thread.sleep(2000) // Wait 2 seconds before canceling
     out.println("Cancelling the future...")
     val cancelled = future.cancel(true)

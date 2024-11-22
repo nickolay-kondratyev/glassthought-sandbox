@@ -32,6 +32,7 @@ class OutImpl : Out {
     // If run out of colors then use plain printing.
     // Keep track of which thread ids were used to find out if
     // we have ran out of colors.
+    @Synchronized
     private fun colorPerThread(msg: String): Any {
 
         val threadId = Thread.currentThread().threadId()
