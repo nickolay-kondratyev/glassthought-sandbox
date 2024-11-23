@@ -11,14 +11,16 @@ val out = Out.standard()
 suspend fun main(): Unit = coroutineScope {
   val job = launch (CoroutineName("job")){
     repeat(1_000) { i ->
-      delay(200)
+      delay(100)
       out.info("Printing $i")
     }
   }
 
   delay(1100)
   job.cancel()
-  job.join()
+
+  // JOIN is important.
+  // job.join()
 
   out.info("Cancelled successfully")
 }
