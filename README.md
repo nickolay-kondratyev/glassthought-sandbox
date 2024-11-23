@@ -1,2 +1,5 @@
-# glassthought-sandbox
-Code sandbox/Examples for glassthought.com
+
+### First run bash script
+```bash
+first_run.sh
+```
