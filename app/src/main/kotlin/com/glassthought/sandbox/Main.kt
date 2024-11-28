@@ -1,26 +1,20 @@
 package com.glassthought.sandbox
 
 import gt.sandbox.util.output.Out
-import kotlin.concurrent.thread
-import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 val out = Out.standard()
 
+class MyException(msg: String) : Throwable(msg)
+
 suspend fun main() {
-  out.info("Before-1")
-
-  val valueFromCoRoutine = suspendCoroutine { continuation ->
-    out.infoNonSuspend("Before-2a")
-
-    thread{
-      Thread.sleep(500)
-
-      out.infoNonSuspend("resuming...")
-      continuation.resume("resumed-value")
-
+  try {
+    suspendCoroutine<Unit> { cont ->
+      out.infoNonSuspend("About to resumeWithException")
+      cont.resumeWithException(MyException("msg-from-resumeWithException"))
     }
+  } catch (e: MyException) {
+    out.info("Caught! exc-msg: " + e.message)
   }
-
-  out.info("After called. Value from co-routine: $valueFromCoRoutine")
 }
