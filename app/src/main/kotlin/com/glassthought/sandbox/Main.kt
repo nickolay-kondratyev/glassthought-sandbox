@@ -1,17 +1,18 @@
 package com.glassthought.sandbox
 
 import kotlinx.coroutines.runBlocking
+import kotlin.random.Random
 
-val seq = sequence {
-  println("Generating first")
-  yield(1)
-  println("Generating second")
-  yield(2)
-  println("Generating third")
-  yield(3)
-  println("Done")
+fun randomNumbersUpTo1000(
+  seed: Long = System.currentTimeMillis()
+): Sequence<Int> = sequence {
+  val random = Random(seed)
+
+  while (true) {
+    yield(random.nextInt(0, 1000))
+  }
 }
 
 fun main() = runBlocking {
-  println("Final output: " + seq.take(2).toList())
+  println(randomNumbersUpTo1000().take(3).toList())
 }
