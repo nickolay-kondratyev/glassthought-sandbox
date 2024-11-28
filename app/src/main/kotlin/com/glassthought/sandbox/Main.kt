@@ -1,33 +1,26 @@
 package com.glassthought.sandbox
 
 import gt.sandbox.util.output.Out
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
+import kotlin.concurrent.thread
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 val out = Out.standard()
 
-private val executor = Executors.newSingleThreadScheduledExecutor {
-  Thread(it, "my-scheduler").apply { isDaemon = true }
-}
-
-
 suspend fun main() {
   out.info("Before-1")
 
-  suspendCoroutine<Unit> { continuation ->
-    // This lambda function is called right before the suspension
-    // takes place.
-    out.infoNonSuspend(continuation.toString())
+  val valueFromCoRoutine = suspendCoroutine { continuation ->
     out.infoNonSuspend("Before-2a")
 
-    executor.schedule({
-      out.infoNonSuspend("Resuming")
+    thread{
+      Thread.sleep(500)
 
-      continuation.resume(Unit)
-    }, 1000, TimeUnit.MILLISECONDS)
+      out.infoNonSuspend("resuming...")
+      continuation.resume("resumed-value")
+
+    }
   }
 
-  out.info("After called because we resumed")
+  out.info("After called. Value from co-routine: $valueFromCoRoutine")
 }
