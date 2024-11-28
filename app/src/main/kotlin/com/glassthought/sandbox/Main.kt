@@ -8,42 +8,11 @@ val out = Out.standard(outSettings = OutSettings(printColorPerThread = true))
 
 
 fun main() {
-  // Create a CompletableFuture that simulates a long-running task
-  val future = CompletableFuture.supplyAsync {
-    out.println("supplyAsync: Task started")
-    try {
-      out.println("Starting 5 second sleep")
-      Thread.sleep(5000) // Simulate a long-running task
-      out.println("Slept for 5 seconds, will sleep for just 100ms more")
-      Thread.sleep(100)
-      out.println("supplyAsync: Task completed")
-      "Task completed"
-    } catch (e: InterruptedException) {
-      out.println("Task was interrupted")
-      throw RuntimeException("Task interrupted", e)
-    }
-  }
+  val inst1 = functionThatCreatesASingleInstance()
+  val inst2 = functionThatCreatesASingleInstance()
 
-  Thread.sleep(100)
-  // Simulate cancellation after 2 seconds
-  Thread {
-    out.println("Starting a new thread to cancel the future...")
-    Thread.sleep(2000) // Wait 2 seconds before canceling
-    out.println("Cancelling the future...")
+  out.println("inst1: $inst1")
+  out.println("inst2: $inst2")
 
-    val cancelled = future.cancel(true)
-
-    out.println("Future cancelled: $cancelled")
-  }.start()
-
-  // Attempt to retrieve the result (blocks until completed or cancelled)
-  try {
-    val result = future.get()
-    out.println("Future result: $result")
-  } catch (e: Exception) {
-    out.println("Exception occurred: ${e.message}")
-  }
-
-  Thread.sleep(6000)
-  out.println("Main thread ends")
+  out.println("Are equal=" + (inst2 == inst1))
 }
