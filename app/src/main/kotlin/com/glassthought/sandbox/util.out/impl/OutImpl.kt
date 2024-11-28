@@ -45,8 +45,13 @@ class OutImpl(private val outSettings: OutSettings) : Out {
     kotlin.io.print("\u001B[34m${msg}\u001B[0m")
   }
 
+
   override suspend fun info(msg: String) {
     kotlin.io.println(optionallyColorPerCoroutine(formatMsg(msg)))
+  }
+
+  override fun infoNonSuspend(msg: String) {
+    kotlin.io.println(formatMsgNonSuspend(msg))
   }
 
   override suspend fun infoBlue(msg: String) {
@@ -100,6 +105,24 @@ class OutImpl(private val outSettings: OutSettings) : Out {
         ""
 
     return "${timestamp}${elapsedMillisSinceStart}${threadInfo}${coroutineInfo} $msg"
+  }
+
+  private  fun formatMsgNonSuspend(msg: String): String {
+    val timestamp = if (outSettings.printTimestamp) "[${Instant.now()}]" else ""
+    val threadInfo = if (outSettings.printThreadInfo) {
+      val currentThread = Thread.currentThread()
+      "[tname:${currentThread.name}/tid:${currentThread.threadId()}]"
+    } else ""
+
+    val elapsedMillisSinceStart =
+      if (outSettings.printElapsedTime)
+        "[elapsed:" +
+            String.format("%5dms", System.currentTimeMillis() - outInstantiationTime) +
+            "]"
+      else
+        ""
+
+    return "${timestamp}${elapsedMillisSinceStart}${threadInfo} $msg"
   }
 
   private suspend fun getCurrentCoroutineName(): String {
