@@ -1,18 +1,17 @@
 package com.glassthought.sandbox
 
-import gt.sandbox.util.output.Out
-import gt.sandbox.util.output.impl.OutSettings
-import java.util.concurrent.CompletableFuture
+import kotlinx.coroutines.runBlocking
 
-val out = Out.standard(outSettings = OutSettings(printColorPerThread = true))
+val seq = sequence {
+  println("Generating first")
+  yield(1)
+  println("Generating second")
+  yield(2)
+  println("Generating third")
+  yield(3)
+  println("Done")
+}
 
-
-fun main() {
-  val inst1 = functionThatCreatesASingleInstance()
-  val inst2 = functionThatCreatesASingleInstance()
-
-  out.println("inst1: $inst1")
-  out.println("inst2: $inst2")
-
-  out.println("Are equal=" + (inst2 == inst1))
+fun main() = runBlocking {
+  println("Final output: " + seq.take(2).toList())
 }
