@@ -15,6 +15,6 @@ suspend fun main() {
       cont.resumeWithException(MyException("msg-from-resumeWithException"))
     }
   } catch (e: MyException) {
-    out.info("Caught! exc-msg: " + e.message)
+    out.info("Caught! exc-msg:  " + e.message)
   }
 }
