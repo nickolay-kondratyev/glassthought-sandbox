@@ -1,7 +1,7 @@
 package gt.sandbox.util.output
 
-import gt.sandbox.util.output.impl.OutImpl
-import gt.sandbox.util.output.impl.OutSettings
+import com.glassthought.sandbox.util.out.impl.OutImpl
+import com.glassthought.sandbox.util.out.impl.OutSettings
 
 interface Out {
   fun print(msg: String)

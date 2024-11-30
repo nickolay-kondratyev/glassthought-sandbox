@@ -1,4 +1,4 @@
-package gt.sandbox.util.output.impl
+package com.glassthought.sandbox.util.out.impl
 
 import gt.sandbox.util.output.Out
 import kotlinx.coroutines.CoroutineName
@@ -12,6 +12,9 @@ data class OutSettings(
   val printElapsedTime: Boolean = true,
   val printColorPerCoroutine: Boolean = true
 )
+
+/** Emoji: 🥇 (used to denote the main thread) */
+private const val EMOJI_MEDAL_NUMBER_1 = "\uD83E\uDD47"
 
 class OutImpl(private val outSettings: OutSettings) : Out {
   private var outInstantiationTime: Long = System.currentTimeMillis()
@@ -89,11 +92,7 @@ class OutImpl(private val outSettings: OutSettings) : Out {
 
   private suspend fun formatMsg(msg: String): String {
     val timestamp = if (outSettings.printTimestamp) "[${Instant.now()}]" else ""
-    val threadInfo = if (outSettings.printThreadInfo) {
-      val currentThread = Thread.currentThread()
-      "[tname:${currentThread.name}/tid:${currentThread.threadId()}]"
-    } else ""
-
+    val threadInfo = formatThreadInfo()
     val coroutineInfo = if (outSettings.printCoroutineName) getCurrentCoroutineName() else ""
 
     val elapsedMillisSinceStart =
@@ -107,12 +106,9 @@ class OutImpl(private val outSettings: OutSettings) : Out {
     return "${timestamp}${elapsedMillisSinceStart}${threadInfo}${coroutineInfo} $msg"
   }
 
-  private  fun formatMsgNonSuspend(msg: String): String {
+  private fun formatMsgNonSuspend(msg: String): String {
     val timestamp = if (outSettings.printTimestamp) "[${Instant.now()}]" else ""
-    val threadInfo = if (outSettings.printThreadInfo) {
-      val currentThread = Thread.currentThread()
-      "[tname:${currentThread.name}/tid:${currentThread.threadId()}]"
-    } else ""
+    val threadInfo = formatThreadInfo()
 
     val elapsedMillisSinceStart =
       if (outSettings.printElapsedTime)
@@ -123,6 +119,49 @@ class OutImpl(private val outSettings: OutSettings) : Out {
         ""
 
     return "${timestamp}${elapsedMillisSinceStart}${threadInfo} $msg"
+  }
+
+  private fun formatThreadInfo() = if (outSettings.printThreadInfo) {
+    val currentThread = Thread.currentThread()
+    val threadId = currentThread.threadId()
+    "[${getThreadIdNumberEmoji(currentThread)}/tname:${currentThread.name}/tid:$threadId]"
+  } else ""
+
+
+  private val threadIdToEmojiMap = mutableMapOf<Long, String>()
+  private val availableThreadEmojis = mutableListOf(
+    "⓶", "⓷", "⓸", "⓹", "⓺", "⓻", "⓼", "⓽", "⓾"
+  )
+
+  /** We will assign an emoji to each new encountered thread.
+   *
+   * We will reserve #1 for main thread and will not use it for threads
+   * that we deem other than main.
+   *
+   * If we run out of numbers to assign we will not show an emoji for the thread.
+   * */
+  private fun getThreadIdNumberEmoji(thread: Thread): String {
+    val threadId = thread.threadId()
+
+    if (threadId == 1L && thread.name == "main") {
+      // 🥇
+      return EMOJI_MEDAL_NUMBER_1
+    } else {
+      //  ⓶ ⓷ ⓸ ⓹ ⓺ ⓻ ⓼ ⓽ ⓾
+      synchronized(threadIdToEmojiMap) {
+        if (threadIdToEmojiMap.containsKey(threadId)) {
+          return threadIdToEmojiMap[threadId]!!
+        } else {
+          if (availableThreadEmojis.isNotEmpty()) {
+            val emoji = availableThreadEmojis.removeAt(0)
+            threadIdToEmojiMap[threadId] = emoji
+            return emoji
+          }
+
+          return ""
+        }
+      }
+    }
   }
 
   private suspend fun getCurrentCoroutineName(): String {
