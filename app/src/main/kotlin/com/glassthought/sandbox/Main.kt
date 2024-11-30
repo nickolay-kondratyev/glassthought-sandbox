@@ -1,37 +1,28 @@
 package com.glassthought.sandbox
 
-import kotlinx.coroutines.*
+import gt.sandbox.util.output.Out
+import kotlin.coroutines.Continuation
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
-var counter = 0
-val lock = Any()
+val out = Out.standard()
 
-suspend fun incrementCounter() {
-  synchronized(lock) {
-    val current = counter
+// Do not do this
+var continuation: Continuation<Unit>? = null
+suspend fun suspendAndSetContinuation() {
 
-
-    // Attempt to use a delay inside synchronized block
-    // Compiler will not allow this with error:
-    //
-    // "The 'delay' suspension point is inside a critical section"
-    delay(100)
-
-    counter = current + 1
+  out.info("Suspending coroutine")
+  suspendCoroutine<Unit> { cont ->
+    continuation = cont
   }
 }
 
-fun main() = runBlocking {
-  val jobs1 = List(1000) {
-    launch(Dispatchers.Default) {
-      incrementCounter()
-    }
-  }
-  val jobs2 = List(1000) {
-    launch(Dispatchers.IO) {
-      incrementCounter()
-    }
-  }
-  jobs1.forEach { it.join() }
-  jobs2.forEach { it.join() }
-  println("Final counter value: $counter")
+suspend fun main() {
+  out.info("Before")
+  suspendAndSetContinuation()
+
+  // We will never get here as the co-routine was suspended without
+  // ever being resumed
+  continuation?.resume(Unit)
+  out.info ("After")
 }
