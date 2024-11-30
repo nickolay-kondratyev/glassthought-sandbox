@@ -30,7 +30,7 @@ fun main() = runBlocking {
       }
     }
   }
-
+  
   val expectedCounter = coroutineCount * incrementsPerCoroutine
   println("Expected Counter: $expectedCounter")
   println("Actual Counter: $counter")
