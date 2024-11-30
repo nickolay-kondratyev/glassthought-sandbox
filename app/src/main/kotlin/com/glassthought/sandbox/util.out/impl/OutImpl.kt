@@ -128,6 +128,8 @@ class OutImpl(private val outSettings: OutSettings) : Out {
   } else ""
 
 
+  // Will hold mapping of thread id to corresponding thread number emoji.
+  // ⓶ ⓷ ⓸ ⓹ ⓺ ⓻ ⓼ ⓽ ⓾
   private val threadIdToEmojiMap = mutableMapOf<Long, String>()
   private val availableThreadEmojis = mutableListOf(
     "⓶", "⓷", "⓸", "⓹", "⓺", "⓻", "⓼", "⓽", "⓾"
@@ -147,7 +149,6 @@ class OutImpl(private val outSettings: OutSettings) : Out {
       // 🥇
       return EMOJI_MEDAL_NUMBER_1
     } else {
-      //  ⓶ ⓷ ⓸ ⓹ ⓺ ⓻ ⓼ ⓽ ⓾
       synchronized(threadIdToEmojiMap) {
         if (threadIdToEmojiMap.containsKey(threadId)) {
           return threadIdToEmojiMap[threadId]!!
