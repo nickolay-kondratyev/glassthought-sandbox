@@ -1,35 +1,39 @@
 package com.glassthought.sandbox
 
-import gt.sandbox.util.output.Out
-import gt.sandbox.util.output.impl.OutSettings
-import kotlinx.coroutines.CoroutineName
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.coroutines.Continuation
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
+import kotlinx.coroutines.runBlocking
+import kotlin.system.measureTimeMillis
 
-val out = Out.standard()
+// Shared counter variable
+private var counter = 0
 
-// Do not do this, potential memory leak
-var continuation: Continuation<Unit>? = null
-suspend fun suspendAndSetContinuation() {
-  suspendCoroutine<Unit> { cont ->
-    continuation = cont
+// Function that increments the counter inside a synchronized block
+private suspend fun incrementCounter(times: Int) {
+  repeat(times) {
+    synchronized(counter) {
+      counter++
+    }
   }
 }
 
-suspend fun main() = coroutineScope {
-  out.info("Before")
+// Main function to launch the test
+fun main() = runBlocking {
+  val coroutineCount = 5
+  val incrementsPerCoroutine = 100_000 // Total increments = coroutineCount * incrementsPerCoroutine
 
-  launch(CoroutineName("launch-1")) {
-    out.info("In 'launch' before delay")
-    delay(1000)
-    out.info("In 'launch' after delay: resuming continuation")
-
-    continuation?.resume(Unit)
+  val timeTaken = measureTimeMillis {
+    coroutineScope {
+      repeat(coroutineCount) {
+        launch(Dispatchers.Default) { incrementCounter(incrementsPerCoroutine) }
+      }
+    }
   }
-  suspendAndSetContinuation()
-  out.info("After")
+
+  val expectedCounter = coroutineCount * incrementsPerCoroutine
+  println("Expected Counter: $expectedCounter")
+  println("Actual Counter: $counter")
+  println("Difference between expected and actual: ${expectedCounter - counter}")
+  println("Time Taken: $timeTaken ms")
 }
