@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4a1b8b7c-d37b-405c-bf40-3761af1fd6ae" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/app/src/main/kotlin/com/glassthought/sandbox/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/kotlin/com/glassthought/sandbox/Main.kt" afterDir="false" />
-    </list>
+    <list default="true" id="4a1b8b7c-d37b-405c-bf40-3761af1fd6ae" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -262,6 +260,7 @@
       <option name="presentableId" value="Default" />
       <updated>1731182233521</updated>
       <workItem from="1731182235341" duration="1185000" />
+      <workItem from="1732998527239" duration="346000" />
     </task>
     <servers />
   </component>
