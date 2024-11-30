@@ -9,6 +9,7 @@ suspend fun incrementCounter() {
   synchronized(lock) {
     val current = counter
 
+    
     // Attempt to use a delay inside synchronized block
     // Compiler will not allow this with error:
     //
