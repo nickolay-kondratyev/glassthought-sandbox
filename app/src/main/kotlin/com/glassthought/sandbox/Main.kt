@@ -12,9 +12,9 @@ val mutex = Mutex()
 var counter = 0
 
 suspend fun test() {
-  mutex.withLock {
+  // mutex.withLock {
     counter = counter + 1
-  }
+  // }
 }
 
 val out = Out.standard(OutSettings(printCoroutineName = false))
