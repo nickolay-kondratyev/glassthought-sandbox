@@ -2,18 +2,27 @@ package com.glassthought.sandbox
 
 import gt.sandbox.util.output.Out
 import gt.sandbox.util.output.impl.OutSettings
-import kotlinx.coroutines.runBlocking
-import kotlin.concurrent.thread
 
 val out = Out.standard(outSettings = OutSettings(printColorPerThread = true))
 
-fun printCallerStackTrace() {
-  val stackTrace = Throwable().stackTrace
-  // The stack trace contains an array of StackTraceElement objects
-  // The first element is `Throwable`, and subsequent elements are callers
-  for ((index, element) in stackTrace.withIndex()) {
-    println("[$index] ${element.className}.${element.methodName} (${element.fileName}:${element.lineNumber})")
+class StackTraceRetriever {
+
+
+  companion object {
+    /**
+     * Returns the filtered stack trace starting from the first relevant caller.
+     */
+    fun getStackTrace(): List<StackTraceElement> {
+
+      // Capture the stack trace and exclude this constructor and the wrapper class
+      val allStackTrace = Throwable().stackTrace
+      return allStackTrace.dropWhile {
+        it.className == StackTraceRetriever::class.java.name
+      }
+    }
   }
+
+
 }
 
 fun callerOne() {
@@ -21,8 +30,12 @@ fun callerOne() {
 }
 
 fun callerTwo() {
-  printCallerStackTrace()
+  val filteredStackTrace = StackTraceRetriever.getStackTrace()
+  filteredStackTrace.forEachIndexed { index, element ->
+    println("[$index] ${element.className}.${element.methodName} (${element.fileName}:${element.lineNumber})")
+  }
 }
+
 
 fun main(args: Array<String>) {
   callerOne()
