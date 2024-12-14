@@ -1,31 +1,34 @@
 package com.glassthought.sandbox
 
+import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.spec.style.DescribeSpec
-import io.kotest.matchers.shouldBe
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestResult
 
 
-var afterInnerSpecCounter = 0
+class MyTestExtension : TestCaseExtension {
+  override suspend fun intercept(
+    testCase: TestCase,
+    execute: suspend (TestCase) -> TestResult
+  ): TestResult {
+    println()
+    println("Before executing test: ${testCase.name}")
+    val result = execute(testCase)
+    println("After executing test: ${testCase.name}, Result: $result")
+    return result
+  }
+}
 
-class ExampleDescribeSpecTest : DescribeSpec({
-  describe("Mathematical operations") {
-    describe("inner describe block") {
-      afterContainer {
-        println("Cleaning up after the inner describe block: called ${++afterInnerSpecCounter} times")
-      }
+class MyDescribeSpec : DescribeSpec({
+  extension(MyTestExtension())
 
-      it("test1") {
-        println("test1")
-      }
-
-      it("test2") {
-        println("test2")
-
-      }
+  describe("A group of tests") {
+    it("should pass test 1") {
+      println("Running test 1")
     }
 
-
-    it("should subtract two numbers") {
-      println("hi")
+    it("should pass test 2") {
+      println("Running test 2")
     }
   }
 })
