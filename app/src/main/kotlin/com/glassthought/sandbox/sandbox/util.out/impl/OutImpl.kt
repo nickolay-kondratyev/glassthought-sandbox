@@ -48,6 +48,16 @@ class OutImpl(private val outSettings: OutSettings) : Out {
     kotlin.io.print("\u001B[34m${msg}\u001B[0m")
   }
 
+  override fun printlnGreen(s: String) {
+    printGreen(s)
+    println("")
+  }
+
+  override fun printlnBlue(s: String) {
+    printBlue(s)
+    println("")
+  }
+
 
   override suspend fun info(msg: String) {
     kotlin.io.println(optionallyColorPerCoroutine(formatMsg(msg)))

@@ -11,6 +11,9 @@ interface Out {
   fun printRed(msg: String)
   fun printBlue(msg: String)
 
+  fun printlnGreen(s: String)
+  fun printlnBlue(s: String)
+
   fun infoNonSuspend(msg: String)
   suspend fun info(msg: String)
   suspend fun infoBlue(msg: String)
