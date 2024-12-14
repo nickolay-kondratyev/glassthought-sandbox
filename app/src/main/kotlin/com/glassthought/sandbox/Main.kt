@@ -4,22 +4,27 @@ import gt.sandbox.util.output.Out
 import gt.sandbox.util.output.impl.OutSettings
 import kotlinx.coroutines.runBlocking
 import kotlin.concurrent.thread
+
 val out = Out.standard(outSettings = OutSettings(printColorPerThread = true))
 
-fun main() = runBlocking {
-  out.println("Hello, World!")
-
-  thread{
-    out.println("Hello, World! from thread-1")
+fun printCallerStackTrace() {
+  val stackTrace = Throwable().stackTrace
+  // The stack trace contains an array of StackTraceElement objects
+  // The first element is `Throwable`, and subsequent elements are callers
+  for ((index, element) in stackTrace.withIndex()) {
+    println("[$index] ${element.className}.${element.methodName} (${element.fileName}:${element.lineNumber})")
   }
+}
 
-  thread{
-    out.println("Hello, World! from thread-2")
-  }
+fun callerOne() {
+  callerTwo()
+}
 
-  thread{
-    out.println("Hello, World! from thread-3")
-  }
+fun callerTwo() {
+  printCallerStackTrace()
+}
 
-  out.println("Hello, World! from main")
+fun main(args: Array<String>) {
+  callerOne()
+
 }
