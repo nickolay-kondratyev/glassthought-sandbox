@@ -38,6 +38,6 @@ suspend fun main(args: Array<String>) {
   }
 
   waitForAllStates()
-  delay(1)
+  delay(3)
   out.info("Goodbye, world!")
 }
