@@ -1,21 +1,38 @@
 package com.glassthought.sandbox
 
 import gt.sandbox.util.output.Out
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
+import kotlin.system.measureTimeMillis
+
+var sharedCounter = 0 // Shared resource
+
+val out = Out.standard()
+
+@Synchronized
+fun incrementSharedCounter(){
+  sharedCounter++
+}
 
 fun main() = runBlocking {
-  val out = Out.standard() // Assuming this is implemented for logging
+  val coroutineCount = 5
+  val iterationsPerCoroutine = 1000000
 
-  out.info("Starting sandbox example")
+  val timeTaken = measureTimeMillis {
+    val jobs = List(coroutineCount) { idx ->
+      launch(CoroutineName("coroutine-$idx") + Dispatchers.Default) {
+        out.info("Starting coroutine $idx")
 
-  run {
-    out.info("Entering the run block")
+        repeat(iterationsPerCoroutine) {
+          incrementSharedCounter()
+        }
+      }
+    }
 
-    delay(100)
-
-    out.info("Exiting the run block")
+    jobs.forEach { it.join() } // Wait for all coroutines to finish
   }
 
-  out.info("Run block complete, continuing execution")
+  out.info("Expected counter value: ${coroutineCount * iterationsPerCoroutine}")
+  out.info("Actual counter value: $sharedCounter")
+  out.info("Time taken: $timeTaken ms")
 }
