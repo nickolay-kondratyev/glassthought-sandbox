@@ -20,7 +20,7 @@ fun main() = runBlocking {
 
   val timeTaken = measureTimeMillis {
     val jobs = List(coroutineCount) { idx ->
-      launch(CoroutineName("coroutine-$idx") + Dispatchers.Default) {
+      launch(CoroutineName("coroutine-$idx") + Dispatchers.IO) {
         out.info("Starting coroutine $idx")
 
         repeat(iterationsPerCoroutine) {
