@@ -62,7 +62,7 @@
     "Gradle.Build glassthought-sandbox.executor": "Run",
     "Gradle.Build glassthought-sandbox2.executor": "Run",
     "Kotlin.AppKt.executor": "Run",
-    "Kotlin.MainKt (1).executor": "Debug",
+    "Kotlin.MainKt (1).executor": "Run",
     "Kotlin.MainKt.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "kotlin-coroutine",
@@ -268,6 +268,7 @@
       <workItem from="1735010281354" duration="3344000" />
       <workItem from="1735014331476" duration="801000" />
       <workItem from="1735576139109" duration="330000" />
+      <workItem from="1735713015359" duration="378000" />
     </task>
     <servers />
   </component>

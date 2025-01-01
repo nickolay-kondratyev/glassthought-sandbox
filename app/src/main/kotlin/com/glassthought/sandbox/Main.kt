@@ -1,38 +1,29 @@
 package com.glassthought.sandbox
 
-import gt.sandbox.util.output.Out
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.*
-import kotlin.system.measureTimeMillis
+import kotlin.concurrent.thread
 
-var sharedCounter = 0 // Shared resource
+fun main() {
+  // Shared mutable list
+  val sharedList = mutableListOf<Int>()
 
-val out = Out.standard()
+  // Number of threads and iterations per thread
+  val threadCount = 10
+  val iterations = 10000
 
-@Synchronized
-fun incrementSharedCounter(){
-  sharedCounter++
-}
-
-fun main() = runBlocking {
-  val coroutineCount = 5
-  val iterationsPerCoroutine = 1000000
-
-  val timeTaken = measureTimeMillis {
-    val jobs = List(coroutineCount) { idx ->
-      launch(CoroutineName("coroutine-$idx") + Dispatchers.IO) {
-        out.info("Starting coroutine $idx")
-
-        repeat(iterationsPerCoroutine) {
-          incrementSharedCounter()
-        }
+  // Threads performing concurrent writes
+  val threads = List(threadCount) { threadIndex ->
+    thread {
+      repeat(iterations) {
+        sharedList.add(threadIndex * iterations + it) // Unsafe write
       }
     }
-
-    jobs.forEach { it.join() } // Wait for all coroutines to finish
   }
 
-  out.info("Expected counter value: ${coroutineCount * iterationsPerCoroutine}")
-  out.info("Actual counter value: $sharedCounter")
-  out.info("Time taken: $timeTaken ms")
+  // Wait for all threads to finish
+  threads.forEach { it.join() }
+
+  // Analyze the result
+  println("Expected size: ${threadCount * iterations}")
+  println("Actual size: ${sharedList.size}")
+  println("Null elements in the list count: ${sharedList.size - sharedList.filterNotNull().size}")
 }
