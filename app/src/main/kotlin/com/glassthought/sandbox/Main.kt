@@ -1,45 +1,40 @@
 package com.glassthought.sandbox
 
-import kotlinx.coroutines.*
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import kotlin.system.measureNanoTime
 
-fun main() = runBlocking {
+fun main() {
   val iterations = 100_000_000
 
-  // Operation without mutex
-  var counterWithoutMutex = 0
-  val timeWithoutMutex = measureNanoTime {
+  // Operation without synchronization
+  var counterWithoutSync = 0
+  val timeWithoutSync = measureNanoTime {
     repeat(iterations) {
-      counterWithoutMutex++
+      counterWithoutSync++
     }
   }
 
-  println("Counter without mutex: $counterWithoutMutex")
-  println("Time taken without mutex: $timeWithoutMutex ns")
+  println("Counter without synchronization: $counterWithoutSync")
+  println("Time taken without synchronization: $timeWithoutSync ns")
 
-  // Operation with mutex
-  val mutex = Mutex()
-  var counterWithMutex = 0
-  val timeWithMutex = measureNanoTime {
+  // Operation with synchronized block
+  val lock = Any()
+  var counterWithSync = 0
+  val timeWithSync = measureNanoTime {
     repeat(iterations) {
-      mutex.withLock {
-        counterWithMutex++
+      synchronized(lock) {
+        counterWithSync++
       }
     }
   }
 
-  println("Counter with mutex: $counterWithMutex")
-  println("Time taken with mutex: $timeWithMutex ns")
+  println("Counter with synchronized block: $counterWithSync")
+  println("Time taken with synchronized block: $timeWithSync ns")
 
-  // Calculate overhead per mutex operation
-  val overheadPerOperation = (timeWithMutex - timeWithoutMutex) / iterations
-  println("Overhead of Mutex.withLock{} per operation: $overheadPerOperation ns")
+  // Calculate overhead per synchronization operation
+  val overheadPerOperation = (timeWithSync - timeWithoutSync) / iterations
+  println("Overhead of synchronized{} per operation: $overheadPerOperation ns")
 
-  // In relation to millisecond how many times can we take mutex in one millisecond
-  // There are 1000 microseconds in one millisecond
-  // There are 1,000,000 nanoseconds in one millisecond
+  // Calculate how many times synchronization can occur in one millisecond
   val timesPerMillisecond = 1_000_000 / overheadPerOperation
-  println("In relation to millisecond how many times can we take mutex in one millisecond: $timesPerMillisecond")
+  println("How many times can synchronized block be executed in one millisecond: $timesPerMillisecond")
 }
