@@ -1,29 +1,45 @@
 package com.glassthought.sandbox
 
-import kotlin.concurrent.thread
+import kotlinx.coroutines.*
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import kotlin.system.measureNanoTime
 
-fun main() {
-  // Shared mutable list
-  val sharedList = mutableListOf<Int>()
+fun main() = runBlocking {
+  val iterations = 1_000_000
 
-  // Number of threads and iterations per thread
-  val threadCount = 10
-  val iterations = 10000
+  // Operation without mutex
+  var counterWithoutMutex = 0
+  val timeWithoutMutex = measureNanoTime {
+    repeat(iterations) {
+      counterWithoutMutex++
+    }
+  }
 
-  // Threads performing concurrent writes
-  val threads = List(threadCount) { threadIndex ->
-    thread {
-      repeat(iterations) {
-        sharedList.add(threadIndex * iterations + it) // Unsafe write
+  println("Counter without mutex: $counterWithoutMutex")
+  println("Time taken without mutex: $timeWithoutMutex ns")
+
+  // Operation with mutex
+  val mutex = Mutex()
+  var counterWithMutex = 0
+  val timeWithMutex = measureNanoTime {
+    repeat(iterations) {
+      mutex.withLock {
+        counterWithMutex++
       }
     }
   }
 
-  // Wait for all threads to finish
-  threads.forEach { it.join() }
+  println("Counter with mutex: $counterWithMutex")
+  println("Time taken with mutex: $timeWithMutex ns")
 
-  // Analyze the result
-  println("Expected size: ${threadCount * iterations}")
-  println("Actual size: ${sharedList.size}")
-  println("Null elements in the list count: ${sharedList.size - sharedList.filterNotNull().size}")
+  // Calculate overhead per mutex operation
+  val overheadPerOperation = (timeWithMutex - timeWithoutMutex) / iterations
+  println("Overhead of Mutex.withLock{} per operation: $overheadPerOperation ns")
+
+  // In relation to millisecond how many times can we take mutex in one millisecond
+  // There is 1000 microseconds in one millisecond
+  // There is 1,000,000 in one millisecond
+  val timesPerMillisecond = 1_000_000 / overheadPerOperation
+  println("In relation to millisecond how many times can we take mutex in one millisecond: $timesPerMillisecond")
 }
