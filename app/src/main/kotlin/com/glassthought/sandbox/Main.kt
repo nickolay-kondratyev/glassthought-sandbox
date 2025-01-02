@@ -6,7 +6,7 @@ import kotlinx.coroutines.sync.withLock
 import kotlin.system.measureNanoTime
 
 fun main() = runBlocking {
-  val iterations = 1_000_000
+  val iterations = 100_000_000
 
   // Operation without mutex
   var counterWithoutMutex = 0
@@ -38,8 +38,8 @@ fun main() = runBlocking {
   println("Overhead of Mutex.withLock{} per operation: $overheadPerOperation ns")
 
   // In relation to millisecond how many times can we take mutex in one millisecond
-  // There is 1000 microseconds in one millisecond
-  // There is 1,000,000 in one millisecond
+  // There are 1000 microseconds in one millisecond
+  // There are 1,000,000 nanoseconds in one millisecond
   val timesPerMillisecond = 1_000_000 / overheadPerOperation
   println("In relation to millisecond how many times can we take mutex in one millisecond: $timesPerMillisecond")
 }
