@@ -23,6 +23,7 @@ dependencies {
     testImplementation(libs.junit.jupiter)
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    implementation("org.jetbrains.kotlinx:atomicfu:0.26.1")
 
     // This dependency is used by the application.
     implementation(libs.guava)
