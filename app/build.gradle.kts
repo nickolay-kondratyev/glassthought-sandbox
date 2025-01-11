@@ -11,6 +11,9 @@ plugins {
 
     // Apply the application plugin to add support for building a CLI application in Java.
     application
+
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.10" // Match your Kotlin version
+
 }
 
 repositories {
@@ -24,6 +27,8 @@ dependencies {
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     implementation("org.jetbrains.kotlinx:atomicfu:0.26.1")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
 
     // This dependency is used by the application.
     implementation(libs.guava)
