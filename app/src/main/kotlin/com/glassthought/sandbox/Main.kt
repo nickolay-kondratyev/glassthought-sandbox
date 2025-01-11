@@ -5,12 +5,11 @@ import kotlinx.atomicfu.atomic
 import java.util.*
 
 suspend fun main() {
-
   val atomicLong = atomic(0L)
   println(
     Benchmarker.benchmark(
       {
-          atomicLong.incrementAndGet()
+          val id = atomicLong.incrementAndGet()
       },
       name = "Atomic Long Counter Increment"
     )
@@ -19,7 +18,7 @@ suspend fun main() {
   println(
     Benchmarker.benchmark(
       {
-        UUID.randomUUID()
+        val string = UUID.randomUUID().toString()
       },
       name = "UUID creation"
     )
