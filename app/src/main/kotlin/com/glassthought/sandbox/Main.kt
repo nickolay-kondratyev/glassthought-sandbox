@@ -1,10 +1,13 @@
 package com.glassthought.sandbox
 
+import gt.sandbox.util.output.Out
 import kotlinx.serialization.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.modules.subclass
+
+val out = Out.standard();
 
 // Base class
 @Serializable
@@ -46,8 +49,9 @@ object JsonUtil {
 
 // Main function to test serialization and deserialization
 fun main() {
+  val filePath = "/tmp/test.txt"
   val fileChangeEvent = FileChangeEvent(
-    filePath = "/tmp/test.txt",
+    filePath = filePath,
     updateType = "Created"
   )
 
@@ -56,8 +60,19 @@ fun main() {
   println("Serialized JSON:")
   println(json)
 
-  // Deserialize the JSON back to the appropriate subclass
-  val deserializedEvent = JsonUtil.fromJson<FileChangeEvent>(json)
-  println("Deserialized Object:")
-  println(deserializedEvent)
+  if (!json.contains("eventTypeVal")) {
+    out.printlnRed("Does not contain parent value")
+  } else {
+    out.printlnGreen("Contains parent value")
+  }
+  if (!json.contains("creationId")) {
+    out.printRed("Does not contain parent value")
+  } else {
+    out.printlnGreen("Contains parent value")
+  }
+  if (!json.contains(filePath)) {
+    out.printRed("Does not contain filePath")
+  } else {
+    out.printlnGreen("Contains filePath")
+  }
 }
