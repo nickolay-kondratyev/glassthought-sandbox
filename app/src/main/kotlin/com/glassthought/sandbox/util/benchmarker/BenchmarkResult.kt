@@ -4,6 +4,7 @@ package com.glassthought.sandbox.util.benchmarker
  * Data class holding the benchmark results.
  */
 data class BenchmarkResult(
+  val name: String?,
   val timesExecuted: Int,
   val totalTimeNs: Long,
 
@@ -22,7 +23,11 @@ data class BenchmarkResult(
    */
   override fun toString(): String {
     val sb = StringBuilder()
-    sb.appendLine("=== Benchmark Results ===")
+    sb.append("=== Benchmark Results")
+    if (name != null) {
+      sb.append(" for $name")
+    }
+    sb.appendLine(" ===")
     sb.appendLine("Executed $timesExecuted times")
     sb.appendLine("Total time:  ${formatNanos(totalTimeNs)}")
 

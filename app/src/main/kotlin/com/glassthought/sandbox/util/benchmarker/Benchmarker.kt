@@ -2,6 +2,7 @@ package com.glassthought.sandbox.util.benchmarker
 
 import kotlin.math.ceil
 
+/** GPT o1 created. I have NOT done thorough review of it. */
 object Benchmarker {
 
   /**
@@ -12,7 +13,8 @@ object Benchmarker {
    */
   suspend fun benchmark(
     block: suspend () -> Unit,
-    times: Int = 100_000
+    name: String? = null,
+    times: Int = 1_000_000
   ): BenchmarkResult {
     require(times > 0) { "Number of times to execute must be > 0." }
 
@@ -34,6 +36,7 @@ object Benchmarker {
       val averageNs = totalNanos / times
       // min=average, max=average, all percentiles = null
       return BenchmarkResult(
+        name = name,
         timesExecuted = times,
         totalTimeNs = totalNanos,
         averageNs = averageNs,
@@ -73,6 +76,7 @@ object Benchmarker {
     val p100Ns = durations.last() // same as max
 
     return BenchmarkResult(
+      name = name,
       timesExecuted = times,
       totalTimeNs = totalNanos,
       averageNs = averageNs,

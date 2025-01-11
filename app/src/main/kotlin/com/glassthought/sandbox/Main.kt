@@ -2,18 +2,26 @@ package com.glassthought.sandbox
 
 import com.glassthought.sandbox.util.benchmarker.Benchmarker
 import kotlinx.atomicfu.atomic
-import kotlinx.coroutines.delay
-import kotlin.system.measureNanoTime
-import kotlin.time.Duration.Companion.microseconds
+import java.util.*
 
 suspend fun main() {
 
-  val atomic = atomic(0L)
+  val atomicLong = atomic(0L)
+  println(
+    Benchmarker.benchmark(
+      {
+          atomicLong.incrementAndGet()
+      },
+      name = "Atomic Long Counter Increment"
+    )
+  )
 
-  val result = Benchmarker.benchmark(
-    {
-        atomic.incrementAndGet()
-    })
-  println(result)
-
+  println(
+    Benchmarker.benchmark(
+      {
+        UUID.randomUUID()
+      },
+      name = "UUID creation"
+    )
+  )
 }
