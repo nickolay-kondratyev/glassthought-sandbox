@@ -8,24 +8,20 @@ import kotlinx.serialization.modules.subclass
 
 // Base class
 @Serializable
-open class Event(
+@Polymorphic
+sealed class Event(
   val eventType: String,
   val creationId: Long = System.currentTimeMillis()
-) {
-  fun toJson(): String {
-    // Incorrect serialization: Only serializes fields of `Event`
-    return JsonUtil.toJson(serializer(), this)
-  }
-}
+)
 
-// Subclass
+// Subclass with extra fields
 @Serializable
-class FileChangeEvent(
+data class FileChangeEvent(
   val filePath: String,
-  val updateType: String
-) : Event("FileChange")
+  val updateType: String,
+) : Event("eventTypeVal")
 
-// Utility object with custom Json configuration
+// Utility for JSON serialization
 object JsonUtil {
   private val module = SerializersModule {
     polymorphic(Event::class) {
@@ -36,21 +32,32 @@ object JsonUtil {
   val json = Json {
     serializersModule = module
     encodeDefaults = true
+    classDiscriminator = "type" // Field to distinguish subclasses
   }
 
-  fun <T> toJson(serializer: SerializationStrategy<T>, value: T): String {
-    return json.encodeToString(serializer, value)
+  fun toJson(event: Event): String {
+    return json.encodeToString(Event.serializer(), event)
+  }
+
+  inline fun <reified T : Event> fromJson(jsonString: String): T {
+    return json.decodeFromString(Event.serializer(), jsonString) as T
   }
 }
 
-// Main function to emulate the problem
+// Main function to test serialization and deserialization
 fun main() {
   val fileChangeEvent = FileChangeEvent(
     filePath = "/tmp/test.txt",
     updateType = "Created"
   )
 
-  // Incorrect serialization: Only base fields serialized
-  println("Incorrect serialization:")
-  println(fileChangeEvent.toJson()) // Outputs: {"eventType":"FileChange","creationId":...}
+  // Serialize the subclass
+  val json = JsonUtil.toJson(fileChangeEvent)
+  println("Serialized JSON:")
+  println(json)
+
+  // Deserialize the JSON back to the appropriate subclass
+  val deserializedEvent = JsonUtil.fromJson<FileChangeEvent>(json)
+  println("Deserialized Object:")
+  println(deserializedEvent)
 }
