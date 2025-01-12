@@ -9,25 +9,27 @@ import kotlinx.serialization.modules.subclass
 import kotlinx.serialization.Serializable
 import kotlin.reflect.KClass
 
-object SealedClassAsserter {
-  fun assertAllChildClassesAreSerializable(sealedClass: KClass<*>) {
-    require(sealedClass.isSealed) {
-      "Class ${sealedClass.simpleName} is not a sealed class"
+class SealedClassAsserter {
+  companion object {
+    fun assertAllChildClassesAreSerializable(sealedClass: KClass<*>) {
+      require(sealedClass.isSealed) {
+        "Class ${sealedClass.simpleName} is not a sealed class"
+      }
+
+      val childClasses = sealedClass.sealedSubclasses
+
+      val nonSerializableClasses = childClasses.filterNot { it.isSerializable() }
+
+      if (nonSerializableClasses.isNotEmpty()) {
+        val nonSerializableNames = nonSerializableClasses.joinToString(", ") { it.simpleName ?: "Unnamed class" }
+        throw VerificationError("The following subclasses of ${sealedClass.simpleName} are not @Serializable: $nonSerializableNames")
+      }
     }
 
-    val childClasses = sealedClass.sealedSubclasses
-
-    val nonSerializableClasses = childClasses.filterNot { it.isSerializable() }
-
-    if (nonSerializableClasses.isNotEmpty()) {
-      val nonSerializableNames = nonSerializableClasses.joinToString(", ") { it.simpleName ?: "Unnamed class" }
-      throw VerificationError("The following subclasses of ${sealedClass.simpleName} are not @Serializable: $nonSerializableNames")
+    private fun KClass<*>.isSerializable(): Boolean {
+      // Check if the class is annotated with @Serializable
+      return this.annotations.any { it.annotationClass == Serializable::class }
     }
-  }
-
-  private fun KClass<*>.isSerializable(): Boolean {
-    // Check if the class is annotated with @Serializable
-    return this.annotations.any { it.annotationClass == Serializable::class }
   }
 
   class VerificationError(message: String) : RuntimeException(message)
