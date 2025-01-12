@@ -5,6 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4a1b8b7c-d37b-405c-bf40-3761af1fd6ae" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/kotlin/com/glassthought/sandbox/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/kotlin/com/glassthought/sandbox/Main.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -283,7 +284,7 @@
       <workItem from="1735576139109" duration="330000" />
       <workItem from="1735713015359" duration="378000" />
       <workItem from="1736628419451" duration="1751000" />
-      <workItem from="1736632913267" duration="669000" />
+      <workItem from="1736632913267" duration="2520000" />
     </task>
     <servers />
   </component>

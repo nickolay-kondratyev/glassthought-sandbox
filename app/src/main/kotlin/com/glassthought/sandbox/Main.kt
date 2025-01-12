@@ -11,7 +11,6 @@ val out = Out.standard();
 
 // Base class
 @Serializable
-@Polymorphic
 sealed class Event(
   val eventType: String,
   val creationId: Long = System.currentTimeMillis()
