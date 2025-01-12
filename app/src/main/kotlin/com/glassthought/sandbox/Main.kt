@@ -7,7 +7,7 @@ import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.modules.subclass
 
-val out = Out.standard();
+val out = Out.standard()
 
 // Base class
 @Serializable
@@ -39,10 +39,6 @@ object JsonUtil {
 
   fun toJson(event: Event): String {
     return json.encodeToString(Event.serializer(), event)
-  }
-
-  inline fun <reified T : Event> fromJson(jsonString: String): T {
-    return json.decodeFromString(Event.serializer(), jsonString) as T
   }
 }
 
