@@ -30,6 +30,8 @@ dependencies {
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
 
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.9.10") // Replace with your Kotlin version
+
     // This dependency is used by the application.
     implementation(libs.guava)
 

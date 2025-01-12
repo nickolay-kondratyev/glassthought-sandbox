@@ -6,6 +6,32 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.modules.subclass
+import kotlinx.serialization.Serializable
+import kotlin.reflect.KClass
+
+object SealedClassAsserter {
+  fun assertAllChildClassesAreSerializable(sealedClass: KClass<*>) {
+    require(sealedClass.isSealed) {
+      "Class ${sealedClass.simpleName} is not a sealed class"
+    }
+
+    val childClasses = sealedClass.sealedSubclasses
+
+    val nonSerializableClasses = childClasses.filterNot { it.isSerializable() }
+
+    if (nonSerializableClasses.isNotEmpty()) {
+      val nonSerializableNames = nonSerializableClasses.joinToString(", ") { it.simpleName ?: "Unnamed class" }
+      throw VerificationError("The following subclasses of ${sealedClass.simpleName} are not @Serializable: $nonSerializableNames")
+    }
+  }
+
+  private fun KClass<*>.isSerializable(): Boolean {
+    // Check if the class is annotated with @Serializable
+    return this.annotations.any { it.annotationClass == Serializable::class }
+  }
+
+  class VerificationError(message: String) : RuntimeException(message)
+}
 
 val out = Out.standard()
 
@@ -22,6 +48,7 @@ data class FileChangeEvent(
   val filePath: String,
   val updateType: String,
 ) : Event("eventTypeVal")
+
 
 // Utility for JSON serialization
 object JsonUtil {
@@ -44,6 +71,10 @@ object JsonUtil {
 
 // Main function to test serialization and deserialization
 fun main() {
+  SealedClassAsserter.assertAllChildClassesAreSerializable(
+    Event::class
+  )
+
   val filePath = "/tmp/test.txt"
   val fileChangeEvent = FileChangeEvent(
     filePath = filePath,
