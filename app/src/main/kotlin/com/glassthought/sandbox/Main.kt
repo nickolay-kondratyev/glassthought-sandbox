@@ -1,106 +1,61 @@
 package com.glassthought.sandbox
 
-import gt.sandbox.util.output.Out
-import kotlinx.serialization.*
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.modules.SerializersModule
-import kotlinx.serialization.modules.polymorphic
-import kotlinx.serialization.modules.subclass
-import kotlinx.serialization.Serializable
-import kotlin.reflect.KClass
+import kotlinx.coroutines.*
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import gt.sandbox.util.output.out
 
-class SealedClassAsserter {
-  companion object {
-    fun assertAllChildClassesAreSerializable(sealedClass: KClass<*>) {
-      require(sealedClass.isSealed) {
-        "Class ${sealedClass.simpleName} is not a sealed class"
+fun main() = runBlocking {
+  val mutex = Mutex()
+  val expectedOrder = listOf("Job 1", "Job 2", "Job 3")
+  val results = mutableListOf<String>()
+
+  var counterTimesRan = 0
+  while (true) {
+    results.clear()
+
+   val mutexAcquired = CompletableDeferred<Unit>()
+    val job1 = launch {
+      out.info("Job 1: Attempting to acquire the mutex...")
+      mutex.withLock {
+        out.infoGreen("Job 1: Acquired the mutex!")
+        mutexAcquired.complete(Unit)
+        results.add("Job 1")
+        delay(200) // Simulate long work
+        out.infoGreen("Job 1: Releasing the mutex.")
       }
+    }
+    mutexAcquired.await()
 
-      val childClasses = sealedClass.sealedSubclasses
+    val job2AboutToWaitOnMutex = CompletableDeferred<Unit>()
+    val job2 = launch {
+      out.info("Job 2: Attempting to acquire the mutex...")
+      job2AboutToWaitOnMutex.complete(Unit)
+      mutex.withLock {
+        out.infoBlue("Job 2: Acquired the mutex!")
+        results.add("Job 2")
+        out.infoBlue("Job 2: Releasing the mutex.")
+      }
+    }
+    job2AboutToWaitOnMutex.await()
+    delay(10)
 
-      val nonSerializableClasses = childClasses.filterNot { it.isSerializable() }
-
-      if (nonSerializableClasses.isNotEmpty()) {
-        val nonSerializableNames = nonSerializableClasses.joinToString(", ") { it.simpleName ?: "Unnamed class" }
-        throw VerificationError("The following subclasses of ${sealedClass.simpleName} are not @Serializable: $nonSerializableNames")
+    val job3 = launch {
+      out.info("Job 3: Attempting to acquire the mutex...")
+      mutex.withLock {
+        out.infoRed("Job 3: Acquired the mutex!")
+        results.add("Job 3")
+        out.infoRed("Job 3: Releasing the mutex.")
       }
     }
 
-    private fun KClass<*>.isSerializable(): Boolean {
-      // Check if the class is annotated with @Serializable
-      return this.annotations.any { it.annotationClass == Serializable::class }
+    joinAll(job1, job2, job3)
+
+    if (results != expectedOrder) {
+      out.infoRed("Incorrect order detected: $results")
+      break
+    } else {
+      out.infoGreen("Correct order: $results, (run #${++counterTimesRan})")
     }
-  }
-
-  class VerificationError(message: String) : RuntimeException(message)
-}
-
-val out = Out.standard()
-
-// Base class
-@Serializable
-sealed class Event(
-  val eventType: String,
-  val creationId: Long = System.currentTimeMillis()
-)
-
-// Subclass with extra fields
-@Serializable
-data class FileChangeEvent(
-  val filePath: String,
-  val updateType: String,
-) : Event("eventTypeVal")
-
-
-// Utility for JSON serialization
-object JsonUtil {
-  private val module = SerializersModule {
-    polymorphic(Event::class) {
-      subclass(FileChangeEvent::class)
-    }
-  }
-
-  val json = Json {
-    serializersModule = module
-    encodeDefaults = true
-    classDiscriminator = "type" // Field to distinguish subclasses
-  }
-
-  fun toJson(event: Event): String {
-    return json.encodeToString(Event.serializer(), event)
-  }
-}
-
-// Main function to test serialization and deserialization
-fun main() {
-  SealedClassAsserter.assertAllChildClassesAreSerializable(
-    Event::class
-  )
-
-  val filePath = "/tmp/test.txt"
-  val fileChangeEvent = FileChangeEvent(
-    filePath = filePath,
-    updateType = "Created"
-  )
-
-  // Serialize the subclass
-  val json = JsonUtil.toJson(fileChangeEvent)
-  println("Serialized JSON:")
-  println(json)
-
-  if (!json.contains("eventTypeVal")) {
-    out.printlnRed("Does not contain parent value")
-  } else {
-    out.printlnGreen("Contains parent value")
-  }
-  if (!json.contains("creationId")) {
-    out.printRed("Does not contain parent value")
-  } else {
-    out.printlnGreen("Contains parent value")
-  }
-  if (!json.contains(filePath)) {
-    out.printRed("Does not contain filePath")
-  } else {
-    out.printlnGreen("Contains filePath")
   }
 }
