@@ -14,27 +14,32 @@ fun main(args: Array<String>) {
   runBlocking {
     val channel = Channel<Int>(Channel.UNLIMITED)
 
+    var stampBeforeSent = System.nanoTime()
+
     val sender = launch(CoroutineName("${Emoji.LETTER}-sender")) {
-      repeat(5) {
+      repeat(100) {
         delay(50)
 
         out.info("starting_to_send: $it")
+
+        stampBeforeSent = System.nanoTime()
         channel.send(it)
+
         out.info("sent: $it")
       }
     }
 
     val listener = launch(CoroutineName("${Emoji.MAILBOX}-listener")) {
-      repeat(2) {
-        delay(500)
+      for (i in channel) {
+        val stampAtReceive = System.nanoTime()
 
-        out.info("received: ${channel.receive()}")
+
+        out.info("received: $i (time: ${(stampAtReceive - stampBeforeSent) / 1000}micro-seconds)")
       }
     }
 
-    delay(3000)
-    listener.cancel()
-    sender.cancel()
+    delay(10000)
+    System.exit(0)
     out.info("Main completed")
   }
 }
