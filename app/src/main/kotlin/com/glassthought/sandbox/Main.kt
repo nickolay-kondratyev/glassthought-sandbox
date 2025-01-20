@@ -16,7 +16,7 @@ fun main(args: Array<String>) {
 
     val sender = launch(CoroutineName("${Emoji.LETTER}-sender")) {
       try {
-        repeat(10) {
+        repeat(1) {
           delay(500)
 
           out.info("starting_to_send: $it")
@@ -32,8 +32,8 @@ fun main(args: Array<String>) {
 
     val listener = launch(CoroutineName("${Emoji.MAILBOX}-listener")) {
       try {
-        for (i in channel) {
-          out.info("received: $i")
+        repeat(100){
+          out.info("received: ${channel.receive()}")
         }
         out.info("Listener Done - ${Emoji.CHECKERED_FLAG}")
       } catch (e: Exception) {
