@@ -1,6 +1,5 @@
 package com.glassthought.sandbox
 
-import com.glassthought.sandbox.util.benchmarker.Benchmarker
 import com.glassthought.sandbox.util.out.impl.OutSettings
 import gt.sandbox.util.output.Out
 import kotlinx.coroutines.CoroutineName
@@ -8,27 +7,45 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlin.concurrent.thread
 
-val out = Out.standard(OutSettings(printCoroutineName = true))
+val out = Out.standard(OutSettings(printCoroutineName = true, printThreadInfo = false))
 
 fun main(args: Array<String>) {
   runBlocking {
+    // Default capacity of Channel is:
+    //
+    // capacity: Int = RENDEZVOUS,
+    val channel = Channel<Int>()
 
-    val channel = Channel<Int>(4) // create buffered channel
+    val sender = launch(CoroutineName("${Emoji.LETTER}-sender")) {
+      // In this example notice that the sender will end up getting blocked.
+      repeat(2) {
+        delay(100)
 
-    val sender = launch { // launch sender coroutine
-      repeat(10) {
-        delay(200)
-        println("Sending $it") // print before sending each element
-        channel.send(it) // will suspend when buffer is full
+        out.info("starting_to_send: $it")
+        channel.send(it)
+        out.info("sent: $it")
       }
     }
 
-    repeat(5){
-      println("Receiving ${channel.receive()}") // print after receiving each element
+    val listener = launch(CoroutineName("${Emoji.MAILBOX}-listener")) {
+      repeat(1) {
+        delay(300)
+
+        out.info("received: ${channel.receive()}")
+      }
     }
 
+    delay(3000)
+    listener.cancel()
+    sender.cancel()
+    out.info("Main completed")
   }
+}
 
+class Emoji{
+  companion object{
+    const val LETTER="✉\uFE0F"
+    const val MAILBOX="\uD83D\uDCEC"
+  }
 }
