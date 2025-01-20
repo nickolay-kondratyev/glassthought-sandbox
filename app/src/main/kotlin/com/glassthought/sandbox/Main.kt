@@ -14,33 +14,40 @@ fun main(args: Array<String>) {
   runBlocking {
     val channel = Channel<Int>(Channel.UNLIMITED)
 
-    var stampBeforeSent = System.nanoTime()
-
     val sender = launch(CoroutineName("${Emoji.LETTER}-sender")) {
-      repeat(100) {
-        delay(50)
+      try {
+        repeat(10) {
+          delay(500)
 
-        out.info("starting_to_send: $it")
+          out.info("starting_to_send: $it")
 
-        stampBeforeSent = System.nanoTime()
-        channel.send(it)
+          channel.send(it)
 
-        out.info("sent: $it")
+          out.info("sent: $it")
+        }
+      } catch (e: Exception) {
+        out.infoRed("sender exception: $e")
       }
     }
 
     val listener = launch(CoroutineName("${Emoji.MAILBOX}-listener")) {
-      for (i in channel) {
-        val stampAtReceive = System.nanoTime()
-
-
-        out.info("received: $i (time: ${(stampAtReceive - stampBeforeSent) / 1000}micro-seconds)")
+      try {
+        for (i in channel) {
+          out.info("received: $i")
+        }
+        out.info("Listener Done - ${Emoji.CHECKERED_FLAG}")
+      } catch (e: Exception) {
+        out.infoRed("listener exception: $e")
       }
     }
 
-    delay(10000)
+    delay(1700)
+    out.info("Closing channel from Main")
+    channel.close()
+
+    delay(2000)
+    out.info("Main completed. Exiting...")
     System.exit(0)
-    out.info("Main completed")
   }
 }
 
@@ -48,5 +55,6 @@ class Emoji {
   companion object {
     const val LETTER = "✉\uFE0F"
     const val MAILBOX = "\uD83D\uDCEC"
+    const val CHECKERED_FLAG = "\uD83C\uDFC1"
   }
 }
