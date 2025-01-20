@@ -18,19 +18,21 @@ fun main(args: Array<String>) {
     val channel = Channel<Int>()
 
     val sender = launch(CoroutineName("${Emoji.LETTER}-sender")) {
-      // In this example notice that the sender will end up getting blocked.
       repeat(2) {
         delay(100)
 
         out.info("starting_to_send: $it")
         channel.send(it)
+        // Notice:
+        // - in first message that sent is not going to be let go until it is received.
+        // - second message we never get out of send as nobody is listening for 2nd receive.
         out.info("sent: $it")
       }
     }
 
     val listener = launch(CoroutineName("${Emoji.MAILBOX}-listener")) {
       repeat(1) {
-        delay(300)
+        delay(500)
 
         out.info("received: ${channel.receive()}")
       }
@@ -43,9 +45,9 @@ fun main(args: Array<String>) {
   }
 }
 
-class Emoji{
-  companion object{
-    const val LETTER="✉\uFE0F"
-    const val MAILBOX="\uD83D\uDCEC"
+class Emoji {
+  companion object {
+    const val LETTER = "✉\uFE0F"
+    const val MAILBOX = "\uD83D\uDCEC"
   }
 }
