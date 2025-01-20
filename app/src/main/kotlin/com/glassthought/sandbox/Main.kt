@@ -12,26 +12,20 @@ val out = Out.standard(OutSettings(printCoroutineName = true, printThreadInfo = 
 
 fun main(args: Array<String>) {
   runBlocking {
-    // Default capacity of Channel is:
-    //
-    // capacity: Int = RENDEZVOUS,
-    val channel = Channel<Int>()
+    val channel = Channel<Int>(Channel.UNLIMITED)
 
     val sender = launch(CoroutineName("${Emoji.LETTER}-sender")) {
-      repeat(2) {
-        delay(100)
+      repeat(5) {
+        delay(50)
 
         out.info("starting_to_send: $it")
         channel.send(it)
-        // Notice:
-        // - in first message that sent is not going to be let go until it is received.
-        // - second message we never get out of send as nobody is listening for 2nd receive.
         out.info("sent: $it")
       }
     }
 
     val listener = launch(CoroutineName("${Emoji.MAILBOX}-listener")) {
-      repeat(1) {
+      repeat(2) {
         delay(500)
 
         out.info("received: ${channel.receive()}")
