@@ -14,20 +14,21 @@ val out = Out.standard(OutSettings(printCoroutineName = true))
 
 fun main(args: Array<String>) {
   runBlocking {
-    val channel = Channel<Int>()
-    launch(context = CoroutineName("producer")) {
-      // this might be heavy CPU-consuming computation or async logic,
-      // we'll just send five squares
-      for (x in 1..5) {
-        out.info("Sending for: $x")
-        delay(500)
-        channel.send(x * x)
+
+    val channel = Channel<Int>(4) // create buffered channel
+
+    val sender = launch { // launch sender coroutine
+      repeat(10) {
+        delay(200)
+        println("Sending $it") // print before sending each element
+        channel.send(it) // will suspend when buffer is full
       }
     }
 
-    // here we print five received integers:
-    repeat(5) { out.info(channel.receive().toString()) }
-    println("Done!")
+    repeat(5){
+      println("Receiving ${channel.receive()}") // print after receiving each element
+    }
+
   }
 
 }
