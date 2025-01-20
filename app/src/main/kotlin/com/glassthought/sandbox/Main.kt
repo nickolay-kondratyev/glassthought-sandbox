@@ -32,8 +32,8 @@ fun main(args: Array<String>) {
 
     val listener = launch(CoroutineName("${Emoji.MAILBOX}-listener")) {
       try {
-        repeat(100){
-          out.info("received: ${channel.receive()}")
+        for (i in channel) {
+          out.info("received: $i")
         }
         out.info("Listener Done - ${Emoji.CHECKERED_FLAG}")
       } catch (e: Exception) {
@@ -42,8 +42,11 @@ fun main(args: Array<String>) {
     }
 
     delay(1700)
+    out.info("listener.isActive: " + listener.isActive.toString())
     out.info("Closing channel from Main")
     channel.close()
+    delay(100)
+    out.info("listener.isActive: " + listener.isActive.toString())
 
     delay(2000)
     out.info("Main completed. Exiting...")
