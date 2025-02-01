@@ -55,7 +55,7 @@ fun main() = runBlocking {
   server1.start()
   server2.start()
 
-  
+
   delay(10)
   // Stopping server 1 should not stop server - 2
   server1.stop()
