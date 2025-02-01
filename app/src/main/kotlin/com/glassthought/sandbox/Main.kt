@@ -22,8 +22,16 @@ class ServerImpl(
 
     backgroundJob = scope.launch(CoroutineName("${serverName}-work-1")) {
       out.info("Running server work in thread: ${Thread.currentThread().name}")
+
+      launch {
+        out.info("${serverName}: spawned from background job - work-A")
+        delay(3000)
+        out.info("${serverName}-work-A completed")
+      }
+
       delay(2000)
       out.info("${serverName}-work-1 completed")
+
     }
   }
 
@@ -47,8 +55,11 @@ fun main() = runBlocking {
   server1.start()
   server2.start()
 
+  delay(10)
+  // Stopping server 1 should not stop server - 2
   server1.stop()
 
   server1.join()
   server2.join()
+  out.info("Main completed")
 }
