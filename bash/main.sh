@@ -1,28 +1,38 @@
-# Define a sample function for testing the behavior of PIPESTATUS
-sample_command_that_fails() {
-  echo ""
-  echo 'Running Sample Command that fails (returns 1)...'
-  return 1
+#!/bin/bash
+
+# Function to simulate a long-running process
+simulate_process() {
+    sleep "$1"
+    exit "$2"  # Simulates success (0) or failure (non-zero)
 }
 
-# Temporary file for output capture
-OUTPUT_FILE="/tmp/sample_output.txt"
+# Array to store process PIDs
+pids=()
 
-correct(){
-  sample_command_that_fails | tee "${OUTPUT_FILE:?}"
-  echo.green "Pipe status captured as expected: ${PIPESTATUS[0]}"
-}
+# Start multiple background processes with different durations and exit codes
+simulate_process 2 0 & pids+=($!)  # Simulates success
+simulate_process 3 1 & pids+=($!)  # Simulates failure
+simulate_process 1 0 & pids+=($!)  # Simulates success
 
+# Track overall success/failure
+exit_status=0
 
-incorrect(){
-    sample_command_that_fails | tee "${OUTPUT_FILE:?}"
-    SOME_VAR="${OUTPUT_FILE:?}"
-    echo.yellow "Pipe status got reset without a PIPE call: ${PIPESTATUS[0]}"
-}
+# Wait for all processes and capture their exit codes
+for pid in "${pids[@]}"; do
+    wait "$pid"
+    code=$?
+    echo "Process $pid finished with exit code $code"
 
-main() {
-  correct
-  incorrect
-}
+    if [[ $code -ne 0 ]]; then
+        exit_status=1  # Mark as failure if any process fails
+    fi
+done
 
-main "${@}" || exit 1
+# Final exit based on process results
+if [[ $exit_status -ne 0 ]]; then
+    echo "Error: One or more processes failed." >&2
+    exit 1
+fi
+
+echo "All processes completed successfully."
+exit 0
