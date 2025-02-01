@@ -1,4 +1,12 @@
-#!/bin/bash
+SLEEP_DELAY_THAT_WE_WANT_TO_THROW_ON=5
+START_MILLIS=$(date +%s%3N)
+
+echo_log() {
+  local millis_elapsed_since_start=$(( $(date +%s%3N) - START_MILLIS ))
+
+  echo_dim "[$BASHPID][elapsed: ${millis_elapsed_since_start:?}] ${*}"
+}
+export -f echo_log
 
 ###############################################################################
 # simulate_process
@@ -12,8 +20,16 @@
 #   Exits with the provided exit code.
 ###############################################################################
 simulate_process() {
-    sleep "$1"
-    exit "$2"  # Simulates success (0) or failure (non-zero)
+
+  local seconds_to_sleep="${1:?seconds_to_sleep}"
+  echo_log "simulate_process that will sleep for ${seconds_to_sleep:?} seconds: \$\$ = $$ (parent), \$BASHPID = $BASHPID (child)"
+
+  sleep "${seconds_to_sleep:?}"
+  if [[ "${seconds_to_sleep:?}" == "${SLEEP_DELAY_THAT_WE_WANT_TO_THROW_ON:?}" ]]; then
+      echo_log "Enough of sleeping, let's throw an error"
+      throw "throw on sleep of ${SLEEP_DELAY_THAT_WE_WANT_TO_THROW_ON:?} on purpose"
+  fi
+  exit "$2"  # Simulates success (0) or failure (non-zero)
 }
 
 ###############################################################################
@@ -37,7 +53,7 @@ wait_for_processes() {
         # Wait for the process to complete
         wait "$pid"
         local code=$?
-        echo "Process $pid finished with exit code $code"
+        echo_log "Process $pid finished with exit code $code"
 
         # If any process fails, mark overall status as failure
         if [[ $code -ne 0 ]]; then
@@ -48,22 +64,27 @@ wait_for_processes() {
     return $exit_status
 }
 
-# Array to store process PIDs
-pids=()
+main() {
+  echo_log "Starting main script: \$\$ = $$, \$BASHPID = $BASHPID"
+  # Array to store process PIDs
+  pids=()
 
-# Start multiple background processes with different durations and exit codes
-simulate_process 2 0 & pids+=("$!")  # Simulates success
-simulate_process 3 1 & pids+=("$!")  # Simulates failure
-simulate_process 1 0 & pids+=("$!")  # Simulates success
+  # Start multiple background processes with different durations and exit codes
+  simulate_process 1 0 & pids+=("$!")  # Simulates success
+  simulate_process 2 0 & pids+=("$!")  # Simulates success
+  simulate_process ${SLEEP_DELAY_THAT_WE_WANT_TO_THROW_ON:?} 0 & pids+=("$!")  # Simulates failure
 
-# Wait for all processes and check the overall exit status
-wait_for_processes "${pids[@]}"
-result=$?
+  # Wait for all processes and check the overall exit status
+  wait_for_processes "${pids[@]}"
+  result=$?
 
-if [[ $result -ne 0 ]]; then
-    echo "Error: One or more processes failed." >&2
-    exit 1
-fi
+  if [[ $result -ne 0 ]]; then
+      echo_log "Error: One or more processes failed." >&2
+      exit 1
+  fi
 
-echo "All processes completed successfully."
-exit 0
+  echo_log "All processes completed successfully."
+  exit 0
+}
+
+main "${@}" || exit 1
