@@ -22,7 +22,7 @@ export -f echo_log
 simulate_process() {
 
   local seconds_to_sleep="${1:?seconds_to_sleep}"
-  echo_log "simulate_process that will sleep for ${seconds_to_sleep:?} seconds: \$\$ = $$ (parent), \$BASHPID = $BASHPID (child)"
+  echo_log "simulate_process that will sleep for ${seconds_to_sleep:?} seconds, and exit with [${2}]: \$\$ = $$ (parent), \$BASHPID = $BASHPID (child)"
 
   sleep "${seconds_to_sleep:?}"
   if [[ "${seconds_to_sleep:?}" == "${SLEEP_DELAY_THAT_WE_WANT_TO_THROW_ON:?}" ]]; then
@@ -36,6 +36,25 @@ simulate_process() {
 # wait_for_processes
 # Waits for all background processes specified by their PIDs.
 #
+# Example code:
+# ```
+#  # Array to store process PIDs
+#  pids=()
+#
+#  # Start multiple background processes with different durations and exit codes
+#  simulate_process 1 0 & pids+=("$!")  # Simulates success
+#  simulate_process 2 0 & pids+=("$!")  # Simulates success
+#  simulate_process 3 1 & pids+=("$!")  # Simulates success
+#
+#  # Wait for all processes and check the overall exit status
+#  if wait_for_processes "${pids[@]}"; then
+#    echo.green "All processes completed successfully."
+#  else
+#    echo.red "Error: One or more processes failed." >&2
+#    exit 1
+#  fi
+# ```
+# --------------------------------------------------------------------------------
 # Arguments:
 #   List of PIDs to wait for.
 #
@@ -44,12 +63,14 @@ simulate_process() {
 #
 # Side Effects:
 #   Prints the exit status of each process.
+#
 ###############################################################################
 wait_for_processes() {
     local pids=("$@")
     local exit_status=0
 
     for pid in "${pids[@]}"; do
+        echo_log "Waiting for process $pid to complete"
         # Wait for the process to complete
         wait "$pid"
         local code=$?
@@ -72,19 +93,16 @@ main() {
   # Start multiple background processes with different durations and exit codes
   simulate_process 1 0 & pids+=("$!")  # Simulates success
   simulate_process 2 0 & pids+=("$!")  # Simulates success
-  simulate_process ${SLEEP_DELAY_THAT_WE_WANT_TO_THROW_ON:?} 0 & pids+=("$!")  # Simulates failure
+  simulate_process 3 1 & pids+=("$!")  # Simulates success
+  # simulate_process ${SLEEP_DELAY_THAT_WE_WANT_TO_THROW_ON:?} 0 & pids+=("$!")  # Simulates failure
 
   # Wait for all processes and check the overall exit status
-  wait_for_processes "${pids[@]}"
-  result=$?
-
-  if [[ $result -ne 0 ]]; then
-      echo_log "Error: One or more processes failed." >&2
-      exit 1
+  if wait_for_processes "${pids[@]}"; then
+    echo.green "All processes completed successfully."
+  else
+    echo.red "Error: One or more processes failed." >&2
+    exit 1
   fi
-
-  echo_log "All processes completed successfully."
-  exit 0
 }
 
 main "${@}" || exit 1
