@@ -32,6 +32,7 @@ simulate_process() {
   exit "$2"  # Simulates success (0) or failure (non-zero)
 }
 
+
 ###############################################################################
 # wait_for_processes
 # Waits for all background processes specified by their PIDs.
