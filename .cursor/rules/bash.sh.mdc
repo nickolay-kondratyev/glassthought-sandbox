@@ -3,60 +3,46 @@ description: Rules for writing robust and maintainable BASH scripts and function
 globs: *.sh
 ---
 
-```md
 
-## 1. Strict Mode
+### Mandatory Variable Checks
 
-Always begin your script with a shebang and enable strict error handling:
-
-```bash
-#!/usr/bin/env bash
-set -euo pipefail
-IFS=$'\n\t'
-```
-
-**Benefits:**
-
-- Catches errors early.
-- Prevents use of uninitialized variables.
-- Controls word splitting and globbing.
-
----
-
-## 2. Mandatory Variable Checks
-
+#### What 
 Ensure required parameters are provided using parameter expansion with error messages:
 
+#### Example
+##### Input 
 ```bash
 local file_path="${1:?file name or path}"
 ```
-
-**Why:**  
-This pattern guarantees that the script stops with a clear error if a required variable is missing.
-
----
-
-## 3. Proper Quoting
-
-Always quote variable expansions to avoid unexpected word splitting and globbing:
-
+#### Usage
 ```bash
-echo "file=[${file_path}]"
+echo "file=[${file_path:?}]"
 ```
 
-**Advantages:**
+#### Why
+Guarantees that the script stops with a clear error if a required variable is missing.
 
+### Proper Quoting
+
+#### What
+Always quote variable expansions to avoid unexpected word splitting and globbing:
+
+#### Example
+```bash
+echo "file=[${file_path:?}]"
+```
+
+#### Why
 - Preserves spaces and special characters.
 - Produces predictable and reliable output.
 
----
 
-## 4. Local Scope for Variables
+### Local Scope for Variables
 
 Within functions, use `local` to restrict variable scope:
 
 ```bash
-function process_file() {
+process.file() {
   local file_path="${1:?file name or path}"
   # Process the file
 }
@@ -115,14 +101,4 @@ function throw() {
 [ -f "$file_path" ] || throw "File does not exist: ${file_path}"
 ```
 
-**Benefits:**
 
-- Provides clear error reporting.
-- Ensures scripts exit gracefully on failure.
-
----
-
-By following these guidelines, your BASH scripts will be more robust, maintainable, and easier for both developers and
-language models to understand. Happy scripting!
-
-```
