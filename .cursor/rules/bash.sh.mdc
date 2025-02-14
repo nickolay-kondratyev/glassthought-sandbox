@@ -1,0 +1,264 @@
+---
+description: Rules for writing robust bash scripts and bash functions.
+globs: *.sh
+---
+
+## Bash Script Best Practices
+
+This document outlines key guidelines for writing robust bash scripts and functions.
+
+### Mandatory Variable Checks
+
+#### What
+
+Ensure required parameters are provided using parameter expansion with error messages.
+
+#### Example
+
+##### Input
+
+```bash
+local file_path="${1:?file name or path}"
+```
+
+##### Usage
+
+```bash
+echo "file=[${file_path:?}]"
+```
+
+#### Why
+
+Guarantees that the script stops with a clear error if a required variable is missing.
+?
+---
+
+### Proper Quoting
+
+#### What
+
+Always quote variable expansions to avoid unexpected word splitting and globbing.
+
+#### Example
+
+##### Input
+
+```bash
+echo "file=[${file_path:?}]"
+```
+
+#### Why
+
+- Preserves spaces and special characters.
+- Produces predictable and reliable output.
+
+---
+
+### Local Scope for Variables
+
+#### What
+
+Within functions, use `local` to restrict variable scope and prevent leakage into the global environment.
+
+#### Example
+
+##### Input
+
+```bash
+some.function.name() {
+  local file_path="${1:?file name or path}"
+  # Process the file
+}
+```
+
+#### Why
+
+Limits side effects by keeping variables contained within the function.
+
+---
+
+### DRY Principle (Don't Repeat Yourself)
+
+#### What
+
+Encapsulate common logic into functions to avoid duplicating code.
+
+#### Example
+
+##### Input
+
+```bash
+string.prefix(){
+  local prefix="${1:?Prefix is required}"
+  
+  if [ -t 0 ]; then
+    local input_string="${2:?Input string is required when not piping}"
+    echo "${prefix}${input_string}"
+  else
+    while IFS= read -r line; do
+      echo "${prefix}${line}"
+    done
+  fi
+}
+
+```
+
+#### Why
+
+- Simplifies maintenance.
+- Reduces the risk of errors from repetitive code.
+- Makes it easier to understand and modify the script.
+
+---
+
+### Self-Documenting Code
+
+#### What
+
+Write clear, descriptive code that explains itself through naming conventions and succinct comments.
+
+#### Best Practices
+
+- Use meaningful names for variables and functions.
+- Comment on the intent and rationale behind decisions, not just the actions.
+
+---
+
+### Consistent Error Handling
+
+#### What
+
+Implement a uniform error-handling mechanism: `throw` function, to manage failures consistently.
+
+#### `throw` is already implemented as:
+
+```bash
+throw(){
+  interrupt "${*}"
+}
+
+interrupt(){
+    echo.red "Interrupting: ${*}" 1>&2;
+    echo.yellow "FunctionChain: $(function_chain)" 1>&2;
+    echo.yellow "PWD: $PWD" 1>&2;
+    echo.yellow "PID    : $$" 1>&2;
+    echo.yellow "BASHPID: $BASHPID" 1>&2;
+    interrupt_quietly
+}
+
+interrupt_quietly(){
+    kill -INT 0;
+    kill -INT -$$;
+    echo.red "Interrupting failed. We will now 'exit 1' to make sure we aren't continuing with a failed state." 1>&2;
+    exit 1
+}
+```
+
+#### Usage example
+
+```bash
+[ ! -f "$file_path" ] && throw "File does not exist: ${file_path}"
+```
+
+#### Why
+
+Provides a predictable method for error handling, enhancing the script's robustness and readability.
+
+### Use `eai` for functions without arguments.
+
+#### What
+
+Feed functions through `eai` to execute functions that do not require arguments.
+
+```bash
+# EAI implementation that already exists in environment
+eai(){
+   execute_announce_or_interrupt "${@:?}"
+}
+
+execute_announce_or_interrupt(){
+  execute_announce "${@:?}" || throw "Failed to execute [${*:?}]"
+}
+```
+
+#### Example
+
+```bash
+eai some_function
+```
+
+#### Why
+
+`eai` will execute the given function, will print what function is being executed. And will `throw` if the function fails.
+
+#### Why only without arguments?
+`eai` will store the function in a temporary file, and the quoting of the arguments can be lost. Hence, it's only use it for functions that don't require arguments. And use `some_function "with-args' || throw "..."` pattern otherwise. 
+
+### Bash Function Naming Convention
+
+#### What
+
+Use the following structure for naming functions in a way that conveys both hierarchy and clarity:
+
+- **Periods (`.`)** for **namespace-like** separation.
+- **Underscores (`_`)** for separating words within the same "namespace level."
+
+#### Example
+
+- `thorg_dev.server.out_file.tail.errors_and_above`
+- `thorg_dev.server.out_file.tail.jq_select.log_lines.with_metrics`
+
+#### Why
+
+- **Readability**: Periods group related segments, underscores clarify multi-word segments.
+- **Maintainability**: Easier to visually parse and logically organize.
+- **Consistency**: Establishes a predictable pattern for referencing and naming complex components.
+
+### Logging and Function Entry Echoes
+
+To log general information, use `echo.log`, which prints messages clearly for standard logging purposes to STDERR. When
+entering a function, call `echo.func` **with all arguments** to document the function call and its parameters.
+
+**Example:**
+
+```bash
+files.create_soft_link(){
+  echo.func "${@}"
+
+  if [[ "$#" -ne 2 ]]; then
+    throw "Illegal number of parameters. Expected 2, but got $#. Usage: files.create_soft_link <source_file> <soft_link> "
+  fi
+
+  local source_file="${1:?source_file}"
+  local target_soft_link="${2:?target_soft_link}"
+
+  [[ ! -e "$source_file" ]] && throw "File $source_file does not exist. Not creating a soft link."
+  [[ -e "$target_soft_link" ]] && throw "File $target_soft_link already exists. Not creating a soft link."
+
+  ln -s "$source_file" "$target_soft_link" || {
+    throw "Failed to create soft link: $target_soft_link -> $source_file"
+  }
+
+  echo.log "Created soft link: $target_soft_link -> $source_file"
+}
+export -f files.create_soft_link
+```
+
+#### Additional `echo` Variants
+
+The environment also includes the following echo variants for colored or styled output:
+
+```
+echo
+echo.bold
+echo.italic
+echo.cyan
+echo.green
+echo.yellow
+echo.red
+echo.purple
+echo.underline
+```
+
+Use them to highlight specific messages or emphasize important information in your script’s output.
+

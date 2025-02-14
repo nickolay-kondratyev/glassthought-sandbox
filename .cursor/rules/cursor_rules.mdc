@@ -1,0 +1,95 @@
+---
+description: Rules for placing and organizing Cursor rule files in the repository.
+globs: *.mdc
+---
+
+### Rule
+```yaml
+name: cursor_rules_location
+priority: high
+description: Standards for placing Cursor rule files in the correct directory
+filters:
+  - type: file_extension
+    pattern: "*.mdc$"
+    description: "Match files with [.mdc] extension"
+  # Match files that look like Cursor rules
+  - type: event
+    pattern: "file_create"
+
+actions:
+  - type: reject
+    conditions:
+      - pattern: "^(?!\\.\\/\\.cursor\\/rules\\/.*\\.mdc$)"
+        message: "Cursor rule files (.mdc) must be placed in the .cursor/rules directory"
+  
+  - type: suggest
+    when: on_rule_creation_or_edit
+    what: where_to_place
+    message: |
+        1. Always place rule files in PROJECT_ROOT/.cursor/rules/:
+          ```
+          .cursor/rules/
+          ├── your-rule-name.mdc
+          ├── another-rule.mdc
+          └── ...
+          ```
+      
+        3. Directory structure:
+         ```
+         PROJECT_ROOT/
+         ├── .cursor/
+         │   └── rules/
+         │       ├── your-rule-name.mdc
+         │       └── ...
+         └── ...
+         ```
+
+  - type: suggest
+    when: on_rule_creation_or_edit
+    what: how_to_name
+    message: |
+      1. Follow the naming convention:
+       - Use kebab-case for filenames
+       - Always use .mdc extension
+       - Make names descriptive of the rule's purpose
+
+      2. WHEN Rule is for particular file type (example file_type=[.kt]) THEN:
+        - Use [kt] as suffix in rule name. 
+          - Example: `my-rule.kt.mdc`
+        - Add glob pattern in rule file front-matter, example for Kotlin files:
+          ```
+          ---
+          globs: *.kt
+          ---
+          ```
+      
+  - type: suggest
+    when: on_rule_creation_or_edit
+    what: format_to_use_for_content
+    message: |
+      1. Use Markdown for rule content
+      2. Use headings for different sections
+      3. Use code blocks for code snippets
+      4. Use lists for listing items
+      5. If needed, use YAML for more structured rule formatting within Markdown.
+        5a. Surround YAML with triple backticks '```yaml' and '```'
+        5b. Use YAML for structured data like metadata, filters, and actions
+        5c. Example:
+          ```yaml
+            - type: reject
+              conditions:
+                - pattern: "^(?!\\.\\/\\.cursor\\/rules\\/.*\\.mdc$)"
+                  message: "Cursor rule files (.mdc) must be placed in the .cursor/rules directory"
+            - type: suggest
+              when: on_rule_creation_or_edit
+              what: where_to_place
+              message: |
+                  1. Always place rule files in PROJECT_ROOT/.cursor/rules/:
+                    ```
+                    .cursor/rules/
+                    ├── your-rule-name.mdc
+                    ├── another-rule.mdc
+                    └── ...
+                    ```
+          ```
+```
