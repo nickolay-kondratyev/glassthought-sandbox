@@ -1,0 +1,8 @@
+---
+description: Kotlin files
+globs: *.kt
+---
+
+# Your rule content
+
+- Use [Out.kt](mdc:app/src/main/kotlin/com/glassthought/sandbox/util.out/Out.kt) for output.
