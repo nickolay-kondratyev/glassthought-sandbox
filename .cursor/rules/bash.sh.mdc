@@ -1,19 +1,21 @@
----
-description: Rules for writing robust and maintainable BASH scripts and functions.
-globs: *.sh
+Below are **two** possible reformatted versions for the remaining headings. Each version uses a similar structure to the provided *Mandatory Variable Checks* snippet—with sections for **What**, **Example** (with a code snippet labeled as “Input” when applicable), and either **Why** or **Benefits/Best Practices** as needed.
+
 ---
 
+## **Version 1: Standardized Formatting**
 
+```md
 ### Mandatory Variable Checks
 
 #### What 
-Ensure required parameters are provided using parameter expansion with error messages:
+Ensure required parameters are provided using parameter expansion with error messages.
 
 #### Example
 ##### Input 
 ```bash
 local file_path="${1:?file name or path}"
 ```
+
 #### Usage
 ```bash
 echo "file=[${file_path:?}]"
@@ -22,12 +24,15 @@ echo "file=[${file_path:?}]"
 #### Why
 Guarantees that the script stops with a clear error if a required variable is missing.
 
+---
+
 ### Proper Quoting
 
 #### What
-Always quote variable expansions to avoid unexpected word splitting and globbing:
+Always quote variable expansions to avoid unexpected word splitting and globbing.
 
 #### Example
+##### Input
 ```bash
 echo "file=[${file_path:?}]"
 ```
@@ -36,11 +41,15 @@ echo "file=[${file_path:?}]"
 - Preserves spaces and special characters.
 - Produces predictable and reliable output.
 
+---
 
 ### Local Scope for Variables
 
-Within functions, use `local` to restrict variable scope:
+#### What
+Within functions, use `local` to restrict variable scope.
 
+#### Example
+##### Input
 ```bash
 process.file() {
   local file_path="${1:?file name or path}"
@@ -48,17 +57,18 @@ process.file() {
 }
 ```
 
-**Why:**  
+#### Why
 Limits side effects by preventing variables from affecting the global environment.
 
 ---
 
-## 5. DRY Principle (Don't Repeat Yourself)
+### DRY Principle (Don't Repeat Yourself)
 
+#### What
 Avoid duplicating code by encapsulating common logic into functions.
 
-**Example:**
-
+#### Example
+##### Input
 ```bash
 function log_message() {
   local message="${1:?message text}"
@@ -68,28 +78,30 @@ function log_message() {
 log_message "Starting process"
 ```
 
-**Benefits:**
-
+#### Benefits
 - Simplifies maintenance.
 - Reduces the risk of errors in repetitive code.
 
 ---
 
-## 6. Self-Documenting Code
+### Self-Documenting Code
 
+#### What
 Adopt clear, descriptive naming conventions and add succinct comments that explain **why** certain decisions were made.
 
-**Best Practices:**
-
+#### Best Practices
 - Use meaningful names for variables and functions.
 - Comment on the intent and rationale, not just the actions.
 
 ---
 
-## 7. Consistent Error Handling
+### Consistent Error Handling
 
-Implement a dedicated error-handling mechanism, such as a `throw` function, to manage failures uniformly:
+#### What
+Implement a dedicated error-handling mechanism, such as a `throw` function, to manage failures uniformly.
 
+#### Example
+##### Input
 ```bash
 function throw() {
   local error_message="${1:?error message}"
@@ -100,5 +112,122 @@ function throw() {
 # Usage example:
 [ -f "$file_path" ] || throw "File does not exist: ${file_path}"
 ```
+```
 
+---
 
+## **Version 2: Slight Variation with “Usage” When Applicable**
+
+```md
+### Mandatory Variable Checks
+
+#### What 
+Ensure required parameters are provided using parameter expansion with error messages.
+
+#### Example
+##### Input 
+```bash
+local file_path="${1:?file name or path}"
+```
+
+#### Usage
+```bash
+echo "file=[${file_path:?}]"
+```
+
+#### Why
+Guarantees that the script stops with a clear error if a required variable is missing.
+
+---
+
+### Proper Quoting
+
+#### What
+Always quote variable expansions to avoid unexpected word splitting and globbing.
+
+#### Example
+##### Input
+```bash
+echo "file=[${file_path:?}]"
+```
+
+#### Why
+- Preserves spaces and special characters.
+- Produces predictable and reliable output.
+
+---
+
+### Local Scope for Variables
+
+#### What
+Within functions, use `local` to restrict variable scope.
+
+#### Example
+##### Input
+```bash
+process.file() {
+  local file_path="${1:?file name or path}"
+  # Process the file
+}
+```
+
+#### Why
+Prevents variables from leaking into the global environment.
+
+---
+
+### DRY Principle (Don't Repeat Yourself)
+
+#### What
+Encapsulate common logic into functions to avoid code duplication.
+
+#### Example
+##### Input
+```bash
+function log_message() {
+  local message="${1:?message text}"
+  echo "Log: ${message}"
+}
+
+log_message "Starting process"
+```
+
+#### Why
+- Simplifies maintenance.
+- Reduces the risk of errors from repetitive code.
+
+---
+
+### Self-Documenting Code
+
+#### What
+Write code that explains itself by using descriptive names and succinct comments that state the rationale.
+
+#### Best Practices
+- Use meaningful names for variables and functions.
+- Comment on the intent and reasoning behind decisions.
+
+---
+
+### Consistent Error Handling
+
+#### What
+Adopt a uniform error-handling mechanism (e.g., a `throw` function) to manage failures.
+
+#### Example
+##### Input
+```bash
+function throw() {
+  local error_message="${1:?error message}"
+  echo "Error: ${error_message}" >&2
+  exit 1
+}
+
+# Usage example:
+[ -f "$file_path" ] || throw "File does not exist: ${file_path}"
+```
+```
+
+---
+
+Choose the version that best fits your documentation style. Both formats maintain consistency with the original *Mandatory Variable Checks* style while addressing the key points in each section.
