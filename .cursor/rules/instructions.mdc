@@ -3,6 +3,7 @@ description: Kotlin files
 globs: *.kt
 ---
 
-# Your rule content
+### Output
+- DO_NOT_USE: println().
+- DO_USE: Use [Out.kt](mdc:app/src/main/kotlin/com/glassthought/sandbox/util.out/Out.kt) for output.
 
-- Use [Out.kt](mdc:app/src/main/kotlin/com/glassthought/sandbox/util.out/Out.kt) for output.
