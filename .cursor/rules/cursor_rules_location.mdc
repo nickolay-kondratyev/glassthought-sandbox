@@ -1,7 +1,6 @@
 ---
 description: Rules for placing and organizing Cursor rule files in the repository.
 globs: *.mdc
-type: rule
 ---
 
 ### Rule
@@ -9,13 +8,10 @@ type: rule
 name: cursor_rules_location
 description: Standards for placing Cursor rule files in the correct directory
 filters:
-  # Match any .mdc files
   - type: file_extension
-    pattern: "\\.mdc$"
+    pattern: "*.mdc$"
+    description: "Match files with [.mdc] extension"
   # Match files that look like Cursor rules
-  - type: content_front_matter
-    pattern: "type: rule"
-  # Match file creation events
   - type: event
     pattern: "file_create"
 
@@ -41,7 +37,17 @@ actions:
          - Use kebab-case for filenames
          - Always use .mdc extension
          - Make names descriptive of the rule's purpose
-
+      
+      2a. WHEN Rule is for particular file type (example file_type=[.kt]) THEN:
+        - Use [kt] as suffix in rule name. 
+          - Example: `my-rule.kt.mdc`
+        - Add glob pattern in rule file front-matter, example for Kotlin files:
+          ```
+            ---
+            globs: *.kt
+            ---
+          ```
+        
       3. Directory structure:
          ```
          PROJECT_ROOT/
