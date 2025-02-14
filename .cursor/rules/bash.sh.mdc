@@ -1,29 +1,32 @@
-Below are **two** possible reformatted versions for the remaining headings. Each version uses a similar structure to the provided *Mandatory Variable Checks* snippet—with sections for **What**, **Example** (with a code snippet labeled as “Input” when applicable), and either **Why** or **Benefits/Best Practices** as needed.
-
+---
+description: Rules for writing robust bash scripts and bash functions.
+globs: *.sh
 ---
 
-## **Version 1: Standardized Formatting**
+## Bash Script Best Practices
 
-```md
+This document outlines key guidelines for writing robust bash scripts. Each section describes **what** to do, provides an **example** (with input code and usage if applicable), and explains **why** it is important or outlines best practices.
+
 ### Mandatory Variable Checks
 
-#### What 
+#### What
 Ensure required parameters are provided using parameter expansion with error messages.
 
 #### Example
-##### Input 
+
+##### Input
 ```bash
 local file_path="${1:?file name or path}"
 ```
 
-#### Usage
+##### Usage
 ```bash
 echo "file=[${file_path:?}]"
 ```
 
 #### Why
 Guarantees that the script stops with a clear error if a required variable is missing.
-
+?
 ---
 
 ### Proper Quoting
@@ -32,6 +35,7 @@ Guarantees that the script stops with a clear error if a required variable is mi
 Always quote variable expansions to avoid unexpected word splitting and globbing.
 
 #### Example
+
 ##### Input
 ```bash
 echo "file=[${file_path:?}]"
@@ -46,188 +50,98 @@ echo "file=[${file_path:?}]"
 ### Local Scope for Variables
 
 #### What
-Within functions, use `local` to restrict variable scope.
+Within functions, use `local` to restrict variable scope and prevent leakage into the global environment.
 
 #### Example
+
 ##### Input
 ```bash
-process.file() {
+some.function.name() {
   local file_path="${1:?file name or path}"
   # Process the file
 }
 ```
 
 #### Why
-Limits side effects by preventing variables from affecting the global environment.
+Limits side effects by keeping variables contained within the function.
 
 ---
 
 ### DRY Principle (Don't Repeat Yourself)
 
 #### What
-Avoid duplicating code by encapsulating common logic into functions.
+Encapsulate common logic into functions to avoid duplicating code.
 
 #### Example
+
 ##### Input
 ```bash
-function log_message() {
-  local message="${1:?message text}"
-  echo "Log: ${message}"
+string.prefix(){
+  local prefix="${1:?Prefix is required}"
+  
+  if [ -t 0 ]; then
+    local input_string="${2:?Input string is required when not piping}"
+    echo "${prefix}${input_string}"
+  else
+    while IFS= read -r line; do
+      echo "${prefix}${line}"
+    done
+  fi
 }
 
-log_message "Starting process"
-```
-
-#### Benefits
-- Simplifies maintenance.
-- Reduces the risk of errors in repetitive code.
-
----
-
-### Self-Documenting Code
-
-#### What
-Adopt clear, descriptive naming conventions and add succinct comments that explain **why** certain decisions were made.
-
-#### Best Practices
-- Use meaningful names for variables and functions.
-- Comment on the intent and rationale, not just the actions.
-
----
-
-### Consistent Error Handling
-
-#### What
-Implement a dedicated error-handling mechanism, such as a `throw` function, to manage failures uniformly.
-
-#### Example
-##### Input
-```bash
-function throw() {
-  local error_message="${1:?error message}"
-  echo "Error: ${error_message}" >&2
-  exit 1
-}
-
-# Usage example:
-[ -f "$file_path" ] || throw "File does not exist: ${file_path}"
-```
-```
-
----
-
-## **Version 2: Slight Variation with “Usage” When Applicable**
-
-```md
-### Mandatory Variable Checks
-
-#### What 
-Ensure required parameters are provided using parameter expansion with error messages.
-
-#### Example
-##### Input 
-```bash
-local file_path="${1:?file name or path}"
-```
-
-#### Usage
-```bash
-echo "file=[${file_path:?}]"
-```
-
-#### Why
-Guarantees that the script stops with a clear error if a required variable is missing.
-
----
-
-### Proper Quoting
-
-#### What
-Always quote variable expansions to avoid unexpected word splitting and globbing.
-
-#### Example
-##### Input
-```bash
-echo "file=[${file_path:?}]"
-```
-
-#### Why
-- Preserves spaces and special characters.
-- Produces predictable and reliable output.
-
----
-
-### Local Scope for Variables
-
-#### What
-Within functions, use `local` to restrict variable scope.
-
-#### Example
-##### Input
-```bash
-process.file() {
-  local file_path="${1:?file name or path}"
-  # Process the file
-}
-```
-
-#### Why
-Prevents variables from leaking into the global environment.
-
----
-
-### DRY Principle (Don't Repeat Yourself)
-
-#### What
-Encapsulate common logic into functions to avoid code duplication.
-
-#### Example
-##### Input
-```bash
-function log_message() {
-  local message="${1:?message text}"
-  echo "Log: ${message}"
-}
-
-log_message "Starting process"
 ```
 
 #### Why
 - Simplifies maintenance.
 - Reduces the risk of errors from repetitive code.
+- Makes it easier to understand and modify the script.
 
 ---
 
 ### Self-Documenting Code
 
 #### What
-Write code that explains itself by using descriptive names and succinct comments that state the rationale.
+Write clear, descriptive code that explains itself through naming conventions and succinct comments.
 
 #### Best Practices
 - Use meaningful names for variables and functions.
-- Comment on the intent and reasoning behind decisions.
+- Comment on the intent and rationale behind decisions, not just the actions.
 
 ---
 
 ### Consistent Error Handling
 
 #### What
-Adopt a uniform error-handling mechanism (e.g., a `throw` function) to manage failures.
+Implement a uniform error-handling mechanism: `throw` function, to manage failures consistently.
 
-#### Example
-##### Input
+#### `throw` is already implemented as:
 ```bash
-function throw() {
-  local error_message="${1:?error message}"
-  echo "Error: ${error_message}" >&2
-  exit 1
+throw(){
+  interrupt "${*}"
 }
 
-# Usage example:
+interrupt(){
+    echo.red "Interrupting: ${*}" 1>&2;
+    echo.yellow "FunctionChain: $(function_chain)" 1>&2;
+    echo.yellow "PWD: $PWD" 1>&2;
+    echo.yellow "PID    : $$" 1>&2;
+    echo.yellow "BASHPID: $BASHPID" 1>&2;
+    interrupt_quietly
+}
+
+interrupt_quietly(){
+    kill -INT 0;
+    kill -INT -$$;
+    echo.red "Interrupting failed. We will now 'exit 1' to make sure we aren't continuing with a failed state." 1>&2;
+    exit 1
+}
+```
+
+#### Usage example
+```bash
 [ -f "$file_path" ] || throw "File does not exist: ${file_path}"
 ```
-```
 
----
+#### Why
+Provides a predictable method for error handling, enhancing the script's robustness and readability.
 
-Choose the version that best fits your documentation style. Both formats maintain consistency with the original *Mandatory Variable Checks* style while addressing the key points in each section.
