@@ -1,0 +1,128 @@
+---
+description: Rules for writing robust and maintainable BASH scripts and functions.
+globs: *.sh
+---
+
+```md
+
+## 1. Strict Mode
+
+Always begin your script with a shebang and enable strict error handling:
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+IFS=$'\n\t'
+```
+
+**Benefits:**
+
+- Catches errors early.
+- Prevents use of uninitialized variables.
+- Controls word splitting and globbing.
+
+---
+
+## 2. Mandatory Variable Checks
+
+Ensure required parameters are provided using parameter expansion with error messages:
+
+```bash
+local file_path="${1:?file name or path}"
+```
+
+**Why:**  
+This pattern guarantees that the script stops with a clear error if a required variable is missing.
+
+---
+
+## 3. Proper Quoting
+
+Always quote variable expansions to avoid unexpected word splitting and globbing:
+
+```bash
+echo "file=[${file_path}]"
+```
+
+**Advantages:**
+
+- Preserves spaces and special characters.
+- Produces predictable and reliable output.
+
+---
+
+## 4. Local Scope for Variables
+
+Within functions, use `local` to restrict variable scope:
+
+```bash
+function process_file() {
+  local file_path="${1:?file name or path}"
+  # Process the file
+}
+```
+
+**Why:**  
+Limits side effects by preventing variables from affecting the global environment.
+
+---
+
+## 5. DRY Principle (Don't Repeat Yourself)
+
+Avoid duplicating code by encapsulating common logic into functions.
+
+**Example:**
+
+```bash
+function log_message() {
+  local message="${1:?message text}"
+  echo "Log: ${message}"
+}
+
+log_message "Starting process"
+```
+
+**Benefits:**
+
+- Simplifies maintenance.
+- Reduces the risk of errors in repetitive code.
+
+---
+
+## 6. Self-Documenting Code
+
+Adopt clear, descriptive naming conventions and add succinct comments that explain **why** certain decisions were made.
+
+**Best Practices:**
+
+- Use meaningful names for variables and functions.
+- Comment on the intent and rationale, not just the actions.
+
+---
+
+## 7. Consistent Error Handling
+
+Implement a dedicated error-handling mechanism, such as a `throw` function, to manage failures uniformly:
+
+```bash
+function throw() {
+  local error_message="${1:?error message}"
+  echo "Error: ${error_message}" >&2
+  exit 1
+}
+
+# Usage example:
+[ -f "$file_path" ] || throw "File does not exist: ${file_path}"
+```
+
+**Benefits:**
+
+- Provides clear error reporting.
+- Ensures scripts exit gracefully on failure.
+
+---
+
+By following these guidelines, your BASH scripts will be more robust, maintainable, and easier for both developers and
+language models to understand. Happy scripting!
+
+```

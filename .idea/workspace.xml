@@ -5,7 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4a1b8b7c-d37b-405c-bf40-3761af1fd6ae" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.cursor/rules/cursor_rules_location.mdc" beforeDir="false" afterPath="$PROJECT_DIR$/.cursor/rules/cursor_rules.mdc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.cursor/rules/bash.sh.mdc" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
