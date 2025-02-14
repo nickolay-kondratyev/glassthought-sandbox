@@ -5,8 +5,7 @@ globs: *.sh
 
 ## Bash Script Best Practices
 
-This document outlines key guidelines for writing robust bash scripts. Each section describes **what** to do, provides an *
-*example** (with input code and usage if applicable), and explains **why** it is important or outlines best practices.
+This document outlines key guidelines for writing robust bash scripts and functions.
 
 ### Mandatory Variable Checks
 
