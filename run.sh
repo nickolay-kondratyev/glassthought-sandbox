@@ -1,1 +1,1 @@
-./gradlew run
+echo TODO-ADD-RUN-COMMAND
