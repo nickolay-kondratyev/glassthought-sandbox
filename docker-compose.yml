@@ -30,6 +30,12 @@ services:
         chown -R jenkins:jenkins /var/jenkins_home
         su jenkins -c '/usr/local/bin/jenkins.sh'
       "
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/login"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
 volumes:
   jenkins_home: 

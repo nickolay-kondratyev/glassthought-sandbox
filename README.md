@@ -15,6 +15,12 @@ This repository contains the necessary configuration to set up Jenkins in Docker
 
 ## Quick Start
 
+1. Clone this repository:
+   ```bash
+   git clone <this-repository-url>
+   cd <repository-directory>
+   ```
+
 2. Start Jenkins:
    ```bash
    ./start-jenkins.sh
@@ -25,6 +31,7 @@ This repository contains the necessary configuration to set up Jenkins in Docker
    - Check that Docker Compose can support the compose file version used (3.8)
    - Check that your SSH key exists
    - Build and start the Jenkins container
+   - Wait for Jenkins to be fully started and ready to use
 
    By default, the script will use your SSH key at `~/.ssh/id_rsa`. If your SSH key is in a different location, you can specify it:
    ```bash
@@ -51,6 +58,8 @@ The setup consists of:
 - `jenkins-casc.yaml`: Jenkins Configuration as Code for automatic setup
 - `init.groovy.d/`: Contains initialization scripts for Jenkins
 - `verify-prerequisites.sh`: Script to verify that Docker and Docker Compose are installed and compatible
+- `start-jenkins.sh`: Script to start Jenkins with proper configuration
+- `stop-jenkins.sh`: Script to stop Jenkins
 
 ### Jenkins Pipeline
 
@@ -99,6 +108,28 @@ If the prerequisites check fails:
    - If using Docker Compose V2, version 2.0.0+ is required
 3. Check the error message for specific instructions on how to upgrade
 
+### Build Issues
+
+If the Docker build fails:
+1. Check the build logs for specific errors
+2. Common issues include:
+   - Network connectivity problems when downloading packages
+   - Repository or package availability issues
+   - Incompatible package versions
+3. If you see errors related to Docker CLI installation:
+   - The script uses the official Docker installation method
+   - You can try rebuilding with: `docker-compose build --no-cache jenkins`
+   - Check Docker Hub for any known issues with the Jenkins base image
+
+### Container Startup Issues
+
+If the Jenkins container fails to start or is not accessible:
+1. Check the container status: `docker-compose ps`
+2. View the container logs: `docker-compose logs jenkins`
+3. Ensure ports 8080 and 50000 are not already in use by other services
+4. Verify that the Docker daemon has sufficient resources (CPU, memory, disk space)
+5. Try restarting the container: `docker-compose restart jenkins`
+
 ### SSH Key Issues
 
 If Jenkins cannot access the Git repository:
@@ -112,13 +143,6 @@ If the build fails:
 1. Check the Jenkins logs for errors
 2. Verify that the THORG scripts (`init.sh`, `sanity_check.sh`) are executable
 3. Ensure the Bash environment is correctly sourced
-
-### Container Issues
-
-If the container fails to start:
-1. Check Docker logs: `docker-compose logs jenkins`
-2. Verify that Docker has access to the specified volumes
-3. Ensure Docker has sufficient resources
 
 ## Maintenance
 
@@ -135,3 +159,10 @@ The Jenkins data is stored in a Docker volume. To back it up:
 1. Stop Jenkins: `./stop-jenkins.sh`
 2. Backup the volume: `docker volume create --name jenkins_backup && docker run --rm -v jenkins_home:/source -v jenkins_backup:/destination alpine cp -a /source/. /destination/`
 3. Start Jenkins: `./start-jenkins.sh`
+
+### Cleaning Up
+
+If you need to completely reset the Jenkins setup:
+1. Stop Jenkins: `./stop-jenkins.sh`
+2. Remove the volume: `docker volume rm jenkins_home`
+3. Start Jenkins again: `./start-jenkins.sh`
