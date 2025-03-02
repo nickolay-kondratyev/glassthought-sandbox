@@ -1,7 +1,6 @@
 # Jenkins in Docker for THORG
 
 This repository contains the necessary configuration to set up Jenkins in Docker for the THORG project. The setup is designed to monitor the THORG Git repository and run build scripts when changes are detected.
-
 ## Prerequisites
 
 - Docker and Docker Compose installed
@@ -23,6 +22,8 @@ This repository contains the necessary configuration to set up Jenkins in Docker
 
 2. Start Jenkins:
    ```bash
+   # Note after starting in Chroe (with slew of my extensions installed) UI did not work.
+   # while in clean fire fox it did. 
    ./start-jenkins.sh
    ```
 
