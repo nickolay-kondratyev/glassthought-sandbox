@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Verify Docker and Docker Compose are installed
+echo "Verifying prerequisites..."
+./verify-prerequisites.sh
+
 # Set default SSH key path if not provided
 export SSH_KEY_PATH=${SSH_KEY_PATH:-~/.ssh/id_rsa}
 
@@ -7,6 +11,7 @@ export SSH_KEY_PATH=${SSH_KEY_PATH:-~/.ssh/id_rsa}
 if [ ! -f "$SSH_KEY_PATH" ]; then
   echo "Error: SSH key not found at $SSH_KEY_PATH"
   echo "Please provide a valid SSH key path with SSH_KEY_PATH environment variable"
+  throw "SSH key not found at $SSH_KEY_PATH"
   exit 1
 fi
 
@@ -27,4 +32,4 @@ echo "Jenkins is starting at http://localhost:8080/"
 echo "Username: admin"
 echo "Password: admin"
 echo ""
-echo "Jenkins logs can be viewed with: docker-compose logs -f jenkins" 
+echo "Jenkins logs can be viewed with: docker-compose logs -f jenkins"

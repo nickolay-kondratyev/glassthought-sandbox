@@ -5,6 +5,12 @@ This repository contains the necessary configuration to set up Jenkins in Docker
 ## Prerequisites
 
 - Docker and Docker Compose installed
+  - Docker version 20.10.0 or newer
+  - Docker Compose version 1.29.0 or newer (both V1 and V2 are supported)
+  - The setup script will automatically verify these prerequisites
+  - If not installed or outdated, please follow the official installation guides:
+    - [Docker Installation Guide](https://docs.docker.com/get-docker/)
+    - [Docker Compose Installation Guide](https://docs.docker.com/compose/install/)
 - SSH key with access to the THORG Git repository (`git@gitlab.com:thorg/thorg-root.git`)
 - Bash 5.x+ (installed in the Docker container)
 
@@ -20,6 +26,12 @@ This repository contains the necessary configuration to set up Jenkins in Docker
    ```bash
    ./start-jenkins.sh
    ```
+
+   The script will:
+   - Verify that Docker and Docker Compose are installed and meet minimum version requirements
+   - Check that Docker Compose can support the compose file version used (3.8)
+   - Check that your SSH key exists
+   - Build and start the Jenkins container
 
    By default, the script will use your SSH key at `~/.ssh/id_rsa`. If your SSH key is in a different location, you can specify it:
    ```bash
@@ -45,6 +57,7 @@ The setup consists of:
 - `plugins.txt`: Lists the Jenkins plugins to be installed
 - `jenkins-casc.yaml`: Jenkins Configuration as Code for automatic setup
 - `init.groovy.d/`: Contains initialization scripts for Jenkins
+- `verify-prerequisites.sh`: Script to verify that Docker and Docker Compose are installed and compatible
 
 ### Jenkins Pipeline
 
@@ -82,6 +95,16 @@ The sample Jenkinsfile can be customized to:
 To add more Jenkins plugins, edit the `plugins.txt` file and add the plugin IDs.
 
 ## Troubleshooting
+
+### Prerequisites Issues
+
+If the prerequisites check fails:
+1. Ensure Docker is installed (version 20.10.0 or newer) and the Docker daemon is running
+2. Ensure Docker Compose is installed (version 1.29.0 or newer)
+   - Both Docker Compose V1 (`docker-compose`) and V2 (`docker compose`) are supported
+   - If using Docker Compose V1, version 1.27.0+ is required to support Compose file version 3.8
+   - If using Docker Compose V2, version 2.0.0+ is required
+3. Check the error message for specific instructions on how to upgrade
 
 ### SSH Key Issues
 
