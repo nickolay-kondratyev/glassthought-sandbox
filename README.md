@@ -16,12 +16,6 @@ This repository contains the necessary configuration to set up Jenkins in Docker
 
 ## Quick Start
 
-1. Clone this repository:
-   ```bash
-   git clone <this-repository-url>
-   cd <repository-directory>
-   ```
-
 2. Start Jenkins:
    ```bash
    ./start-jenkins.sh
