@@ -27,7 +27,7 @@ jobs:
                   url('git@gitlab.com:thorg/thorg-root.git')
                   credentials('gitlab-ssh-key')
                 }
-                branches('*/main')
+                branches('*/master')
               }
             }
             scriptPath('Jenkinsfile')
