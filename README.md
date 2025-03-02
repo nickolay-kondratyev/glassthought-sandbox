@@ -12,7 +12,6 @@ This repository contains the necessary configuration to set up Jenkins in Docker
     - [Docker Installation Guide](https://docs.docker.com/get-docker/)
     - [Docker Compose Installation Guide](https://docs.docker.com/compose/install/)
 - SSH key with access to the THORG Git repository (`git@gitlab.com:thorg/thorg-root.git`)
-- Bash 5.x+ (installed in the Docker container)
 
 ## Quick Start
 
