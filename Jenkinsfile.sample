@@ -1,0 +1,94 @@
+pipeline {
+    agent any
+    
+    options {
+        timestamps()
+        ansiColor('xterm')
+        disableConcurrentBuilds()
+        timeout(time: 60, unit: 'MINUTES')
+    }
+    
+    environment {
+        THORG_ROOT = "${env.WORKSPACE}"
+    }
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+        
+        stage('Initialize') {
+            steps {
+                script {
+                    sh '''
+                        # Check if init.sh exists and is executable
+                        if [ -f "${THORG_ROOT}/init.sh" ] && [ -x "${THORG_ROOT}/init.sh" ]; then
+                            echo "Running initialization script..."
+                            ${THORG_ROOT}/init.sh
+                        else
+                            echo "Warning: init.sh not found or not executable"
+                            exit 1
+                        fi
+                    '''
+                }
+            }
+        }
+        
+        stage('Setup Environment') {
+            steps {
+                script {
+                    sh '''
+                        # Source the THORG Bash environment
+                        if [ -f "${THORG_ROOT}/shell/env/thorg-env.sh" ]; then
+                            echo "Sourcing THORG environment..."
+                            source ${THORG_ROOT}/shell/env/thorg-env.sh
+                        else
+                            echo "Error: THORG environment file not found"
+                            exit 1
+                        fi
+                    '''
+                }
+            }
+        }
+        
+        stage('Sanity Check') {
+            steps {
+                script {
+                    try {
+                        sh '''
+                            # Source the environment again in this shell
+                            source ${THORG_ROOT}/shell/env/thorg-env.sh
+                            
+                            # Run the sanity check script
+                            if [ -f "${THORG_ROOT}/sanity_check.sh" ] && [ -x "${THORG_ROOT}/sanity_check.sh" ]; then
+                                echo "Running sanity check..."
+                                ${THORG_ROOT}/sanity_check.sh
+                            else
+                                echo "Error: sanity_check.sh not found or not executable"
+                                exit 1
+                            fi
+                        '''
+                    } catch (Exception e) {
+                        echo "Sanity check failed: ${e.message}"
+                        currentBuild.result = 'FAILURE'
+                        error "Sanity check failed"
+                    }
+                }
+            }
+        }
+    }
+    
+    post {
+        always {
+            cleanWs()
+        }
+        success {
+            echo 'Sanity check completed successfully!'
+        }
+        failure {
+            echo 'Sanity check failed!'
+        }
+    }
+} 

@@ -1,0 +1,52 @@
+jenkins:
+  systemMessage: "Jenkins configured automatically for THORG project"
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+        - id: "admin"
+          password: "admin"
+  authorizationStrategy:
+    loggedInUsersCanDoAnything:
+      allowAnonymousRead: false
+  remotingSecurity:
+    enabled: true
+
+unclassified:
+  location:
+    url: "http://localhost:8080/"
+
+jobs:
+  - script: >
+      pipelineJob('thorg-sanity-check') {
+        definition {
+          cpsScm {
+            scm {
+              git {
+                remote {
+                  url('git@gitlab.com:thorg/thorg-root.git')
+                  credentials('gitlab-ssh-key')
+                }
+                branches('*/main')
+              }
+            }
+            scriptPath('Jenkinsfile')
+          }
+        }
+        triggers {
+          scm('H/15 * * * *')
+        }
+      }
+
+credentials:
+  system:
+    domainCredentials:
+      - credentials:
+          - basicSSHUserPrivateKey:
+              scope: GLOBAL
+              id: "gitlab-ssh-key"
+              username: "git"
+              description: "SSH key for GitLab access"
+              privateKeySource:
+                directEntry:
+                  privateKey: "${SSH_PRIVATE_KEY}" 
