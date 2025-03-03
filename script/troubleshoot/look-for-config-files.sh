@@ -1,4 +1,7 @@
-# Search for job configuration files that mention 'main' in docker.
+# Search for job configuration files that mention 'main' in
+# Jenkins docker container.
+#
+# This script is a good example how to look into the container files.
 echo "Searching for job configuration files mentioning 'main'..."
 
 docker exec -it thorg-jenkins bash -c '
