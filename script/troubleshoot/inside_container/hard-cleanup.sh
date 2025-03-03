@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# complete-cleanup.sh - Script to completely clean Jenkins and start fresh
+# jenkins-cleanup.sh - Script to completely clean Jenkins (without restart)
 
 function throw() {
     local message="${1:?Error message required}"
@@ -9,8 +9,8 @@ function throw() {
 }
 
 echo "=== JENKINS COMPLETE CLEANUP ==="
-echo "This script will completely remove the Jenkins container and volume"
-echo "and start fresh with a clean installation."
+echo "This script will stop and completely remove the Jenkins container and volumes."
+echo "You will need to manually restart Jenkins after this cleanup."
 echo ""
 echo "WARNING: All Jenkins configuration and data will be lost!"
 echo "Continue? (y/n)"
@@ -46,41 +46,16 @@ if [ -n "${JENKINS_CONTAINERS}" ]; then
     docker rm -f ${JENKINS_CONTAINERS}
 fi
 
-# Verify jenkins-casc.yaml has the correct branch
-echo "Checking jenkins-casc.yaml for correct branch configuration..."
-if [ -f "jenkins-casc.yaml" ]; then
-    if grep -q "branches('\*/main')" jenkins-casc.yaml; then
-        echo "Fixing branch reference in jenkins-casc.yaml..."
-        sed -i "s/branches('\*\/main')/branches('*\/master')/g" jenkins-casc.yaml
-    fi
-
-    # Check for the syntax error in triggers
-    if grep -q "scm('H/15 \* '\*)" jenkins-casc.yaml; then
-        echo "Fixing syntax error in triggers configuration..."
-        sed -i "s/scm('H\/15 \* '\*)/scm('H\/15 * * * *')/g" jenkins-casc.yaml
-    fi
-
-    echo "Current branch configuration in jenkins-casc.yaml:"
-    grep -n "branches" jenkins-casc.yaml
-else
-    echo "jenkins-casc.yaml not found in current directory."
-fi
-
-# Rebuild and start Jenkins
-echo "Building and starting fresh Jenkins container..."
-docker-compose build --no-cache
-if [ $? -ne 0 ]; then
-    throw "Failed to build Jenkins container."
-fi
-
-docker-compose up -d
-if [ $? -ne 0 ]; then
-    throw "Failed to start Jenkins container."
-fi
-
-echo "Jenkins container started. Waiting for it to initialize..."
-sleep 10
-
-# Follow logs to see startup progress
-echo "Displaying Jenkins logs (Ctrl+C to exit logs but keep Jenkins running):"
-docker-compose logs -f jenkins
+echo "=== CLEANUP COMPLETE ==="
+echo ""
+echo "All Jenkins containers and volumes have been removed."
+echo "Before restarting Jenkins, you may want to check your configuration files:"
+echo ""
+echo "1. Verify jenkins-casc.yaml has the correct branch configuration:"
+echo "   grep -n \"branches\" jenkins-casc.yaml"
+echo ""
+echo "2. Check for syntax errors in triggers:"
+echo "   grep -n \"triggers\" jenkins-casc.yaml"
+echo ""
+echo "To restart Jenkins after verifying configurations:"
+echo "   ./start-jenkins.sh"
