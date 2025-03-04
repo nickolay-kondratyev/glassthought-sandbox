@@ -6,11 +6,6 @@ include "_env_variables_source_me.sh"
 
 eai ./stop-jenkins.sh
 
-# Create environment file for Homebrew service
-echo "JENKINS_HOME=${JENKINS_HOME}" > "${JENKINS_ENV_FILE:?}"
-echo "CASC_JENKINS_CONFIG=${JENKINS_HOME}/casc_configs/jenkins.yaml" >> "${JENKINS_ENV_FILE:?}"
-echo "JAVA_OPTS=\"-Djenkins.install.runSetupWizard=false\"" >> "${JENKINS_ENV_FILE:?}"
-
 # Check if Jenkins is installed
 if ! brew list --formula | grep -q jenkins-lts; then
     echo -e "${RED}Error: Jenkins is not installed.${NC:?}"
