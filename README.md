@@ -10,33 +10,22 @@ This repository contains scripts to install, configure, and manage Jenkins nativ
 
 ## Installation
 
-1. Clone this repository:
-   ```bash
-   git clone <repository-url>
-   cd <repository-directory>
-   ```
-
-2. Make the scripts executable:
-   ```bash
-   chmod +x *.sh
-   ```
-
-3. Verify prerequisites:
+### Verify prerequisites:
    ```bash
    ./verify-prerequisites.sh
    ```
 
-4. Install Jenkins:
+### Install Jenkins:
    ```bash
    ./install-jenkins.sh
    ```
 
-5. Start Jenkins:
+### Start Jenkins:
    ```bash
    ./start-jenkins.sh
    ```
 
-6. Install plugins (after Jenkins has started):
+### Install plugins (after Jenkins has started):
    ```bash
    ./install-plugins.sh
    ```
