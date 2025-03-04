@@ -8,7 +8,7 @@ main() {
   echo ""
   echo ""
   # shellcheck disable=SC2012
-  echo "There are [$(ls "${JENKINS_HOME:?}"/plugins | wc -l)] in [${JENKINS_HOME:?}/plugins] directory"
+  echo "There are [$(ls "${JENKINS_HOME:?}"/plugins | wc -l)] plugins in [${JENKINS_HOME:?}/plugins] directory"
 }
 
 main "${@}" || exit 1
