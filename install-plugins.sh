@@ -17,7 +17,7 @@ _install_plugin(){
   	throw "Jenkins CLI jar not found at path=[$JENKINS_CLI_JAR]"
   fi
 
-  
+
   java -jar "${JENKINS_CLI_JAR:?}" -s "${JENKINS_URL:?}" \
     -auth admin:"${ADMIN_PASSWORD:?}" \
     install-plugin "${plugin:?}" || {
