@@ -2,7 +2,7 @@
 
 set -e
 
-include "_env_variables_source_me.sh"
+source "_env_setup_source_me.sh"
 
 
 JENKINS_CRUMB_HEADER=""
@@ -43,8 +43,8 @@ create_api_token() {
     # Form the curl command with or without crumb header
     local curl_cmd="curl -s -u \"${ADMIN_USER:?}:${ADMIN_PASSWORD:?}\" -X POST"
 
-    if [[ -n "${JENKINS_CRUMB:?}" && -n "${JENKINS_CRUMB_HEADER}" ]]; then
-        curl_cmd="${curl_cmd:?} -H \"${JENKINS_CRUMB_HEADER}: ${JENKINS_CRUMB:?}\""
+    if [[ -n "${JENKINS_CRUMB}" && -n "${JENKINS_CRUMB_HEADER}" ]]; then
+        curl_cmd="${curl_cmd:?} -H \"${JENKINS_CRUMB_HEADER}: ${JENKINS_CRUMB}\""
     fi
 
     # Complete the curl command
@@ -161,8 +161,8 @@ install_plugins() {
             # Construct the CLI command for installing plugin
             local cli_cmd="java -jar \"${JENKINS_CLI_JAR:?}\" -s \"${JENKINS_URL:?}\" -auth \"${ADMIN_USER:?}:${API_TOKEN}\""
 
-            if [[ -n "${JENKINS_CRUMB:?}" && -n "${JENKINS_CRUMB_HEADER}" ]]; then
-                cli_cmd="${cli_cmd} -crumb \"${JENKINS_CRUMB:?}\""
+            if [[ -n "${JENKINS_CRUMB}" && -n "${JENKINS_CRUMB_HEADER}" ]]; then
+                cli_cmd="${cli_cmd} -crumb \"${JENKINS_CRUMB}\""
             fi
 
             cli_cmd="${cli_cmd} install-plugin \"${plugin}\" -deploy"
@@ -182,8 +182,8 @@ install_plugins() {
     # Construct the CLI command for restarting
     local restart_cmd="java -jar \"${JENKINS_CLI_JAR:?}\" -s \"${JENKINS_URL:?}\" -auth \"${ADMIN_USER:?}:${API_TOKEN}\""
 
-    if [[ -n "${JENKINS_CRUMB:?}" && -n "${JENKINS_CRUMB_HEADER}" ]]; then
-        restart_cmd="${restart_cmd} -crumb \"${JENKINS_CRUMB:?}\""
+    if [[ -n "${JENKINS_CRUMB}" && -n "${JENKINS_CRUMB_HEADER}" ]]; then
+        restart_cmd="${restart_cmd} -crumb \"${JENKINS_CRUMB}\""
     fi
 
     restart_cmd="${restart_cmd} safe-restart"

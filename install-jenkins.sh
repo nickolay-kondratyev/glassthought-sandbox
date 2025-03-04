@@ -2,7 +2,7 @@
 
 set -e
 
-include "_env_variables_source_me.sh"
+source "_env_setup_source_me.sh"
 
 echo -e "${GREEN:?}Starting Jenkins installation for macOS...${NC:?}"
 
@@ -106,3 +106,5 @@ EOF
 echo -e "${GREEN:?}Jenkins installation completed!${NC:?}"
 echo -e "${YELLOW:?}You can start Jenkins using the start-jenkins.sh script.${NC:?}"
 echo -e "Jenkins home directory: ${GREEN:?}${JENKINS_HOME:?}${NC:?}"
+
+

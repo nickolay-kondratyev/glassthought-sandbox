@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-include "_env_variables_source_me.sh"
+source "_env_setup_source_me.sh"
 
 # Check if Jenkins is running
 if ! pgrep -f "jenkins.war" > /dev/null; then

@@ -2,7 +2,7 @@
 
 set -e
 
-include "_env_variables_source_me.sh"
+source "_env_setup_source_me.sh"
 
 # Check if Jenkins is installed
 if ! brew list --formula | grep -q jenkins-lts; then

@@ -15,3 +15,11 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 RED='\033[0;31m'
 NC='\033[0m' # No Color
+
+
+# Need to redefine due to SUDO usage.
+throw() {
+  echo "Failed: ${*}"
+  exit 1
+}
+export -f throw
