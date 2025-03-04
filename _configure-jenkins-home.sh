@@ -31,6 +31,10 @@ main_not_under_sudo() {
 main() {
   main_not_under_sudo
 
+  echo ""
+  echo "--------------------------------------------------------------------------------"
+  echo "Starting the SUDO portion of the script..."
+  
   (sudo "./_configure-jenkins-home.sudo-portion.sh")
 }
 
