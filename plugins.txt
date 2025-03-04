@@ -16,4 +16,3 @@ pipeline-utility-steps:2.12.0
 pipeline-github:2.8
 gitlab-plugin:1.5.35
 ssh-agent:1.24
-

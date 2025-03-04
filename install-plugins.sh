@@ -16,13 +16,16 @@ _install_plugin(){
     -auth admin:"${ADMIN_PASSWORD:?}" \
     install-plugin "${plugin:?}" || {
       echo.red "Failed to install plugin=[$plugin]"
-    } && echo "Finished installing plugin=[$plugin]"
+    } && echo.log "Finished installing plugin=[$plugin]"
 }
 
 echo.log "Installing plugins using Jenkins CLI"
 mapfile -t plugins < plugins.txt
 for plugin in "${plugins[@]}"; do
-  _install_plugin "$plugin"
+  # -n: return true when value is not empty.
+  if [[ -n "${plugin}" ]]; then
+    _install_plugin "$plugin"
+  fi
 done
 echo.log "Finished installing plugins"
 
