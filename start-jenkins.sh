@@ -78,7 +78,7 @@ while [ $ATTEMPTS -lt $MAX_ATTEMPTS ]; do
         echo -e "${GREEN}Jenkins is up and running!${NC}"
         break
     fi
-    
+
     ATTEMPTS=$((ATTEMPTS+1))
     echo -e "${YELLOW}Waiting for Jenkins to start... (Attempt $ATTEMPTS/$MAX_ATTEMPTS)${NC}"
     sleep 10
@@ -93,6 +93,7 @@ echo ""
 echo -e "${GREEN}Jenkins is available at http://localhost:8080/${NC}"
 echo -e "${GREEN}Username: admin${NC}"
 echo -e "${GREEN}Password: admin${NC}"
+echo -e "Initial admin password: ${GREEN}$(cat "$JENKINS_HOME/secrets/initialAdminPassword")${NC}"
 echo ""
 echo -e "${YELLOW}Jenkins logs can be viewed with: brew services log jenkins-lts${NC}"
 echo ""
