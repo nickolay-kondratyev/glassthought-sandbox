@@ -9,15 +9,8 @@ echo -e "${GREEN:?}Starting Jenkins installation for macOS...${NC:?}"
 
 command -v brew || throw "Brew is not installed"
 command -v java || throw "Java is not installed"
+brew install jenkins-lts || throw "Failed to install Jenkins"
 
-# Install Jenkins
-if ! brew list --formula | grep -q jenkins; then
-    echo -e "${YELLOW:?}Installing Jenkins...${NC:?}"
-    brew install jenkins-lts
-else
-    echo -e "${GREEN:?}Jenkins is already installed.${NC:?}"
-    brew upgrade jenkins-lts
-fi
 
 # Create Jenkins directories
 mkdir -p "${JENKINS_HOME:?}"
