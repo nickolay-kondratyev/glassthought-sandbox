@@ -16,7 +16,7 @@ _install_plugin(){
     -auth admin:"${ADMIN_PASSWORD:?}" \
     install-plugin "${plugin:?}" || {
       echo.red "Failed to install plugin=[$plugin]"
-    }
+    } && echo "Finished installing plugin=[$plugin]"
 }
 
 echo.log "Installing plugins using Jenkins CLI"
@@ -27,6 +27,4 @@ done
 echo.log "Finished installing plugins"
 
 echo.log "Restarting Jenkins"
-java -jar "${JENKINS_CLI_JAR:?}" -s $JENKINS_URL \
-  -auth admin:"${ADMIN_PASSWORD:?}" \
-  safe-restart
+java -jar "${JENKINS_CLI_JAR:?}" -s "${JENKINS_URL:?}" -auth admin:"${ADMIN_PASSWORD:?}" safe-restart
