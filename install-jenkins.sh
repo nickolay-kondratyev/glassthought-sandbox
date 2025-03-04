@@ -23,10 +23,10 @@ fi
 if ! command -v java &> /dev/null; then
     echo -e "${YELLOW}Java not found. Installing OpenJDK 17...${NC}"
     brew install openjdk@17
-    
+
     # Create a symlink to make Java available system-wide
     sudo ln -sfn $(brew --prefix)/opt/openjdk@17/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk-17.jdk
-    
+
     # Add Java to PATH if not already there
     if ! grep -q 'export PATH="$PATH:/opt/homebrew/opt/openjdk@17/bin"' ~/.zshrc 2>/dev/null && ! grep -q 'export PATH="$PATH:/opt/homebrew/opt/openjdk@17/bin"' ~/.bash_profile 2>/dev/null; then
         if [ -f ~/.zshrc ]; then
@@ -84,18 +84,18 @@ wait_for_jenkins() {
     echo -e "${YELLOW}Waiting for Jenkins to start...${NC}"
     local attempts=0
     local max_attempts=30
-    
+
     while [ $attempts -lt $max_attempts ]; do
         if curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/ | grep -q "200\|403"; then
             echo -e "${GREEN}Jenkins is up and running!${NC}"
             return 0
         fi
-        
+
         attempts=$((attempts+1))
         echo -e "${YELLOW}Waiting for Jenkins to start... (Attempt $attempts/$max_attempts)${NC}"
         sleep 10
     done
-    
+
     echo -e "${RED}Jenkins did not start within the expected time.${NC}"
     return 1
 }
@@ -103,11 +103,10 @@ wait_for_jenkins() {
 # Set environment variables for Jenkins
 echo -e "${YELLOW}Setting up environment variables for Jenkins...${NC}"
 cat > "$JENKINS_HOME/jenkins.environment" << EOF
-JENKINS_HOME=$JENKINS_HOME
 CASC_JENKINS_CONFIG=$JENKINS_HOME/casc_configs/jenkins.yaml
 JAVA_OPTS="-Djenkins.install.runSetupWizard=false"
 THORG_ROOT=$JENKINS_HOME/workspace/thorg-root
 EOF
 
 echo -e "${GREEN}Jenkins installation completed!${NC}"
-echo -e "${YELLOW}You can start Jenkins using the start-jenkins.sh script.${NC}" 
+echo -e "${YELLOW}You can start Jenkins using the start-jenkins.sh script.${NC}"
