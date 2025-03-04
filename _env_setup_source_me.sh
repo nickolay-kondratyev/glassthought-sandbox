@@ -3,7 +3,7 @@ export JENKINS_HOME="/Users/nickolaykondratyev/git_repos/glassthought-sandbox/ou
 export JENKINS_ENVIRONMENT="$JENKINS_HOME/jenkins.environment"
 # Determine Homebrew prefix based on architecture
 export BREW_PREFIX
-BREW_PREFIX=$(brew --prefix)
+[[ -z "${BREW_PREFIX}" ]] && BREW_PREFIX=$(brew --prefix)
 export JENKINS_WAR=${BREW_PREFIX:?}/opt/jenkins-lts/libexec/jenkins.war
 export JENKINS_CLI_JAR
 [[ -z "${JENKINS_CLI_JAR}" ]] && JENKINS_CLI_JAR="$(brew list jenkins-lts | grep '\.jar$')"
