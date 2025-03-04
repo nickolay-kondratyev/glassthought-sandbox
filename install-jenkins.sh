@@ -72,7 +72,6 @@ fi
 
 # Install Jenkins plugins
 echo -e "${YELLOW:?}Installing Jenkins plugins...${NC:?}"
-JENKINS_CLI_JAR="${JENKINS_HOME:?}/jenkins-cli.jar"
 
 # Function to wait for Jenkins to start
 wait_for_jenkins() {
