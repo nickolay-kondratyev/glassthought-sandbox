@@ -6,6 +6,9 @@ source "_env_setup_source_me.sh"
 
 ./stop-jenkins.sh
 
+echo "--------------------------------------------------------------------------------"
+echo -e "${GREEN:?}Starting Jenkins...${NC:?}"
+
 # Check if Jenkins is installed
 if ! brew list --formula | grep -q jenkins-lts; then
     echo -e "${RED}Error: Jenkins is not installed.${NC:?}"

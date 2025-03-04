@@ -5,6 +5,9 @@ set -e
 
 source "_env_setup_source_me.sh"
 
+echo "--------------------------------------------------------------------------------"
+echo -e "${GREEN:?}Starting Jenkins plugin installation...${NC:?}"
+
 export ADMIN_PASSWORD=$(./_password.sh)
 
 _install_plugin(){

@@ -2,6 +2,9 @@
 
 source "_env_setup_source_me.sh"
 
+echo "--------------------------------------------------------------------------------"
+echo -e "${YELLOW:?}Stopping Jenkins...${NC:?}"
+
 # Check if Jenkins is running
 if ! pgrep -f "jenkins.war" > /dev/null; then
     echo -e "${YELLOW:?}Jenkins is not running.${NC:?}"

@@ -4,6 +4,7 @@ set -e
 
 source "_env_setup_source_me.sh"
 
+echo "--------------------------------------------------------------------------------"
 echo -e "${GREEN:?}Starting Jenkins installation for macOS...${NC:?}"
 
 # Check if Homebrew is installed
