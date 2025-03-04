@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Verify Docker and Docker Compose are installed
 echo "Verifying prerequisites..."
@@ -56,12 +56,12 @@ ATTEMPTS=0
 MAX_ATTEMPTS=30
 while [ $ATTEMPTS -lt $MAX_ATTEMPTS ]; do
   STATUS=$(check_jenkins 2>/dev/null || echo "000")
-  
+
   if [ "$STATUS" = "200" ] || [ "$STATUS" = "403" ]; then
     echo "Jenkins is up and running!"
     break
   fi
-  
+
   ATTEMPTS=$((ATTEMPTS+1))
   echo "Waiting for Jenkins to start... (Attempt $ATTEMPTS/$MAX_ATTEMPTS)"
   sleep 10

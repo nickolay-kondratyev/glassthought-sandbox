@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Function to check if a command exists
 command_exists() {
@@ -99,4 +99,4 @@ else
   fi
 fi
 
-echo "All prerequisites are satisfied!" 
+echo "All prerequisites are satisfied!"

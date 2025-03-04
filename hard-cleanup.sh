@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # jenkins-cleanup.sh - Script to completely clean Jenkins (without restart)
 

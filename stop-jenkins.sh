@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Stop Jenkins container
 docker-compose down
 
-echo "Jenkins has been stopped." 
+echo "Jenkins has been stopped."
