@@ -1,5 +1,5 @@
 # TODO: modify
-export JENKINS_HOME="${HOME:?}/.jenkins"
+export JENKINS_HOME="/Users/nickolaykondratyev/git_repos/glassthought-sandbox/out/.jenkins"
 export JENKINS_ENVIRONMENT="$JENKINS_HOME/jenkins.environment"
 export JENKINS_WAR=$(brew --prefix)/opt/jenkins-lts/libexec/jenkins.war
 export JENKINS_CLI_JAR="${JENKINS_HOME:?}/jenkins-cli.jar"
