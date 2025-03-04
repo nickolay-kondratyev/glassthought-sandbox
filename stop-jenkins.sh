@@ -1,10 +1,6 @@
 #!/usr/bin/env bash
 
-# Colors for output
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-RED='\033[0;31m'
-NC='\033[0m' # No Color
+include "_env_variables_source_me.sh"
 
 # Check if Jenkins is running
 if ! pgrep -f "jenkins.war" > /dev/null; then
@@ -25,7 +21,7 @@ while [ $ATTEMPTS -lt $MAX_ATTEMPTS ]; do
         echo -e "${GREEN}Jenkins has been stopped.${NC}"
         exit 0
     fi
-    
+
     ATTEMPTS=$((ATTEMPTS+1))
     echo -e "${YELLOW}Waiting for Jenkins to stop... (Attempt $ATTEMPTS/$MAX_ATTEMPTS)${NC}"
     sleep 2
