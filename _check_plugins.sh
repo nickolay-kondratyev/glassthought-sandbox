@@ -5,8 +5,8 @@ main() {
   echo "With CURL:"
   curl -u admin:"$(./_password.sh)" -s http://localhost:8080/pluginManager/api/json
 
-  echo "With ls:"
-  ls -la "${JENKINS_HOME:?}"/plugins
+  # shellcheck disable=SC2012
+  echo "There are [$(ls "${JENKINS_HOME:?}"/plugins | wc -l)] in [${JENKINS_HOME:?}/plugins] directory"
 }
 
 main "${@}" || exit 1
