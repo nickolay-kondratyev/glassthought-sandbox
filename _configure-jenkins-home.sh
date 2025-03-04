@@ -31,7 +31,7 @@ main_not_under_sudo() {
 main() {
   main_not_under_sudo
 
-  sudo ./_configure-jenkins-home.sudo-portion.sh
+  (sudo "./_configure-jenkins-home.sudo-portion.sh")
 }
 
 main "${@}" || exit 1
