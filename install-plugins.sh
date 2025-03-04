@@ -12,6 +12,12 @@ _install_plugin(){
 
   echo.log "Installing plugin=[$plugin]"
 
+  if [[ ! -f "${JENKINS_CLI_JAR}" ]]
+  then
+  	throw "Jenkins CLI jar not found at path=[$JENKINS_CLI_JAR]"
+  fi
+
+  
   java -jar "${JENKINS_CLI_JAR:?}" -s "${JENKINS_URL:?}" \
     -auth admin:"${ADMIN_PASSWORD:?}" \
     install-plugin "${plugin:?}" || {

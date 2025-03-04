@@ -78,5 +78,6 @@ credentials:
               username: "git"
               description: "SSH key for GitLab access"
               privateKeySource:
-                directEntry:
-                  privateKey: "${SSH_PRIVATE_KEY}"
+                fileOnMaster:
+                  path: "${JENKINS_HOME}/.ssh/id_rsa"
+
