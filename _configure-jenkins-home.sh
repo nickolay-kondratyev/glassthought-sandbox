@@ -33,7 +33,7 @@ main() {
   echo "--------------------------------------------------------------------------------"
   echo "Starting the SUDO portion of the script..."
 
-  (sudo "./_configure-jenkins-home.sudo-portion.sh")
+  (sudo -E "./_configure-jenkins-home.sudo-portion.sh")
 }
 
 main "${@}" || exit 1
