@@ -8,29 +8,7 @@ echo "--------------------------------------------------------------------------
 echo -e "${GREEN:?}Starting Jenkins installation for macOS...${NC:?}"
 
 command -v brew || throw "Brew is not installed"
-
-# Check if Java is installed
-if ! command -v java &> /dev/null; then
-    echo -e "${YELLOW:?}Java not found. Installing OpenJDK 17...${NC:?}"
-    brew install openjdk@17
-
-    # Create a symlink to make Java available system-wide
-    sudo ln -sfn $(brew --prefix)/opt/openjdk@17/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk-17.jdk
-
-    # Add Java to PATH if not already there
-    if ! grep -q 'export PATH="$PATH:/opt/homebrew/opt/openjdk@17/bin"' ~/.zshrc 2>/dev/null && ! grep -q 'export PATH="$PATH:/opt/homebrew/opt/openjdk@17/bin"' ~/.bash_profile 2>/dev/null; then
-        if [ -f ~/.zshrc ]; then
-            echo 'export PATH="$PATH:/opt/homebrew/opt/openjdk@17/bin"' >> ~/.zshrc
-            source ~/.zshrc
-        elif [ -f ~/.bash_profile ]; then
-            echo 'export PATH="$PATH:/opt/homebrew/opt/openjdk@17/bin"' >> ~/.bash_profile
-            source ~/.bash_profile
-        fi
-    fi
-else
-    echo -e "${GREEN:?}Java is already installed.${NC:?}"
-    java -version
-fi
+command -v java || throw "Java is not installed"
 
 # Install Jenkins
 if ! brew list --formula | grep -q jenkins; then
