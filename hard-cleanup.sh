@@ -2,11 +2,7 @@
 
 # jenkins-cleanup.sh - Script to completely clean Jenkins (without restart)
 
-function throw() {
-    local message="${1:?Error message required}"
-    echo "ERROR: ${message}" >&2
-    exit 1
-}
+./stop-jenkins.sh
 
 echo "=== JENKINS COMPLETE CLEANUP ==="
 echo "This script will stop and completely remove the Jenkins container and volumes."
