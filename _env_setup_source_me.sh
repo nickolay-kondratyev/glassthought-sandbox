@@ -1,5 +1,6 @@
-# TODO: modify
-export JENKINS_HOME="/Users/nickolaykondratyev/git_repos/glassthought-sandbox/out/.jenkins"
+# Brew expects this there, I have attempted to change PList of brew to point to another
+# directory but its troublesome.
+export JENKINS_HOME="${HOME:?}/.jenkins"
 export JENKINS_ENVIRONMENT="$JENKINS_HOME/jenkins.environment"
 # Determine Homebrew prefix based on architecture
 export BREW_PREFIX
