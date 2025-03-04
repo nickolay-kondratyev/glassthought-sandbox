@@ -35,4 +35,7 @@ else
     echo -e "${YELLOW:?}Jenkins home directory has been preserved.${NC:?}"
 fi
 
+rm -rf ./out
+
 echo -e "${GREEN:?}Jenkins uninstallation completed!${NC:?}"
+
