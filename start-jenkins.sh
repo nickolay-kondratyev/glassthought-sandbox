@@ -1,83 +1,103 @@
 #!/usr/bin/env bash
 
-# Verify Docker and Docker Compose are installed
-echo "Verifying prerequisites..."
-./verify-prerequisites.sh
-if [ $? -ne 0 ]; then
-  echo "Prerequisites check failed. Please fix the issues and try again."
-  exit 1
+set -e
+
+# Colors for output
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+RED='\033[0;31m'
+NC='\033[0m' # No Color
+
+JENKINS_HOME="$HOME/.jenkins"
+JENKINS_ENVIRONMENT="$JENKINS_HOME/jenkins.environment"
+
+# Check if Jenkins is installed
+if ! brew list --formula | grep -q jenkins-lts; then
+    echo -e "${RED}Error: Jenkins is not installed.${NC}"
+    echo -e "${YELLOW}Please run ./install-jenkins.sh first.${NC}"
+    exit 1
 fi
 
-# Set default SSH key path if not provided
-export SSH_KEY_PATH=${SSH_KEY_PATH:-~/.ssh/id_rsa}
+# Check if Jenkins is already running
+if pgrep -f "jenkins.war" > /dev/null; then
+    echo -e "${YELLOW}Jenkins is already running.${NC}"
+    echo -e "${GREEN}Jenkins is available at http://localhost:8080/${NC}"
+    exit 0
+fi
 
-# Check if SSH key exists
+# Verify SSH key
+SSH_KEY_PATH=${SSH_KEY_PATH:-~/.ssh/id_rsa}
 if [ ! -f "$SSH_KEY_PATH" ]; then
-  echo "Error: SSH key not found at $SSH_KEY_PATH"
-  echo "Please provide a valid SSH key path with SSH_KEY_PATH environment variable"
-  throw "SSH key not found at $SSH_KEY_PATH"
-  exit 1
+    echo -e "${RED}Error: SSH key not found at $SSH_KEY_PATH${NC}"
+    echo -e "${YELLOW}Please provide a valid SSH key path with SSH_KEY_PATH environment variable${NC}"
+    exit 1
 fi
 
-# Export SSH private key content if needed for direct entry in Jenkins
-if [ -z "$SSH_PRIVATE_KEY" ]; then
-  export SSH_PRIVATE_KEY=$(cat $SSH_KEY_PATH)
+# Copy SSH key to Jenkins home if needed
+if [ ! -f "$JENKINS_HOME/.ssh/id_rsa" ]; then
+    echo -e "${YELLOW}Copying SSH key to Jenkins home...${NC}"
+    mkdir -p "$JENKINS_HOME/.ssh"
+    cp "$SSH_KEY_PATH" "$JENKINS_HOME/.ssh/id_rsa"
+    chmod 600 "$JENKINS_HOME/.ssh/id_rsa"
+    ssh-keyscan gitlab.com >> "$JENKINS_HOME/.ssh/known_hosts"
 fi
 
-# Build and start Jenkins container
-echo "Building and starting Jenkins container..."
-docker-compose build --no-cache
-if [ $? -ne 0 ]; then
-  echo "Error: Failed to build Jenkins container."
-  echo "Check the build logs above for more details."
-  throw "Failed to build Jenkins container"
-  exit 1
+# Load environment variables
+if [ -f "$JENKINS_ENVIRONMENT" ]; then
+    echo -e "${YELLOW}Loading Jenkins environment variables...${NC}"
+    source "$JENKINS_ENVIRONMENT"
+else
+    echo -e "${YELLOW}Creating default environment variables...${NC}"
+    cat > "$JENKINS_ENVIRONMENT" << EOF
+JENKINS_HOME=$JENKINS_HOME
+CASC_JENKINS_CONFIG=$JENKINS_HOME/casc_configs/jenkins.yaml
+JAVA_OPTS="-Djenkins.install.runSetupWizard=false"
+THORG_ROOT=$JENKINS_HOME/workspace/thorg-root
+EOF
+    source "$JENKINS_ENVIRONMENT"
 fi
 
-docker-compose up -d
-if [ $? -ne 0 ]; then
-  echo "Error: Failed to start Jenkins container."
-  echo "Check the logs with: docker-compose logs jenkins"
-  throw "Failed to start Jenkins container"
-  exit 1
-fi
+# Start Jenkins
+echo -e "${YELLOW}Starting Jenkins...${NC}"
+brew services start jenkins-lts
 
-# Wait for Jenkins to start
-echo "Waiting for Jenkins to start..."
-echo "This may take a minute or two for the first run..."
-
-# Function to check if Jenkins is up
-check_jenkins() {
-  docker-compose exec jenkins curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/login
+# Function to check if Jenkins is running
+is_jenkins_running() {
+    curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/ | grep -q "200\|403"
+    return $?
 }
 
-# Wait for Jenkins to be ready
+# Wait for Jenkins to start
+echo -e "${YELLOW}Waiting for Jenkins to start...${NC}"
+echo -e "${YELLOW}This may take a minute or two for the first run...${NC}"
+
 ATTEMPTS=0
 MAX_ATTEMPTS=30
 while [ $ATTEMPTS -lt $MAX_ATTEMPTS ]; do
-  STATUS=$(check_jenkins 2>/dev/null || echo "000")
-
-  if [ "$STATUS" = "200" ] || [ "$STATUS" = "403" ]; then
-    echo "Jenkins is up and running!"
-    break
-  fi
-
-  ATTEMPTS=$((ATTEMPTS+1))
-  echo "Waiting for Jenkins to start... (Attempt $ATTEMPTS/$MAX_ATTEMPTS)"
-  sleep 10
+    if is_jenkins_running; then
+        echo -e "${GREEN}Jenkins is up and running!${NC}"
+        break
+    fi
+    
+    ATTEMPTS=$((ATTEMPTS+1))
+    echo -e "${YELLOW}Waiting for Jenkins to start... (Attempt $ATTEMPTS/$MAX_ATTEMPTS)${NC}"
+    sleep 10
 done
 
 if [ $ATTEMPTS -eq $MAX_ATTEMPTS ]; then
-  echo "Warning: Jenkins may not be fully started yet. Check logs with: docker-compose logs jenkins"
+    echo -e "${RED}Warning: Jenkins may not be fully started yet. Check logs with: brew services log jenkins-lts${NC}"
 fi
 
-# Display Jenkins URL and initial admin password
+# Display Jenkins URL and credentials
 echo ""
-echo "Jenkins is available at http://localhost:8080/"
-echo "Username: admin"
-echo "Password: admin"
+echo -e "${GREEN}Jenkins is available at http://localhost:8080/${NC}"
+echo -e "${GREEN}Username: admin${NC}"
+echo -e "${GREEN}Password: admin${NC}"
 echo ""
-echo "Jenkins logs can be viewed with: docker-compose logs -f jenkins"
+echo -e "${YELLOW}Jenkins logs can be viewed with: brew services log jenkins-lts${NC}"
 echo ""
-echo "Container status:"
-docker-compose ps
+
+# Check if plugins need to be installed
+if [ ! -d "$JENKINS_HOME/plugins" ] || [ -z "$(ls -A "$JENKINS_HOME/plugins")" ]; then
+    echo -e "${YELLOW}No plugins detected. You may need to run ./install-plugins.sh after Jenkins has fully started.${NC}"
+fi

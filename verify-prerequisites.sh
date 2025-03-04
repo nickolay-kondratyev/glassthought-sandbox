@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+# Colors for output
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+RED='\033[0;31m'
+NC='\033[0m' # No Color
+
 # Function to check if a command exists
 command_exists() {
   command -v "$1" >/dev/null 2>&1
@@ -10,94 +16,67 @@ version_gt() {
   test "$(printf '%s\n' "$1" "$2" | sort -V | head -n 1)" != "$1"
 }
 
-# Check if Docker is installed
-if ! command_exists docker; then
-  echo "Error: Docker is not installed or not in PATH"
-  echo "Please install Docker: https://docs.docker.com/get-docker/"
-  throw "Docker is not installed"
+echo -e "${YELLOW}Verifying prerequisites for native Jenkins installation on macOS...${NC}"
+
+# Check if Homebrew is installed
+if ! command_exists brew; then
+  echo -e "${RED}Error: Homebrew is not installed or not in PATH${NC}"
+  echo -e "${YELLOW}Please install Homebrew: https://brew.sh/${NC}"
   exit 1
 fi
 
+echo -e "${GREEN}Homebrew is installed.${NC}"
 
-# Check Docker version
-DOCKER_VERSION=$(docker --version | awk '{print $3}' | tr -d ',')
-echo "Docker version: $DOCKER_VERSION"
-
-# Minimum required Docker version
-MIN_DOCKER_VERSION="20.10.0"
-if version_gt "$MIN_DOCKER_VERSION" "$DOCKER_VERSION"; then
-  echo "Error: Docker version $DOCKER_VERSION is too old"
-  echo "Please upgrade Docker to version $MIN_DOCKER_VERSION or newer"
-  throw "Docker version $DOCKER_VERSION is too old (minimum required: $MIN_DOCKER_VERSION)"
+# Check if Java is installed
+if ! command_exists java; then
+  echo -e "${RED}Error: Java is not installed or not in PATH${NC}"
+  echo -e "${YELLOW}Please install Java using: brew install openjdk@17${NC}"
   exit 1
 fi
 
-# Check if Docker Compose is installed
-# First try docker compose (V2)
-if command_exists "docker" && docker compose version >/dev/null 2>&1; then
-  COMPOSE_VERSION=$(docker compose version --short)
-  COMPOSE_V2=true
-  echo "Docker Compose V2 version: $COMPOSE_VERSION"
-# Then try docker-compose (V1)
-elif command_exists docker-compose; then
-  COMPOSE_VERSION=$(docker-compose --version | awk '{print $3}' | tr -d ',')
-  COMPOSE_V2=false
-  echo "Docker Compose V1 version: $COMPOSE_VERSION"
+# Check Java version
+JAVA_VERSION=$(java -version 2>&1 | awk -F '"' '/version/ {print $2}' | awk -F '.' '{print $1}')
+echo -e "${GREEN}Java version: $JAVA_VERSION${NC}"
+
+# Minimum required Java version
+MIN_JAVA_VERSION="11"
+if [ "$JAVA_VERSION" -lt "$MIN_JAVA_VERSION" ]; then
+  echo -e "${RED}Error: Java version $JAVA_VERSION is too old${NC}"
+  echo -e "${YELLOW}Please upgrade Java to version $MIN_JAVA_VERSION or newer${NC}"
+  exit 1
+fi
+
+# Check if SSH key exists
+SSH_KEY_PATH=${SSH_KEY_PATH:-~/.ssh/id_rsa}
+if [ ! -f "$SSH_KEY_PATH" ]; then
+  echo -e "${RED}Error: SSH key not found at $SSH_KEY_PATH${NC}"
+  echo -e "${YELLOW}Please provide a valid SSH key path with SSH_KEY_PATH environment variable${NC}"
+  exit 1
+fi
+
+echo -e "${GREEN}SSH key found at $SSH_KEY_PATH${NC}"
+
+# Check if curl is installed
+if ! command_exists curl; then
+  echo -e "${RED}Error: curl is not installed or not in PATH${NC}"
+  echo -e "${YELLOW}Please install curl using: brew install curl${NC}"
+  exit 1
+fi
+
+echo -e "${GREEN}curl is installed.${NC}"
+
+# Check if Jenkins is already installed
+if brew list --formula | grep -q jenkins-lts; then
+  echo -e "${GREEN}Jenkins is already installed.${NC}"
+  JENKINS_VERSION=$(brew info jenkins-lts --json | grep -o '"installed":\["[^"]*' | cut -d'"' -f4)
+  echo -e "${GREEN}Jenkins version: $JENKINS_VERSION${NC}"
 else
-  echo "Error: Docker Compose is not installed or not in PATH"
-  echo "Please install Docker Compose: https://docs.docker.com/compose/install/"
-  throw "Docker Compose is not installed"
-  exit 1
+  echo -e "${YELLOW}Jenkins is not installed. It will be installed by the install-jenkins.sh script.${NC}"
 fi
 
-# Minimum required Docker Compose version
-MIN_COMPOSE_VERSION="1.29.0"
-if version_gt "$MIN_COMPOSE_VERSION" "$COMPOSE_VERSION"; then
-  echo "Error: Docker Compose version $COMPOSE_VERSION is too old"
-  echo "Please upgrade Docker Compose to version $MIN_COMPOSE_VERSION or newer"
-  throw "Docker Compose version $COMPOSE_VERSION is too old (minimum required: $MIN_COMPOSE_VERSION)"
-  exit 1
-fi
+# Check disk space
+AVAILABLE_SPACE=$(df -h $HOME | awk 'NR==2 {print $4}')
+echo -e "${GREEN}Available disk space: $AVAILABLE_SPACE${NC}"
 
-# Check if Docker daemon is running
-if ! docker info >/dev/null 2>&1; then
-  echo "Error: Docker daemon is not running"
-  echo "Please start Docker daemon"
-  throw "Docker daemon is not running"
-  exit 1
-fi
-
-# Check if Docker Compose file version is supported
-if [ "$COMPOSE_V2" = true ]; then
-  # For Docker Compose V2
-  COMPOSE_FILE_VERSION=$(grep -m 1 "^version:" docker-compose.yml | awk '{print $2}' | tr -d "'\"")
-  if [ -z "$COMPOSE_FILE_VERSION" ]; then
-    echo "Warning: Could not determine Docker Compose file version"
-  else
-    echo "Docker Compose file version: $COMPOSE_FILE_VERSION"
-    # Check if the compose file version is supported by the installed Docker Compose
-    if [ "$COMPOSE_FILE_VERSION" = "3.8" ] && version_gt "2.0.0" "$COMPOSE_VERSION"; then
-      echo "Error: Docker Compose version $COMPOSE_VERSION does not support Compose file version $COMPOSE_FILE_VERSION"
-      echo "Please upgrade Docker Compose to version 2.0.0 or newer"
-      throw "Docker Compose version $COMPOSE_VERSION does not support Compose file version $COMPOSE_FILE_VERSION"
-      exit 1
-    fi
-  fi
-else
-  # For Docker Compose V1
-  COMPOSE_FILE_VERSION=$(grep -m 1 "^version:" docker-compose.yml | awk '{print $2}' | tr -d "'\"")
-  if [ -z "$COMPOSE_FILE_VERSION" ]; then
-    echo "Warning: Could not determine Docker Compose file version"
-  else
-    echo "Docker Compose file version: $COMPOSE_FILE_VERSION"
-    # Check if the compose file version is supported by the installed Docker Compose
-    if [ "$COMPOSE_FILE_VERSION" = "3.8" ] && version_gt "1.27.0" "$COMPOSE_VERSION"; then
-      echo "Error: Docker Compose version $COMPOSE_VERSION does not support Compose file version $COMPOSE_FILE_VERSION"
-      echo "Please upgrade Docker Compose to version 1.27.0 or newer"
-      throw "Docker Compose version $COMPOSE_VERSION does not support Compose file version $COMPOSE_FILE_VERSION"
-      exit 1
-    fi
-  fi
-fi
-
-echo "All prerequisites are satisfied!"
+echo -e "${GREEN}All prerequisites are satisfied!${NC}"
+exit 0
