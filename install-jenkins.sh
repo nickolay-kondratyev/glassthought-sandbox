@@ -105,3 +105,4 @@ EOF
 
 echo -e "${GREEN:?}Jenkins installation completed!${NC:?}"
 echo -e "${YELLOW:?}You can start Jenkins using the start-jenkins.sh script.${NC:?}"
+echo -e "Jenkins home directory: ${GREEN:?}${JENKINS_HOME:?}${NC:?}"
