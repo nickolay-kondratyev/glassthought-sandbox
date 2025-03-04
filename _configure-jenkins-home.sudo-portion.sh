@@ -21,6 +21,7 @@ echo -e "${YELLOW}Modifying plist at $JENKINS_PLIST_PATH${NC}"
 # Reload service configuration
 echo -e "${YELLOW}Reloading service configuration...${NC}"
 launchctl unload "$JENKINS_PLIST_PATH" 2>/dev/null || true
+echo "Starting load [launchctl load -w $JENKINS_PLIST_PATH]"
 launchctl load -w "$JENKINS_PLIST_PATH" || throw "Failed to reload service configuration"
 
 echo -e "\n${GREEN}Jenkins configuration updated successfully!${NC}"
