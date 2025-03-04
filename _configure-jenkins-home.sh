@@ -8,14 +8,12 @@ set -e
 source "_env_setup_source_me.sh"
 
 main_not_under_sudo() {
-  # Determine Homebrew prefix based on architecture
-  BREW_PREFIX=$(brew --prefix)
-  PLIST_PATH="$BREW_PREFIX/opt/jenkins-lts/homebrew.mxcl.jenkins-lts.plist"
+
 
   # Verify plist existence
-  if [ ! -f "$PLIST_PATH" ]; then
+  if [ ! -f "$JENKINS_PLIST_PATH" ]; then
       echo -e "\n${RED}Error: Jenkins plist not found at expected location:${NC}"
-      echo "Searched in: $PLIST_PATH"
+      echo "Searched in: $JENKINS_PLIST_PATH"
       echo -e "\n${YELLOW}Try alternative locations:${NC}"
       echo "1. Check if installed: brew list jenkins-lts"
       echo "2. Find actual plist: brew services list | grep jenkins-lts"
@@ -34,7 +32,7 @@ main() {
   echo ""
   echo "--------------------------------------------------------------------------------"
   echo "Starting the SUDO portion of the script..."
-  
+
   (sudo "./_configure-jenkins-home.sudo-portion.sh")
 }
 

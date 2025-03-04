@@ -7,30 +7,30 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 # Create backup of plist
-BACKUP_PLIST="${PLIST_PATH}.bak_$(date +%s)"
+BACKUP_PLIST="${JENKINS_PLIST_PATH}.bak_$(date +%s)"
 echo -e "${YELLOW}Creating plist backup at ${BACKUP_PLIST}${NC}"
-cp "$PLIST_PATH" "$BACKUP_PLIST"
+cp "$JENKINS_PLIST_PATH" "$BACKUP_PLIST"
 
 # Use PlistBuddy to modify the plist
-echo -e "${YELLOW}Modifying plist at $PLIST_PATH${NC}"
+echo -e "${YELLOW}Modifying plist at $JENKINS_PLIST_PATH${NC}"
 
 # Clean existing environment variables if needed
-/usr/libexec/PlistBuddy -c "Delete :EnvironmentVariables" "$PLIST_PATH" 2>/dev/null || true
+/usr/libexec/PlistBuddy -c "Delete :EnvironmentVariables" "$JENKINS_PLIST_PATH" 2>/dev/null || true
 
 # Add new environment variables
-/usr/libexec/PlistBuddy -c "Add :EnvironmentVariables dict" "$PLIST_PATH"
-/usr/libexec/PlistBuddy -c "Add :EnvironmentVariables:JENKINS_HOME string $JENKINS_HOME" "$PLIST_PATH"
-/usr/libexec/PlistBuddy -c "Add :EnvironmentVariables:CASC_JENKINS_CONFIG string $JENKINS_HOME/casc_configs/jenkins.yaml" "$PLIST_PATH"
-/usr/libexec/PlistBuddy -c "Add :EnvironmentVariables:JAVA_OPTS string -Djenkins.install.runSetupWizard=false" "$PLIST_PATH"
+/usr/libexec/PlistBuddy -c "Add :EnvironmentVariables dict" "$JENKINS_PLIST_PATH"
+/usr/libexec/PlistBuddy -c "Add :EnvironmentVariables:JENKINS_HOME string $JENKINS_HOME" "$JENKINS_PLIST_PATH"
+/usr/libexec/PlistBuddy -c "Add :EnvironmentVariables:CASC_JENKINS_CONFIG string $JENKINS_HOME/casc_configs/jenkins.yaml" "$JENKINS_PLIST_PATH"
+/usr/libexec/PlistBuddy -c "Add :EnvironmentVariables:JAVA_OPTS string -Djenkins.install.runSetupWizard=false" "$JENKINS_PLIST_PATH"
 
 # Reload service configuration
 echo -e "${YELLOW}Reloading service configuration...${NC}"
-launchctl unload "$PLIST_PATH" 2>/dev/null || true
-launchctl load -w "$PLIST_PATH"
+launchctl unload "$JENKINS_PLIST_PATH" 2>/dev/null || true
+launchctl load -w "$JENKINS_PLIST_PATH"
 
 echo -e "\n${GREEN}Jenkins configuration updated successfully!${NC}"
 echo -e "New settings in plist:"
-/usr/libexec/PlistBuddy -c "Print :EnvironmentVariables" "$PLIST_PATH"
+/usr/libexec/PlistBuddy -c "Print :EnvironmentVariables" "$JENKINS_PLIST_PATH"
 
 echo -e "\n${YELLOW}You can now start Jenkins with:${NC}"
 echo "brew services start jenkins-lts"
