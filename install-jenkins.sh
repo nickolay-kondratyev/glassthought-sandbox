@@ -7,14 +7,7 @@ source "_env_setup_source_me.sh"
 echo "--------------------------------------------------------------------------------"
 echo -e "${GREEN:?}Starting Jenkins installation for macOS...${NC:?}"
 
-# Check if Homebrew is installed
-if ! command -v brew &> /dev/null; then
-    echo -e "${YELLOW:?}Homebrew not found. Installing Homebrew...${NC:?}"
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-else
-    echo -e "${GREEN:?}Homebrew is already installed.${NC:?}"
-    brew update
-fi
+command -v brew || throw "Brew is not installed"
 
 # Check if Java is installed
 if ! command -v java &> /dev/null; then
