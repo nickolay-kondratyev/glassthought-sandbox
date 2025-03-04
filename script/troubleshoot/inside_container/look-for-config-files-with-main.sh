@@ -2,6 +2,13 @@
 # Jenkins docker container.
 #
 # This script is a good example how to look into the container files.
+#
+# In this example we are looking for config files that contain 'main' which was
+# a sticky issue while configuring Jenkins. By sticky I mean, jenkins was
+# configured first to use 'main' (which is incorrect), but it cached it somewhere.
+# Even removing the config file with 'main' would still recreate it with main
+# even thought configuration was already changed to master.
+# 
 echo "Searching for job configuration files mentioning 'main'..."
 
 docker exec -it thorg-jenkins bash -c '
