@@ -2,14 +2,7 @@
 
 set -e
 
-# Colors for output
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-RED='\033[0;31m'
-NC='\033[0m' # No Color
-
-JENKINS_HOME="$HOME/.jenkins"
-JENKINS_ENVIRONMENT="$JENKINS_HOME/jenkins.environment"
+include "_env_variables_source_me.sh"
 
 # Check if Jenkins is installed
 if ! brew list --formula | grep -q jenkins-lts; then

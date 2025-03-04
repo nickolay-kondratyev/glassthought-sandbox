@@ -2,11 +2,7 @@
 
 set -e
 
-# Colors for output
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-RED='\033[0;31m'
-NC='\033[0m' # No Color
+include "_env_variables_source_me.sh"
 
 echo -e "${GREEN:?}Starting Jenkins installation for macOS...${NC:?}"
 
@@ -52,7 +48,6 @@ else
 fi
 
 # Create Jenkins directories
-JENKINS_HOME="${HOME:?}/.jenkins"
 mkdir -p "${JENKINS_HOME:?}"
 mkdir -p "${JENKINS_HOME:?}/casc_configs"
 mkdir -p "${JENKINS_HOME:?}/init.groovy.d"

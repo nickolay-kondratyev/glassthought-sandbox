@@ -2,23 +2,9 @@
 
 set -e
 
-# Colors for output
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-RED='\033[0;31m'
-NC='\033[0m' # No Color
+include "_env_variables_source_me.sh"
 
-throw() {
-    echo -e "${RED}Error: $1${NC}" >&2
-    exit 1
-}
 
-JENKINS_HOME="${HOME:?}/.jenkins"
-JENKINS_WAR=$(brew --prefix)/opt/jenkins-lts/libexec/jenkins.war
-JENKINS_CLI_JAR="${JENKINS_HOME:?}/jenkins-cli.jar"
-JENKINS_URL="http://localhost:8080"
-ADMIN_USER="admin"
-ADMIN_PASSWORD="admin"
 JENKINS_CRUMB_HEADER=""
 JENKINS_CRUMB=""
 
