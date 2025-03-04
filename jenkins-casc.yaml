@@ -42,11 +42,8 @@ jobs:
       
                   stage('Execute Shell Script') {
                     steps {
-                      // Make the script executable
-                      sh 'chmod +x ./say_hello.sh'
-      
-                      // Execute the script
-                      sh './say_hello.sh'
+                      // Execute the script with Bash explicitly
+                      sh 'bash ./say_hello.sh'
                     }
                   }
                 }
