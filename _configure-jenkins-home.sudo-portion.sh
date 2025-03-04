@@ -6,11 +6,6 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
-# Create backup of plist
-BACKUP_PLIST="${JENKINS_PLIST_PATH}.bak_$(date +%s)"
-echo -e "${YELLOW}Creating plist backup at ${BACKUP_PLIST}${NC}"
-cp "$JENKINS_PLIST_PATH" "$BACKUP_PLIST"
-
 # Use PlistBuddy to modify the plist
 echo -e "${YELLOW}Modifying plist at $JENKINS_PLIST_PATH${NC}"
 
@@ -32,5 +27,6 @@ echo -e "\n${GREEN}Jenkins configuration updated successfully!${NC}"
 echo -e "New settings in plist:"
 /usr/libexec/PlistBuddy -c "Print :EnvironmentVariables" "$JENKINS_PLIST_PATH"
 
-echo -e "\n${YELLOW}You can now start Jenkins with:${NC}"
-echo "brew services start jenkins-lts"
+echo -e "\n${GREEN}Completed PList modifications.${NC}"
+echo ""
+
