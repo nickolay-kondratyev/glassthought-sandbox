@@ -2,26 +2,15 @@
 
 # jenkins-cleanup.sh - Script to completely clean Jenkins (without restart)
 
-eai ./stop-jenkins.sh
 
 echo "=== JENKINS COMPLETE CLEANUP ==="
 echo "This script will stop and completely remove the Jenkins container and volumes."
 echo "You will need to manually restart Jenkins after this cleanup."
 echo ""
 echo "WARNING: All Jenkins configuration and data will be lost!"
-echo "Continue? (y/n)"
-read -r response
-if [[ "$response" != "y" ]]; then
-    echo "Operation cancelled."
-    exit 0
-fi
 
-# Stop all containers
-echo "Stopping all containers..."
-docker-compose down
-if [ $? -ne 0 ]; then
-    throw "Failed to stop containers. Please check docker-compose configuration."
-fi
+# Stopping jenkins container
+eai ./stop-jenkins.sh
 
 # List all volumes
 echo "Listing volumes that will be removed..."
