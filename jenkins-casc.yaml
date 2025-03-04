@@ -20,19 +20,52 @@ jobs:
   - script: >
       pipelineJob('thorg-sanity-check') {
         definition {
-          cpsScm {
-            scm {
-              git {
-                remote {
-                  url('git@gitlab.com:thorg/thorg-root.git')
-                  credentials('gitlab-ssh-key')
+          cps {
+            script('''
+              pipeline {
+                agent any
+      
+                stages {
+                  stage('Checkout') {
+                    steps {
+                      // Checkout the repository with specific credentials
+                      checkout([
+                        $class: 'GitSCM',
+                        branches: [[name: '*/master']],
+                        userRemoteConfigs: [[
+                          url: 'git@gitlab.com:thorg/thorg-root.git',
+                          credentialsId: 'gitlab-ssh-key'
+                        ]]
+                      ])
+                    }
+                  }
+      
+                  stage('Execute Shell Script') {
+                    steps {
+                      // Make the script executable
+                      sh 'chmod +x ./say_hello.sh'
+      
+                      // Execute the script
+                      sh './say_hello.sh'
+                    }
+                  }
                 }
-                branches('*/master')
+      
+                post {
+                  success {
+                    echo 'Pipeline executed successfully!'
+                  }
+                  failure {
+                    echo 'Pipeline execution failed!'
+                  }
+                }
               }
-            }
-            scriptPath('./say_hello.sh')
+            ''')
+            sandbox(true)
           }
         }
+      
+        // Add SCM trigger to run every 15 minutes
         triggers {
           scm('H/15 * * * *')
         }
