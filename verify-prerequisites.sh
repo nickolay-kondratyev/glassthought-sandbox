@@ -18,6 +18,7 @@ if ! command_exists docker; then
   exit 1
 fi
 
+
 # Check Docker version
 DOCKER_VERSION=$(docker --version | awk '{print $3}' | tr -d ',')
 echo "Docker version: $DOCKER_VERSION"
