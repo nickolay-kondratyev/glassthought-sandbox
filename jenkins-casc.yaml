@@ -16,57 +16,7 @@ unclassified:
   location:
     url: "http://localhost:8080/"
 
-jobs:
-  - script: >
-      pipelineJob('thorg-sanity-check') {
-        definition {
-          cps {
-            script('''
-              pipeline {
-                agent any
-      
-                stages {
-                  stage('Checkout') {
-                    steps {
-                      // Checkout the repository with specific credentials
-                      checkout([
-                        $class: 'GitSCM',
-                        branches: [[name: '*/master']],
-                        userRemoteConfigs: [[
-                          url: 'git@gitlab.com:thorg/thorg-root.git',
-                          credentialsId: 'gitlab-ssh-key'
-                        ]]
-                      ])
-                    }
-                  }
-      
-                  stage('Execute Shell Script') {
-                    steps {
-                      // Execute the script with Bash explicitly
-                      sh 'bash ./say_hello.sh'
-                    }
-                  }
-                }
-      
-                post {
-                  success {
-                    echo 'Pipeline executed successfully!'
-                  }
-                  failure {
-                    echo 'Pipeline execution failed!'
-                  }
-                }
-              }
-            ''')
-            sandbox(true)
-          }
-        }
-      
-        // Add SCM trigger to run every 15 minutes
-        triggers {
-          scm('H/15 * * * *')
-        }
-      }
+# Jobs section removed as it's now handled by init.groovy.d/create-thorg-job.groovy
 
 credentials:
   system:
