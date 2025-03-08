@@ -8,6 +8,9 @@ import hudson.plugins.git.UserRemoteConfig
 import hudson.plugins.git.BranchSpec
 import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition
 import com.cloudbees.hudson.plugins.folder.*
+import hudson.model.Item
+import hudson.triggers.Trigger
+import hudson.triggers.TriggerDescriptor
 
 // Get Jenkins instance
 def jenkins = Jenkins.getInstance()
@@ -39,13 +42,20 @@ if (job == null) {
     // Set the pipeline definition using SCM
     job.setDefinition(new CpsScmFlowDefinition(gitScm, 'Jenkinsfile'))
 
-    // Set up SCM polling trigger to check every 1 minute
-    job.addTrigger(new SCMTrigger('* * * * *'))
+    // Configure SCM polling with optimized settings
+    SCMTrigger trigger = new SCMTrigger('* * * * *')
+    trigger.setIgnorePostCommitHooks(false)
+    
+    // Clear any existing triggers first
+    job.getTriggers().clear()
+    
+    // Add the new trigger
+    job.addTrigger(trigger)
 
     // Save the job
     job.save()
 
-    println "Job '${jobName}' created successfully with SCM polling configured to check every minute."
+    println "Job '${jobName}' created successfully with optimized SCM polling configured."
 } else {
     println "Job '${jobName}' already exists. Updating configuration..."
 
@@ -63,15 +73,17 @@ if (job == null) {
     // Set the pipeline definition using SCM
     job.setDefinition(new CpsScmFlowDefinition(gitScm, 'Jenkinsfile'))
 
-    // Update SCM polling trigger
-    def triggers = job.getTriggers()
-    def oldTrigger = triggers.get(SCMTrigger.class)
-    if (oldTrigger != null) {
-        job.removeTrigger(SCMTrigger.class)
-    }
-    job.addTrigger(new SCMTrigger('* * * * *'))
+    // Remove all existing triggers
+    job.getTriggers().clear()
+    
+    // Configure SCM polling with optimized settings
+    SCMTrigger trigger = new SCMTrigger('* * * * *')
+    trigger.setIgnorePostCommitHooks(false)
+    
+    // Add the new trigger
+    job.addTrigger(trigger)
 
     job.save()
 
-    println "Updated existing job '${jobName}' with proper SCM polling configuration to check every minute."
+    println "Updated existing job '${jobName}' with optimized SCM polling configuration."
 }
