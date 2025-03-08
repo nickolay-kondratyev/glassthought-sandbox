@@ -25,56 +25,53 @@ if (job == null) {
     // Create the job
     job = jenkins.createProject(WorkflowJob.class, jobName)
 
-    // Define the pipeline script
-    def pipelineScript = '''
-pipeline {
-  agent any
+    // Define Git SCM
+    def gitScm = new GitSCM(
+        [new UserRemoteConfig('git@gitlab.com:thorg/thorg-root.git', null, null, 'gitlab-ssh-key')],
+        [new BranchSpec('*/master-sandbox')],
+        false,
+        [],
+        null,
+        null,
+        []
+    )
 
-  stages {
-    stage('Checkout') {
-      steps {
-        // Checkout the repository with specific credentials
-        checkout([
-          $class: 'GitSCM',
-          branches: [[name: '*/master-sandbox']],
-          userRemoteConfigs: [[
-            url: 'git@gitlab.com:thorg/thorg-root.git',
-            credentialsId: 'gitlab-ssh-key'
-          ]]
-        ])
-      }
-    }
+    // Set the pipeline definition using SCM
+    job.setDefinition(new CpsScmFlowDefinition(gitScm, 'Jenkinsfile'))
 
-    stage('Execute Shell Script') {
-      steps {
-        // Execute the script with Bash explicitly
-        sh 'bash ./say_hello.sh'
-      }
-    }
-  }
-
-  post {
-    success {
-      echo 'Pipeline executed successfully!'
-    }
-    failure {
-      echo 'Pipeline execution failed!'
-    }
-  }
-}
-'''
-
-    // Set the pipeline definition
-    job.setDefinition(new CpsFlowDefinition(pipelineScript, true))
-
-    // Set up SCM polling trigger to check every 30 seconds
-    // The "H/30 * * * *" cron expression means "every 30 seconds"
-    job.addTrigger(new SCMTrigger('H/30 * * * * *'))
+    // Set up SCM polling trigger to check every 5 minutes
+    job.addTrigger(new SCMTrigger('H/5 * * * *'))
 
     // Save the job
     job.save()
 
-    println "Job '${jobName}' created successfully with 30-second polling interval."
+    println "Job '${jobName}' created successfully with SCM polling configured."
 } else {
-    println "Job '${jobName}' already exists. Skipping creation."
+    println "Job '${jobName}' already exists. Updating configuration..."
+    
+    // Update the existing job with proper SCM polling
+    def gitScm = new GitSCM(
+        [new UserRemoteConfig('git@gitlab.com:thorg/thorg-root.git', null, null, 'gitlab-ssh-key')],
+        [new BranchSpec('*/master-sandbox')],
+        false,
+        [],
+        null,
+        null,
+        []
+    )
+    
+    // Set the pipeline definition using SCM
+    job.setDefinition(new CpsScmFlowDefinition(gitScm, 'Jenkinsfile'))
+    
+    // Update SCM polling trigger
+    def triggers = job.getTriggers()
+    def oldTrigger = triggers.get(SCMTrigger.class)
+    if (oldTrigger != null) {
+        job.removeTrigger(SCMTrigger.class)
+    }
+    job.addTrigger(new SCMTrigger('H/5 * * * *'))
+    
+    job.save()
+    
+    println "Updated existing job '${jobName}' with proper SCM polling configuration."
 }
