@@ -41,6 +41,9 @@ def configureJob(job) {
     // Set the pipeline definition using SCM
     job.setDefinition(new CpsScmFlowDefinition(gitScm, 'Jenkinsfile'))
     
+    // Disable concurrent builds
+    job.setConcurrentBuild(false)
+    
     // Configure SCM polling
     configureSCMTrigger(job)
     
