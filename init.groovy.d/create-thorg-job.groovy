@@ -21,10 +21,10 @@ def job = jenkins.getItem(jobName)
 // If job doesn't exist, create it
 if (job == null) {
     println "Creating pipeline job: ${jobName}"
-    
+
     // Create the job
     job = jenkins.createProject(WorkflowJob.class, jobName)
-    
+
     // Define the pipeline script
     def pipelineScript = '''
 pipeline {
@@ -36,7 +36,7 @@ pipeline {
         // Checkout the repository with specific credentials
         checkout([
           $class: 'GitSCM',
-          branches: [[name: '*/master']],
+          branches: [[name: '*/master-sandbox']],
           userRemoteConfigs: [[
             url: 'git@gitlab.com:thorg/thorg-root.git',
             credentialsId: 'gitlab-ssh-key'
@@ -63,18 +63,18 @@ pipeline {
   }
 }
 '''
-    
+
     // Set the pipeline definition
     job.setDefinition(new CpsFlowDefinition(pipelineScript, true))
-    
+
     // Set up SCM polling trigger to check every 30 seconds
     // The "H/30 * * * *" cron expression means "every 30 seconds"
     job.addTrigger(new SCMTrigger('H/30 * * * * *'))
-    
+
     // Save the job
     job.save()
-    
+
     println "Job '${jobName}' created successfully with 30-second polling interval."
 } else {
     println "Job '${jobName}' already exists. Skipping creation."
-} 
+}
