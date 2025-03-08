@@ -24,7 +24,7 @@ _install_plugin(){
   java -jar "${JENKINS_CLI_JAR:?}" -s "${JENKINS_URL:?}" \
     -auth admin:"${ADMIN_PASSWORD:?}" \
     install-plugin "${plugin:?}" || {
-      echo.red "Failed to install plugin=[$plugin]"
+      throw "Failed to install plugin=[$plugin]"
     } && echo.log "Finished installing plugin=[$plugin]"
 }
 
