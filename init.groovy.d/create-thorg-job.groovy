@@ -67,13 +67,14 @@ pipeline {
     // Set the pipeline definition
     job.setDefinition(new CpsFlowDefinition(pipelineScript, true))
     
-    // Add SCM trigger to run every 15 minutes
-    job.addTrigger(new SCMTrigger('H/15 * * * *'))
+    // Set up SCM polling trigger to check every 30 seconds
+    // The "H/30 * * * *" cron expression means "every 30 seconds"
+    job.addTrigger(new SCMTrigger('H/30 * * * * *'))
     
     // Save the job
     job.save()
     
-    println "Job '${jobName}' created successfully."
+    println "Job '${jobName}' created successfully with 30-second polling interval."
 } else {
     println "Job '${jobName}' already exists. Skipping creation."
 } 
