@@ -40,12 +40,12 @@ _make_symlink_for_jenkins_home_to_see_it_in_out_dir(){
   echo.func "${@}"
 
   mkdir -p ./out
-  _remake_symlink "${HOME:?}"/.gradle ./out/.gradle
+  _remake_symlink "${HOME:?}"/.jenkins ./out/.jenkins
 }
 
 main() {
   echo.func "${@}"
-  
+
   _make_symlink_for_jenkins_home_to_see_it_in_out_dir
 
   _make_java_symlink_based_off_env_variable JAVA_17_HOME
