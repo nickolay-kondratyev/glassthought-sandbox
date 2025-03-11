@@ -24,11 +24,11 @@ def createGitScm() {
 def configureSCMTrigger(job) {
     // Clear any existing triggers first
     job.getTriggers().clear()
-    
+
     // Configure SCM polling with optimized settings
     SCMTrigger trigger = new SCMTrigger('* * * * *')
     trigger.setIgnorePostCommitHooks(false)
-    
+
     // Add the new trigger
     job.addTrigger(trigger)
 }
@@ -37,16 +37,16 @@ def configureSCMTrigger(job) {
 def configureJob(job) {
     // Define Git SCM
     def gitScm = createGitScm()
-    
+
     // Set the pipeline definition using SCM
     job.setDefinition(new CpsScmFlowDefinition(gitScm, 'Jenkinsfile'))
-    
+
     // Disable concurrent builds
     job.setConcurrentBuild(false)
-    
+
     // Configure SCM polling
     configureSCMTrigger(job)
-    
+
     // Save the job
     job.save()
 }
@@ -55,7 +55,7 @@ def configureJob(job) {
 def jenkins = Jenkins.getInstance()
 
 // Define job name
-def jobName = 'thorg-sanity-check'
+def jobName = 'thorg-ci'
 
 // Check if job already exists
 def job = jenkins.getItem(jobName)
@@ -63,19 +63,19 @@ def job = jenkins.getItem(jobName)
 // If job doesn't exist, create it
 if (job == null) {
     println "Creating pipeline job: ${jobName}"
-    
+
     // Create the job
     job = jenkins.createProject(WorkflowJob.class, jobName)
-    
+
     // Configure the job
     configureJob(job)
-    
+
     println "Job '${jobName}' created successfully with optimized SCM polling configured."
 } else {
     println "Job '${jobName}' already exists. Updating configuration..."
-    
+
     // Update the existing job
     configureJob(job)
-    
+
     println "Updated existing job '${jobName}' with optimized SCM polling configuration."
 }
