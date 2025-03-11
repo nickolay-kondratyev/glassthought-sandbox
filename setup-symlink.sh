@@ -41,6 +41,7 @@ main() {
   _make_symlink_for_jenkins_home_to_see_it_in_out_dir
 
   _make_java_symlink_based_off_env_variable JAVA_17_HOME
+  _make_java_symlink_based_off_env_variable JAVA_11_HOME
   _make_java_symlink_based_off_env_variable JAVA_8_HOME
 }
 
