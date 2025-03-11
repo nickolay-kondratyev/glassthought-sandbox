@@ -8,12 +8,22 @@ echo -e "${YELLOW:?}Stopping Jenkins...${NC:?}"
 # Check if Jenkins is running
 if ! pgrep -f "jenkins.war" > /dev/null; then
     echo -e "${YELLOW:?}Jenkins is not running.${NC:?}"
+    
+    # Still try to unload the service in case it's in a weird state
+    echo -e "${YELLOW:?}Ensuring service is unloaded...${NC:?}"
+    brew services stop jenkins-lts 2>/dev/null || true
+    launchctl unload ~/Library/LaunchAgents/homebrew.mxcl.jenkins-lts.plist 2>/dev/null || true
+    
     exit 0
 fi
 
 # Stop Jenkins
 echo -e "${YELLOW:?}Stopping Jenkins...${NC:?}"
 brew services stop jenkins-lts
+
+# Also try to unload the service directly
+echo -e "${YELLOW:?}Unloading Jenkins service...${NC:?}"
+launchctl unload ~/Library/LaunchAgents/homebrew.mxcl.jenkins-lts.plist 2>/dev/null || true
 
 # Wait for Jenkins to stop
 echo -e "${YELLOW:?}Waiting for Jenkins to stop...${NC:?}"
@@ -31,7 +41,16 @@ while [ $ATTEMPTS -lt $MAX_ATTEMPTS ]; do
 done
 
 if [ $ATTEMPTS -eq $MAX_ATTEMPTS ]; then
-    echo -e "${RED}Warning: Jenkins may not have stopped properly. You may need to kill the process manually.${NC:?}"
-    echo -e "${YELLOW:?}You can use: pkill -f jenkins.war${NC:?}"
-    exit 1
+    echo -e "${RED}Warning: Jenkins may not have stopped properly. Attempting to kill the process.${NC:?}"
+    echo -e "${YELLOW:?}Killing Jenkins process...${NC:?}"
+    pkill -f jenkins.war || true
+    sleep 2
+    
+    if pgrep -f "jenkins.war" > /dev/null; then
+        echo -e "${RED}Failed to kill Jenkins process. You may need to kill it manually:${NC:?}"
+        echo -e "${YELLOW:?}pkill -9 -f jenkins.war${NC:?}"
+        exit 1
+    else
+        echo -e "${GREEN:?}Jenkins process has been killed.${NC:?}"
+    fi
 fi

@@ -4,6 +4,7 @@ set -e
 
 source "_env_setup_source_me.sh"
 
+# Stop Jenkins first - this will also handle unloading the service
 ./stop-jenkins.sh
 
 echo "--------------------------------------------------------------------------------"
@@ -55,9 +56,22 @@ EOF
     source "$JENKINS_ENVIRONMENT"
 fi
 
-# Start Jenkins
+# Start Jenkins with error handling
 echo -e "${YELLOW:?}Starting Jenkins...${NC:?}"
-brew services start jenkins-lts
+if ! brew services start jenkins-lts; then
+    echo -e "${RED}Failed to start Jenkins with brew services.${NC:?}"
+    echo -e "${YELLOW:?}Trying alternative method...${NC:?}"
+    
+    # Alternative: Start Jenkins directly
+    nohup java -jar "$(brew --prefix)/opt/jenkins-lts/libexec/jenkins.war" --httpPort=8080 > "$JENKINS_HOME/jenkins.log" 2>&1 &
+    
+    if [ $? -ne 0 ]; then
+        echo -e "${RED}Failed to start Jenkins. Check logs for details.${NC:?}"
+        exit 1
+    else
+        echo -e "${GREEN:?}Jenkins started directly (not as a service).${NC:?}"
+    fi
+fi
 
 # Function to check if Jenkins is running
 is_jenkins_running() {
