@@ -14,6 +14,8 @@ _remake_symlink(){
 
   ln -s "${src:?}" "${tmp_dest:?}"
   mv "${tmp_dest:?}" "${dest:?}"
+
+  echo "Symlink created: ${dest:?} -> ${src:?}"
 }
 
 # Take env variable like JAVA_17_HOME, make sure it points to a java home dir
