@@ -2,14 +2,14 @@
 
 set -e
 
+command -v brew || throw "Brew is not installed"
+command -v java || throw "Java is not installed"
+brew install jenkins-lts || throw "Failed to install Jenkins"
+
 source "_env_setup_source_me.sh"
 
 echo "--------------------------------------------------------------------------------"
 echo -e "${GREEN:?}Starting Jenkins installation for macOS...${NC:?}"
-
-command -v brew || throw "Brew is not installed"
-command -v java || throw "Java is not installed"
-brew install jenkins-lts || throw "Failed to install Jenkins"
 
 
 # Create Jenkins directories
