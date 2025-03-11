@@ -21,6 +21,8 @@ _remake_symlink(){
 # Take env variable like JAVA_17_HOME, make sure it points to a java home dir
 # and make a symlink for it under home directory ${HOME:?}/symlinks/JAVA_17_HOME
 _make_java_symlink_based_off_env_variable(){
+  echo.func "${@}"
+
   mkdir -p "${HOME:?}"/symlinks
 
   local env_var_name="${1:?}"
@@ -35,11 +37,15 @@ _make_java_symlink_based_off_env_variable(){
 }
 
 _make_symlink_for_jenkins_home_to_see_it_in_out_dir(){
-    mkdir -p ./out
-    _remake_symlink "${HOME:?}"/.gradle ./out/.gradle
+  echo.func "${@}"
+
+  mkdir -p ./out
+  _remake_symlink "${HOME:?}"/.gradle ./out/.gradle
 }
 
 main() {
+  echo.func "${@}"
+  
   _make_symlink_for_jenkins_home_to_see_it_in_out_dir
 
   _make_java_symlink_based_off_env_variable JAVA_17_HOME
