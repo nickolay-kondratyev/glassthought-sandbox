@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4a1b8b7c-d37b-405c-bf40-3761af1fd6ae" name="Changes" comment="" />
+    <list default="true" id="4a1b8b7c-d37b-405c-bf40-3761af1fd6ae" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/run.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run.sh" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -62,7 +64,8 @@
     "Kotlin.MainKt (1).executor": "Run",
     "Kotlin.MainKt.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "main",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "typescript",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "/Users/nickolaykondratyev/git_repos/glassthought-sandbox",
     "node.js.detected.package.eslint": "true",
@@ -209,7 +212,7 @@
       <workItem from="1731983525725" duration="7000" />
       <workItem from="1732249534843" duration="7505000" />
       <workItem from="1732825390366" duration="12000" />
-      <workItem from="1745264288278" duration="3000" />
+      <workItem from="1745264288278" duration="308000" />
     </task>
     <servers />
   </component>
