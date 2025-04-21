@@ -19,7 +19,30 @@ describe('Math functions', () => {
   });
 });
 
+describe('describe-level-1', () => {
+
+  describe('describe-level-2a', () => {
+
+    describe('describe-level-3', () => {
+
+      it('it-1', () => {
+
+      });
+
+      it('it-2', () => {
+
+      });
+    });
+  });
+
+  describe('describe-level-2b', () => {
+
+
+  });
+});
 describe('String functions', () => {
+
+
   // Testing using toBeTruthy and toBeFalsy
   test('checks palindromes correctly', () => {
     expect(isPalindrome('racecar')).toBeTruthy();
@@ -37,4 +60,4 @@ describe('String functions', () => {
   `('isPalindrome("$input") should return $expected', ({ input, expected }) => {
     expect(isPalindrome(input)).toBe(expected);
   });
-}); 
+});
