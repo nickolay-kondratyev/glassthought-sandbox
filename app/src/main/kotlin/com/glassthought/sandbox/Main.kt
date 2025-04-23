@@ -1,14 +1,18 @@
 package com.glassthought.sandbox
 
-import com.asgard.core.file.directory
+import com.asgard.core.util.envDirectory
 import gt.sandbox.util.output.Out
+
+val out = Out.standard()
 
 /**
  * Main entry point for the application.
  */
 fun main() {
-  val out = Out.standard()
+  val projectDir = envDirectory("GLASSTHOUGHT_SANDBOX")
+
+  val testNote = projectDir.resolve("data/test-data/test-note-1.md").verifyExists()
 
 
-  out.println("Hello, asgard dependency! Number of files in tmp dir: ${directory("/tmp").listFiles().size}")
+  out.println(testNote.readText())
 }
