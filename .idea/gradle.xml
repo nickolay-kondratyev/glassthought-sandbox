@@ -4,11 +4,63 @@
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
+        <compositeConfiguration>
+          <compositeBuild compositeDefinitionSource="SCRIPT">
+            <builds>
+              <build path="/usr/local/workplace/thorg-root/source/libraries/kotlin-mp" name="ThorgKotlinMP">
+                <projects>
+                  <project path="/usr/local/workplace/thorg-root/source/libraries/kotlin-mp" />
+                  <project path="/usr/local/workplace/thorg-root/source/libraries/kotlin-mp/asgardCore" />
+                  <project path="/usr/local/workplace/thorg-root/source/libraries/kotlin-mp/asgardGit" />
+                  <project path="/usr/local/workplace/thorg-root/source/libraries/kotlin-mp/asgardGitDrivenTest" />
+                  <project path="/usr/local/workplace/thorg-root/source/libraries/kotlin-mp/asgardMock" />
+                  <project path="/usr/local/workplace/thorg-root/source/libraries/kotlin-mp/asgardTestTools" />
+                  <project path="/usr/local/workplace/thorg-root/source/libraries/kotlin-mp/composeApp" />
+                  <project path="/usr/local/workplace/thorg-root/source/libraries/kotlin-mp/thorgCore" />
+                  <project path="/usr/local/workplace/thorg-root/source/libraries/kotlin-mp/thorgCoreTestTools" />
+                  <project path="/usr/local/workplace/thorg-root/source/libraries/kotlin-mp/thorgSandbox" />
+                </projects>
+              </build>
+              <build path="/usr/local/workplace/thorg-root/source/libraries/kotlin-mp/asgardIncludedBuild" name="asgardIncludedBuild">
+                <projects>
+                  <project path="/usr/local/workplace/thorg-root/source/libraries/kotlin-mp/asgardIncludedBuild" />
+                  <project path="/usr/local/workplace/thorg-root/source/libraries/kotlin-mp/asgardIncludedBuild/asgardBuildConfig" />
+                </projects>
+              </build>
+              <build path="/usr/local/workplace/thorg-root/source/libraries/kotlin-mp/build-logic" name="build-logic">
+                <projects>
+                  <project path="/usr/local/workplace/thorg-root/source/libraries/kotlin-mp/build-logic" />
+                  <project path="/usr/local/workplace/thorg-root/source/libraries/kotlin-mp/build-logic/plugin" />
+                </projects>
+              </build>
+              <build path="/usr/local/workplace/thorg-root/source/libraries/kotlin-mp/buildSrc" name="buildSrc">
+                <projects>
+                  <project path="/usr/local/workplace/thorg-root/source/libraries/kotlin-mp/buildSrc" />
+                </projects>
+              </build>
+            </builds>
+          </compositeBuild>
+        </compositeConfiguration>
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="/usr/local/workplace/thorg-root/source/libraries/kotlin-mp" />
+            <option value="/usr/local/workplace/thorg-root/source/libraries/kotlin-mp/asgardCore" />
+            <option value="/usr/local/workplace/thorg-root/source/libraries/kotlin-mp/asgardGit" />
+            <option value="/usr/local/workplace/thorg-root/source/libraries/kotlin-mp/asgardGitDrivenTest" />
+            <option value="/usr/local/workplace/thorg-root/source/libraries/kotlin-mp/asgardIncludedBuild" />
+            <option value="/usr/local/workplace/thorg-root/source/libraries/kotlin-mp/asgardIncludedBuild/asgardBuildConfig" />
+            <option value="/usr/local/workplace/thorg-root/source/libraries/kotlin-mp/asgardMock" />
+            <option value="/usr/local/workplace/thorg-root/source/libraries/kotlin-mp/asgardTestTools" />
+            <option value="/usr/local/workplace/thorg-root/source/libraries/kotlin-mp/build-logic" />
+            <option value="/usr/local/workplace/thorg-root/source/libraries/kotlin-mp/build-logic/plugin" />
+            <option value="/usr/local/workplace/thorg-root/source/libraries/kotlin-mp/buildSrc" />
+            <option value="/usr/local/workplace/thorg-root/source/libraries/kotlin-mp/composeApp" />
+            <option value="/usr/local/workplace/thorg-root/source/libraries/kotlin-mp/thorgCore" />
+            <option value="/usr/local/workplace/thorg-root/source/libraries/kotlin-mp/thorgCoreTestTools" />
+            <option value="/usr/local/workplace/thorg-root/source/libraries/kotlin-mp/thorgSandbox" />
           </set>
         </option>
       </GradleProjectSettings>

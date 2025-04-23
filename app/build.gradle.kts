@@ -16,6 +16,7 @@ plugins {
 repositories {
     // Use Maven Central for resolving dependencies.
     mavenCentral()
+    mavenLocal()
 }
 
 dependencies {
@@ -29,6 +30,9 @@ dependencies {
 
     // Core library for Kotlin coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+
+    implementation("com.asgard:asgardCore:1.0.0")
+    implementation("com.thorg:thorgCore:1.0.0")
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
