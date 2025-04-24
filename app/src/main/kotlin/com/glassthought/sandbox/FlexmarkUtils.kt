@@ -42,7 +42,6 @@ object FlexmarkUtils {
           WikiLinkExtension.create(),
           TablesExtension.create(),
           FootnoteExtension.create(), // Included from one version
-          YamlFrontMatterExtension.create()
           // Add other extensions here if needed later
         )
       )
