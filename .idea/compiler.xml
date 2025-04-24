@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <bytecodeTargetLevel target="21" />
+    <bytecodeTargetLevel target="21">
+      <module name="ThorgKotlinMP.asgardCore" target="17" />
+      <module name="ThorgKotlinMP.asgardGit" target="17" />
+      <module name="ThorgKotlinMP.asgardGitDrivenTest" target="17" />
+      <module name="ThorgKotlinMP.asgardMock" target="17" />
+      <module name="ThorgKotlinMP.asgardTestTools" target="17" />
+      <module name="ThorgKotlinMP.composeApp" target="17" />
+      <module name="ThorgKotlinMP.thorgCore" target="17" />
+      <module name="ThorgKotlinMP.thorgCoreTestTools" target="17" />
+      <module name="ThorgKotlinMP.thorgSandbox" target="17" />
+    </bytecodeTargetLevel>
   </component>
 </project>
