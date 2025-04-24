@@ -1,6 +1,6 @@
-package gt.sandbox.util.output.impl
+package com.glassthought.sandbox.util.out.impl
 
-import gt.sandbox.util.output.Out
+import com.glassthought.sandbox.util.out.Out
 import java.time.Instant
 
 data class OutSettings(

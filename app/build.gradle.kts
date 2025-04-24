@@ -34,6 +34,14 @@ dependencies {
     implementation("com.asgard:asgardCore:1.0.0")
     implementation("com.thorg:thorgCore:1.0.0")
     implementation("com.thorg:thorgCoreTestTools:1.0.0")
+
+    // Flexmark Java dependencies
+    implementation("com.vladsch.flexmark:flexmark:0.64.8")
+    implementation("com.vladsch.flexmark:flexmark-ext-wikilink:0.64.8")
+    implementation("com.vladsch.flexmark:flexmark-util:0.64.8")
+    implementation("com.vladsch.flexmark:flexmark-ext-yaml-front-matter:0.64.8")
+    implementation("com.vladsch.flexmark:flexmark-ext-tables:0.64.8")
+    implementation("com.vladsch.flexmark:flexmark-ext-footnotes:0.64.8")
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
