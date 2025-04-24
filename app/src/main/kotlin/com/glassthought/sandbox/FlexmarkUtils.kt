@@ -3,6 +3,7 @@ package com.glassthought.sandbox
 import com.vladsch.flexmark.ast.* // Import core AST nodes like Heading, Link, Image, Paragraph, Text, etc.
 import com.vladsch.flexmark.ext.footnotes.FootnoteExtension // Keep useful extensions
 import com.vladsch.flexmark.ext.tables.TablesExtension
+import com.vladsch.flexmark.ext.wikilink.WikiLinkExtension
 import com.vladsch.flexmark.ext.yaml.front.matter.YamlFrontMatterExtension
 import com.vladsch.flexmark.parser.Parser
 import com.vladsch.flexmark.parser.PegdownExtensions
@@ -34,10 +35,11 @@ object FlexmarkUtils {
     return Parser.builder(standardOptions()).build()
   }
 
-   fun standardOptions(): DataHolder {
+  fun standardOptions(): DataHolder {
     return MutableDataSet().apply {
       set(
         Parser.EXTENSIONS, listOf(
+          WikiLinkExtension.create(),
           TablesExtension.create(),
           FootnoteExtension.create(), // Included from one version
           YamlFrontMatterExtension.create()
