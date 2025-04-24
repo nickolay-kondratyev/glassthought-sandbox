@@ -9,7 +9,7 @@ import com.thorg.test.integsetup.TestNoteProvider
 import kotlin.time.Duration.Companion.seconds
 
 class ParsingBenchmarker(
-  private val numberOfTimesToBenchmark: Int = 1000,
+  private val numberOfTimesToBenchmark: Int = 100,
   private val howManyNotes: Int = 2000,
   private val warmupIterations: Int = 5
 ) {
