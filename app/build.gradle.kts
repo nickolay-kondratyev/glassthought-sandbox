@@ -33,6 +33,7 @@ dependencies {
 
     implementation("com.asgard:asgardCore:1.0.0")
     implementation("com.thorg:thorgCore:1.0.0")
+    implementation("com.thorg:thorgCoreTestTools:1.0.0")
 }
 
 // Apply a specific Java toolchain to ease working on different environments.

@@ -25,6 +25,7 @@ includeBuild("${THORG_ROOT}/source/libraries/kotlin-mp") {
     substitute(module("com.asgard:asgardCore")).using(project(":asgardCore"))
     substitute(module("com.asgard:asgardGit")).using(project(":asgardGit"))
     substitute(module("com.asgard:asgardTestTools")).using(project(":asgardTestTools"))
+    substitute(module("com.thorg:thorgCoreTestTools")).using(project(":thorgCoreTestTools"))
     substitute(module("com.thorg:thorgCore")).using(project(":thorgCore"))
   }
 }
