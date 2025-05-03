@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4a1b8b7c-d37b-405c-bf40-3761af1fd6ae" name="Changes" comment="" />
+    <list default="true" id="4a1b8b7c-d37b-405c-bf40-3761af1fd6ae" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/basic-vr-demo/run.sh" afterDir="false" />
+      <change afterPath="/usr/local/workplace/thorg-root/source/libraries/kotlin-mp/thorgSandbox/src/jvmMain/kotlin/com/thorg/core/MemoryUsageSandbox.kt" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -264,7 +267,7 @@
       <workItem from="1731983525725" duration="7000" />
       <workItem from="1732249534843" duration="7505000" />
       <workItem from="1732825390366" duration="12000" />
-      <workItem from="1746241826803" duration="6000" />
+      <workItem from="1746241826803" duration="600000" />
     </task>
     <servers />
   </component>
