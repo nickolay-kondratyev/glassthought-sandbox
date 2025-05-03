@@ -1,5 +1,3 @@
-Okay, let's formulate a detailed plan to modify the existing rotating cube application to visualize a basic 3D graph based on the provided JSON structure. This plan builds upon the previous one and targets modifications primarily within `src/main.ts`.
-
 **Plan: Visualize Basic 3D Graph from JSON Configuration**
 
 **Objective:**
