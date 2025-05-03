@@ -1,1 +1,1 @@
-echo TODO-ADD-RUN-COMMAND
+chrome ${GT_SANDBOX_REPO:?}/index.html
