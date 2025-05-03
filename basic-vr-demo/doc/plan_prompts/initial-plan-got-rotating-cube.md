@@ -1,3 +1,5 @@
+Chat Reference: https://gemini.google.com/app/50714bd63f3789bd
+
 **Plan: Create Basic 3D VR Visualization Demo with TypeScript, Vite, and Three.js**
 
 **Objective:**
