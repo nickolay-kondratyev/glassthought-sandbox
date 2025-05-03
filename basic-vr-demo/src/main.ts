@@ -140,6 +140,57 @@ graphData.links.forEach(link => {
     }
 });
 
+// --- User Rotation Controls ---
+// Variables to track mouse position and state
+let isDragging = false;
+let previousMousePosition = {
+    x: 0,
+    y: 0
+};
+
+// Sensitivity factor for rotation
+const rotationSensitivity = 0.01;
+
+// Mouse event listeners
+document.addEventListener('mousedown', (event) => {
+    isDragging = true;
+    previousMousePosition = {
+        x: event.clientX,
+        y: event.clientY
+    };
+});
+
+document.addEventListener('mousemove', (event) => {
+    if (isDragging) {
+        // Calculate mouse movement delta
+        const deltaMove = {
+            x: event.clientX - previousMousePosition.x,
+            y: event.clientY - previousMousePosition.y
+        };
+
+        // Rotate the graph group based on mouse movement
+        // Vertical movement (y) rotates around X-axis
+        // Horizontal movement (x) rotates around Y-axis
+        graphGroup.rotation.x += deltaMove.y * rotationSensitivity;
+        graphGroup.rotation.y += deltaMove.x * rotationSensitivity;
+
+        // Update previous position for next move event
+        previousMousePosition = {
+            x: event.clientX,
+            y: event.clientY
+        };
+    }
+});
+
+document.addEventListener('mouseup', () => {
+    isDragging = false;
+});
+
+// Also handle case when mouse leaves the window
+document.addEventListener('mouseout', () => {
+    isDragging = false;
+});
+
 // --- Responsiveness ---
 
 // 10. Handle window resize events to update camera and renderer
@@ -154,12 +205,11 @@ window.addEventListener('resize', () => {
 
 // --- Animation Loop ---
 
-// 11. Define the animation function using renderer.setAnimationLoop
-// This replaces requestAnimationFrame for WebXR compatibility.
+// 11. Define the animation loop without automatic rotation
 renderer.setAnimationLoop((timestamp, frame) => {
-    // Animate the entire graph group
-    graphGroup.rotation.x += 0.002; // Slower rotation
-    graphGroup.rotation.y += 0.003; // Asymmetric rotation
+    // Removed automatic rotation:
+    // graphGroup.rotation.x += 0.002;
+    // graphGroup.rotation.y += 0.003;
 
     // Render the scene from the perspective of the camera
     // The renderer automatically handles camera updates based on headset pose when in VR
