@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3D Force-Directed Graph</title>
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        width: 100%;
+        height: 100%;
+      }
+      #graph-container {
+        width: 100vw;
+        height: 100vh;
+        background-color: #000;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+      
+      /* Fallback info */
+      #loading-info {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+        font-family: sans-serif;
+        text-align: center;
+        z-index: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="loading-info">Loading 3D Graph...</div>
+    <div id="graph-container"></div>
+    <script type="module" src="/src/main.ts"></script>
+    
+    <!-- Fallback to debug version if main app doesn't load properly -->
+    <script>
+      // Check if graph loaded after 5 seconds
+      setTimeout(() => {
+        if (!window.myGraph && !window.graph) {
+          const loadingInfo = document.getElementById('loading-info');
+          loadingInfo.innerHTML = `
+            <h2>Graph not loading?</h2>
+            <p>Try our <a href="/test.html" style="color: #4a9eff;">simple test version</a> instead.</p>
+          `;
+        } else {
+          // Graph loaded successfully, remove loading message
+          const loadingInfo = document.getElementById('loading-info');
+          if (loadingInfo) loadingInfo.style.display = 'none';
+        }
+      }, 5000);
+    </script>
+  </body>
+</html> 
