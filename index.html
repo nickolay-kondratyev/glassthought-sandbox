@@ -2,18 +2,18 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
-  <title>3‑D Force Graph · Textured Nodes · Quest 3 VR</title>
+  <title>3‑D Force Graph · Textured Cubes · Quest 3 VR</title>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <style>
       html, body {
           margin: 0;
           padding: 0;
-          overflow: hidden
+          overflow: hidden;
       }
 
       #graph {
           width: 100vw;
-          height: 100vh
+          height: 100vh;
       }
   </style>
 
@@ -26,27 +26,29 @@
   <div id="graph"></div>
 
   <script>
-      /* ---------- sample graph data ---------- */
+      // ---------- Graph Data ----------
       const N = 60;
       const nodes = [...Array(N).keys()].map(i => ({
           id: String(i),
           name: `Node ${i}`,
           val: 3 + Math.random() * 12,
           color: `hsl(${Math.random() * 360},70%,60%)`,
-          group: Math.floor(Math.random() * 5)   // group 0 gets the image
+          group: Math.floor(Math.random() * 5)   // group 0 gets cube
       }));
+
       const links = [];
       nodes.forEach(({id}) => {
           for (let k = 1; k <= 2; k++) links.push({source: id, target: String((+id + k) % N), value: 2});
           if (Math.random() > 0.7) links.push({source: id, target: String(Math.floor(Math.random() * N)), value: 1});
       });
 
-      /* ---------- load texture once ---------- */
+      // ---------- Load Texture ----------
       const texLoader = new THREE.TextureLoader();
       texLoader.crossOrigin = 'anonymous';
-      const nodeTexture = texLoader.load('https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/PNG_transparency_demonstration_1.png/640px-PNG_transparency_demonstration_1.png');  // swap in your own PNG/JPG
+      const nodeTexture = texLoader.load('https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/PNG_transparency_demonstration_1.png/640px-PNG_transparency_demonstration_1.png');
 
-      /* ---------- create graph ---------- */
+      const rMultiplier = 5;
+      // ---------- Create Graph ----------
       const graph = ForceGraph3D({
           extraRendererConfig: {antialias: true, alpha: true, xr: {enabled: true}}
       })(document.getElementById('graph'))
@@ -56,25 +58,29 @@
           .nodeLabel(n => n.name)
           .linkDirectionalParticles(2)
           .linkDirectionalParticleWidth(link => link.value * 0.6)
-          .nodeThreeObjectExtend(false)    // override, don’t merge
+          .nodeThreeObjectExtend(false)
           .nodeThreeObject(node => {
-              if (node.group !== 0) return undefined;          // fall back to default sphere
-              const r = Math.cbrt(node.val);                // radius ~ cube‑root for visual balance
-              const geo = new THREE.SphereGeometry(r, 16, 16);
-              const mat = new THREE.MeshBasicMaterial({map: nodeTexture});
-              return new THREE.Mesh(geo, mat);
+              if (node.group !== 0) return undefined;
+
+              const r = Math.cbrt(node.val);
+              const geometry = new THREE.BoxGeometry(r * rMultiplier, r * rMultiplier, r * rMultiplier);
+
+              // Apply the same texture to all six cube faces
+              const materials = Array(6).fill().map(() => new THREE.MeshBasicMaterial({map: nodeTexture}));
+
+              return new THREE.Mesh(geometry, materials);
           });
 
-      /* ---------- lights ---------- */
+      // ---------- Lighting ----------
       graph.scene().add(new THREE.AmbientLight(0xffffff, 0.6));
-      const dir = new THREE.DirectionalLight(0xffffff, 0.8);
-      dir.position.set(1, 1, 1);
-      graph.scene().add(dir);
+      const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+      dirLight.position.set(1, 1, 1);
+      graph.scene().add(dirLight);
 
-      /* ---------- enable VR ---------- */
+      // ---------- VR Support ----------
       document.body.appendChild(VRButton.createButton(graph.renderer()));
 
-      /* ---------- frame scene ---------- */
+      // ---------- Frame Camera ----------
       setTimeout(() => graph.zoomToFit(1000, 40), 500);
   </script>
 </body>
