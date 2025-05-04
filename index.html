@@ -2,28 +2,24 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
-  <title>Simple 3D Graph – Quest 3 VR</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>3‑D Force Graph · Textured Nodes · Quest 3 VR</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <style>
       html, body {
           margin: 0;
           padding: 0;
-          overflow: hidden;
+          overflow: hidden
       }
 
       #graph {
           width: 100vw;
-          height: 100vh;
+          height: 100vh
       }
   </style>
 
-  <!-- Three.js core -->
+  <!-- libs -->
   <script src="https://unpkg.com/three@0.152.2/build/three.min.js"></script>
-
-  <!-- WebXR helper (attaches global `VRButton`) -->
   <script src="https://unpkg.com/three@0.152.2/examples/js/webxr/VRButton.js"></script>
-
-  <!-- 3d‑force‑graph -->
   <script src="https://unpkg.com/3d-force-graph@1.73.0/dist/3d-force-graph.min.js"></script>
 </head>
 <body>
@@ -36,28 +32,38 @@
           id: String(i),
           name: `Node ${i}`,
           val: 3 + Math.random() * 12,
-          color: `hsl(${Math.random() * 360},70%,60%)`
+          color: `hsl(${Math.random() * 360},70%,60%)`,
+          group: Math.floor(Math.random() * 5)   // group 0 gets the image
       }));
       const links = [];
       nodes.forEach(({id}) => {
-          for (let k = 1; k <= 2; k++)          // ring lattice
-              links.push({source: id, target: String((+id + k) % N), value: 2});
-          if (Math.random() > 0.7)               // long‑range rewiring
-              links.push({source: id, target: String(Math.floor(Math.random() * N)), value: 1});
+          for (let k = 1; k <= 2; k++) links.push({source: id, target: String((+id + k) % N), value: 2});
+          if (Math.random() > 0.7) links.push({source: id, target: String(Math.floor(Math.random() * N)), value: 1});
       });
 
-      /* ---------- graph & renderer ---------- */
+      /* ---------- load texture once ---------- */
+      const texLoader = new THREE.TextureLoader();
+      texLoader.crossOrigin = 'anonymous';
+      const nodeTexture = texLoader.load('https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/PNG_transparency_demonstration_1.png/640px-PNG_transparency_demonstration_1.png');  // swap in your own PNG/JPG
+
+      /* ---------- create graph ---------- */
       const graph = ForceGraph3D({
           extraRendererConfig: {antialias: true, alpha: true, xr: {enabled: true}}
       })(document.getElementById('graph'))
           .backgroundColor('#111133')
           .graphData({nodes, links})
+          .linkWidth(l => l.value)
           .nodeLabel(n => n.name)
-          .linkDirectionalParticles(2)
-          .linkDirectionalParticleWidth(link => link.value * 0.6)
-          .linkWidth(l => l.value);
+          .nodeThreeObjectExtend(false)    // override, don’t merge
+          .nodeThreeObject(node => {
+              if (node.group !== 0) return undefined;          // fall back to default sphere
+              const r = Math.cbrt(node.val);                // radius ~ cube‑root for visual balance
+              const geo = new THREE.SphereGeometry(r, 16, 16);
+              const mat = new THREE.MeshBasicMaterial({map: nodeTexture});
+              return new THREE.Mesh(geo, mat);
+          });
 
-      // lights
+      /* ---------- lights ---------- */
       graph.scene().add(new THREE.AmbientLight(0xffffff, 0.6));
       const dir = new THREE.DirectionalLight(0xffffff, 0.8);
       dir.position.set(1, 1, 1);
@@ -66,7 +72,7 @@
       /* ---------- enable VR ---------- */
       document.body.appendChild(VRButton.createButton(graph.renderer()));
 
-      /* ---------- initial framing ---------- */
+      /* ---------- frame scene ---------- */
       setTimeout(() => graph.zoomToFit(1000, 40), 500);
   </script>
 </body>
