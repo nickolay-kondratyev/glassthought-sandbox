@@ -1,136 +1,71 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>Simple 3D Graph with VR</title>
+  <meta charset="utf-8"/>
+  <title>Simple 3D Graph – Quest 3 VR</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <style>
-    body { margin: 0; padding: 0; overflow: hidden; }
-    #graph { width: 100vw; height: 100vh; }
-    #vr-button {
-      position: absolute;
-      bottom: 20px;
-      right: 20px;
-      padding: 12px 24px;
-      background: rgba(0, 0, 0, 0.5);
-      color: white;
-      border: none;
-      border-radius: 4px;
-      font-weight: bold;
-      cursor: pointer;
-      z-index: 100;
-    }
-    #vr-button:hover {
-      background: rgba(0, 0, 0, 0.8);
-    }
+      html, body {
+          margin: 0;
+          padding: 0;
+          overflow: hidden;
+      }
+
+      #graph {
+          width: 100vw;
+          height: 100vh;
+      }
   </style>
-  <!-- Include required libraries -->
+
+  <!-- Three.js core -->
   <script src="https://unpkg.com/three@0.152.2/build/three.min.js"></script>
-  <script src="https://unpkg.com/three@0.152.2/examples/js/controls/OrbitControls.js"></script>
+
+  <!-- WebXR helper (attaches global `VRButton`) -->
   <script src="https://unpkg.com/three@0.152.2/examples/js/webxr/VRButton.js"></script>
+
+  <!-- 3d‑force‑graph -->
   <script src="https://unpkg.com/3d-force-graph@1.73.0/dist/3d-force-graph.min.js"></script>
 </head>
 <body>
   <div id="graph"></div>
 
   <script>
-    console.log('Script running');
+      /* ---------- sample graph data ---------- */
+      const N = 60;
+      const nodes = [...Array(N).keys()].map(i => ({
+          id: String(i),
+          name: `Node ${i}`,
+          val: 3 + Math.random() * 12,
+          color: `hsl(${Math.random() * 360},70%,60%)`
+      }));
+      const links = [];
+      nodes.forEach(({id}) => {
+          for (let k = 1; k <= 2; k++)          // ring lattice
+              links.push({source: id, target: String((+id + k) % N), value: 2});
+          if (Math.random() > 0.7)               // long‑range rewiring
+              links.push({source: id, target: String(Math.floor(Math.random() * N)), value: 1});
+      });
 
-    // Create more interesting sample data
-    const N = 60; // Increase number of nodes for a more interesting VR experience
-    const nodes = [...Array(N).keys()].map(i => ({
-      id: String(i),
-      name: `Node ${i}`,
-      val: 3 + Math.random() * 12,
-      color: `hsl(${Math.random() * 360}, 70%, 60%)`,
-      group: Math.floor(Math.random() * 5) // Add groups for better visualization
-    }));
+      /* ---------- graph & renderer ---------- */
+      const graph = ForceGraph3D({
+          extraRendererConfig: {antialias: true, alpha: true, xr: {enabled: true}}
+      })(document.getElementById('graph'))
+          .backgroundColor('#111133')
+          .graphData({nodes, links})
+          .nodeLabel(n => n.name)
+          .linkWidth(l => l.value);
 
-    // Create links with some structure
-    const links = [];
-    // Create a small-world network
-    nodes.forEach(node => {
-      // Connect to some nearby nodes
-      const nodeId = parseInt(node.id);
-      // Connect to next 2 nodes (with wraparound)
-      for (let i = 1; i <= 2; i++) {
-        const target = (nodeId + i) % N;
-        links.push({
-          source: node.id,
-          target: String(target),
-          value: 1 + Math.random() * 3
-        });
-      }
+      // lights
+      graph.scene().add(new THREE.AmbientLight(0xffffff, 0.6));
+      const dir = new THREE.DirectionalLight(0xffffff, 0.8);
+      dir.position.set(1, 1, 1);
+      graph.scene().add(dir);
 
-      // Add some random longer links for small-world property
-      if (Math.random() > 0.7) {
-        const target = Math.floor(Math.random() * N);
-        if (target !== nodeId) {
-          links.push({
-            source: node.id,
-            target: String(target),
-            value: 0.5 + Math.random() * 2
-          });
-        }
-      }
-    });
+      /* ---------- enable VR ---------- */
+      document.body.appendChild(VRButton.createButton(graph.renderer()));
 
-    const data = { nodes, links };
-    console.log('Created graph data with', nodes.length, 'nodes and', links.length, 'links');
-
-    console.log('Creating 3D Force Graph...');
-
-    // Initialize the graph
-    const graph = ForceGraph3D({
-      extraRendererConfig: {
-        antialias: true,
-        alpha: true,
-        // Enable WebXR
-        xr: { enabled: true }
-      }
-    })
-    (document.getElementById("graph"))
-      .backgroundColor("#111133")
-      .nodeLabel(node => node.name)
-      .nodeVal(node => node.val)
-      .nodeColor(node => node.color)
-      .nodeOpacity(0.9)
-      .linkWidth(link => link.value)
-      .linkDirectionalParticles(2)
-      .linkDirectionalParticleWidth(link => link.value * 0.6)
-      .graphData(data);
-
-    console.log('3D Force Graph created!');
-
-    // Adjust forces for better 3D visualization
-    graph.d3Force('charge').strength(-120);
-    graph.d3Force('link').distance(link => 40);
-
-    // Configure additional Three.js components for better visualization
-    const renderer = graph.renderer();
-    const scene = graph.scene();
-    const camera = graph.camera();
-
-    // Add ambient light for better visibility
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
-    scene.add(ambientLight);
-
-    // Add directional light for better 3D effects
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-    directionalLight.position.set(1, 1, 1);
-    scene.add(directionalLight);
-
-    // Add VR button
-    document.body.appendChild(THREE.VRButton.createButton(renderer));
-
-    // Wait a moment and then center the view
-    setTimeout(() => {
-      graph.zoomToFit(1000, 40);
-    }, 500);
-
-    // Make available globally for debugging
-    window.graph = graph;
-    window.graphData = data;
-    window.THREE = THREE;
+      /* ---------- initial framing ---------- */
+      setTimeout(() => graph.zoomToFit(1000, 40), 500);
   </script>
 </body>
 </html>
