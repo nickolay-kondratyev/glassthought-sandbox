@@ -53,6 +53,8 @@
           .backgroundColor('#111133')
           .graphData({nodes, links})
           .nodeLabel(n => n.name)
+          .linkDirectionalParticles(2)
+          .linkDirectionalParticleWidth(link => link.value * 0.6)
           .linkWidth(l => l.value);
 
       // lights
