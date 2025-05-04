@@ -54,6 +54,8 @@
           .graphData({nodes, links})
           .linkWidth(l => l.value)
           .nodeLabel(n => n.name)
+          .linkDirectionalParticles(2)
+          .linkDirectionalParticleWidth(link => link.value * 0.6)
           .nodeThreeObjectExtend(false)    // override, don’t merge
           .nodeThreeObject(node => {
               if (node.group !== 0) return undefined;          // fall back to default sphere
