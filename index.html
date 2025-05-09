@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
-  <title>3‑D Force Graph · Textured Cubes · Quest 3 VR</title>
+  <title>3‑D Force Graph · Textured Cubes · BabylonJS · Quest 3 VR</title>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <style>
       html, body {
@@ -11,28 +11,32 @@
           overflow: hidden;
       }
 
-      #graph {
+      /* BabylonJS typically uses a canvas */
+      #renderCanvas {
           width: 100vw;
           height: 100vh;
+          touch-action: none; /* Recommended for BabylonJS */
       }
   </style>
 
   <!-- libs -->
-  <script src="https://unpkg.com/three@0.152.2/build/three.min.js"></script>
-  <script src="https://unpkg.com/three@0.152.2/examples/js/webxr/VRButton.js"></script>
+  <!-- Use Babylon.js instead of Three.js -->
+  <script src="https://cdn.babylonjs.com/babylon.js"></script>
+  <!-- 3d-force-graph remains the same -->
   <script src="https://unpkg.com/3d-force-graph@1.73.0/dist/3d-force-graph.min.js"></script>
 </head>
 <body>
-  <div id="graph"></div>
+  <!-- The graph will attach its canvas to this div, or we can provide a canvas directly -->
+  <div id="graph-container" style="width: 100vw; height: 100vh;"></div>
 
   <script>
-      // ---------- Graph Data ----------
+      // ---------- Graph Data (Same as original) ----------
       const N = 60;
       const nodes = [...Array(N).keys()].map(i => ({
           id: String(i),
           name: `Node ${i}`,
           val: 3 + Math.random() * 12,
-          color: `hsl(${Math.random() * 360},70%,60%)`,
+          color: `hsl(${Math.random() * 360},70%,60%)`, // Note: 3d-force-graph handles color parsing
           group: Math.floor(Math.random() * 5)   // group 0 gets cube
       }));
 
@@ -42,46 +46,161 @@
           if (Math.random() > 0.7) links.push({source: id, target: String(Math.floor(Math.random() * N)), value: 1});
       });
 
-      // ---------- Load Texture ----------
-      const texLoader = new THREE.TextureLoader();
-      texLoader.crossOrigin = 'anonymous';
-      const nodeTexture = texLoader.load('https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/PNG_transparency_demonstration_1.png/640px-PNG_transparency_demonstration_1.png');
+      // Texture URL
+      const textureUrl = 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/PNG_transparency_demonstration_1.png/640px-PNG_transparency_demonstration_1.png';
+      let babylonNodeTexture = null; // Will be loaded later
 
       const rMultiplier = 5;
-      // ---------- Create Graph ----------
+
+      // ---------- Get the container ----------
+      const graphContainer = document.getElementById('graph-container');
+
+      // ---------- Create Graph with BabylonJS renderer ----------
+      // 3d-force-graph will create its own BabylonJS Engine and Scene if not provided
+      // and attach its canvas to the provided DOM element.
       const graph = ForceGraph3D({
-          extraRendererConfig: {antialias: true, alpha: true, xr: {enabled: true}}
-      })(document.getElementById('graph'))
-          .backgroundColor('#111133')
+          // controlType: 'orbit', // 'fly', 'trackball' are other options for Babylon
+          renderer: 'babylonjs', // Explicitly state we want BabylonJS
+          // extraRendererConfig: { antialias: true } // Antialias is usually default or set on engine
+      })(graphContainer)
+          .backgroundColor('#111133') // Sets scene.clearColor
           .graphData({nodes, links})
           .linkWidth(l => l.value)
           .nodeLabel(n => n.name)
           .linkDirectionalParticles(2)
           .linkDirectionalParticleWidth(link => link.value * 0.6)
-          .nodeThreeObjectExtend(false)
-          .nodeThreeObject(node => {
-              if (node.group !== 0) return undefined;
+          // .nodeThreeObjectExtend(false) // Not applicable for BabylonJS in the same way
+          .nodeBabylonObject((node, scene) => { // Use nodeBabylonObject
+              // 'scene' here is the BabylonJS scene instance from the graph
+              if (node.group !== 0) {
+                  // For non-group 0, let 3d-force-graph use its default (sphere)
+                  // To do this, return undefined or a falsey value.
+                  // If you wanted a different default, you could create a sphere here.
+                  return undefined;
+              }
+
+              // Ensure texture is loaded for group 0 nodes
+              if (!babylonNodeTexture) {
+                  console.warn("Texture not yet loaded for node", node.id);
+                  // Fallback to a simple colored box or wait (better to preload)
+                  const fallbackBox = BABYLON.MeshBuilder.CreateBox(`node_fallback_${node.id}`, { size: 1 }, scene);
+                  const fallbackMat = new BABYLON.StandardMaterial(`mat_fallback_${node.id}`, scene);
+                  fallbackMat.diffuseColor = BABYLON.Color3.FromHexString(node.color.startsWith('#') ? node.color : '#CCCCCC'); // Use node color or default
+                  fallbackBox.material = fallbackMat;
+                  return fallbackBox;
+              }
 
               const r = Math.cbrt(node.val);
-              const geometry = new THREE.BoxGeometry(r * rMultiplier, r * rMultiplier, r * rMultiplier);
+              const boxSize = r * rMultiplier;
+              const geometry = BABYLON.MeshBuilder.CreateBox(`node_box_${node.id}`, {
+                  width: boxSize,
+                  height: boxSize,
+                  depth: boxSize
+              }, scene);
 
-              // Apply the same texture to all six cube faces
-              const materials = Array(6).fill().map(() => new THREE.MeshBasicMaterial({map: nodeTexture}));
+              const material = new BABYLON.StandardMaterial(`mat_box_${node.id}`, scene);
+              material.emissiveTexture = babylonNodeTexture; // Use emissive for unlit texture like MeshBasicMaterial
+              // For transparency with PNGs:
+              if (babylonNodeTexture.hasAlpha) {
+                  material.useAlphaFromDiffuseTexture = true; // Even for emissive, this flag is checked by some internal logic
+                  material.transparencyMode = BABYLON.Material.MATERIAL_ALPHABLEND; // Enable alpha blending
+                  // material.needDepthPrePass = true; // May help with sorting transparent objects
+              }
+              // material.backFaceCulling = false; // If you want to see texture from inside
 
-              return new THREE.Mesh(geometry, materials);
+              geometry.material = material;
+              return geometry;
           });
 
-      // ---------- Lighting ----------
-      graph.scene().add(new THREE.AmbientLight(0xffffff, 0.6));
-      const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
-      dirLight.position.set(1, 1, 1);
-      graph.scene().add(dirLight);
+      // Access the BabylonJS scene created by 3d-force-graph
+      const bjsScene = graph.scene();
+      const bjsEngine = graph.engine(); // Access the engine if needed (e.g., for antialias)
 
-      // ---------- VR Support ----------
-      document.body.appendChild(VRButton.createButton(graph.renderer()));
+      if (bjsEngine) {
+          // Antialias is typically set when creating the engine.
+          // If 3d-force-graph creates it, it might enable it by default or based on options.
+          // We can try to log its current state:
+          // console.log("Engine antialias:", bjsEngine.getHardwareScalingLevel() === 1 ? 'Enabled (or default)' : 'Potentially disabled or scaled');
+      }
+
+
+      // ---------- Load Texture (BabylonJS way) ----------
+      // Ensure the scene is available before loading textures into it.
+      // 3d-force-graph initializes its scene fairly quickly.
+      if (bjsScene) {
+          babylonNodeTexture = new BABYLON.Texture(
+              textureUrl,
+              bjsScene,
+              false, // noMipmap
+              true,  // invertY (often needed for web textures)
+              BABYLON.Texture.TRILINEAR_SAMPLINGMODE,
+              () => {
+                  console.log("BabylonJS Texture loaded successfully!");
+                  // Texture is loaded, nodes that were created before might need an update
+                  // if they used a fallback. 3d-force-graph might re-evaluate nodeBabylonObject,
+                  // or we might need to trigger a graph refresh if nodes look wrong.
+                  // Often, simply having the texture available is enough for new/updated nodes.
+                  // For existing nodes, if they have a fallback, they won't auto-update.
+                  // A simple way to force re-evaluation if needed:
+                  // graph.graphData(graph.graphData()); // Re-feed the same data
+              },
+              (message, exception) => {
+                  console.error("BabylonJS Texture loading error:", message, exception);
+              }
+          );
+          babylonNodeTexture.hasAlpha = true; // Crucial for PNG transparency
+      } else {
+          console.error("BabylonJS scene not available for texture loading!");
+      }
+
+      // ---------- Lighting (BabylonJS way) ----------
+      if (bjsScene) {
+          // Ambient light (Hemispheric is common in BabylonJS)
+          const ambientLight = new BABYLON.HemisphericLight("ambientLight", new BABYLON.Vector3(0, 1, 0), bjsScene);
+          ambientLight.intensity = 0.6;
+          ambientLight.diffuse = new BABYLON.Color3(1,1,1); // White light
+          ambientLight.groundColor = new BABYLON.Color3(0.5,0.5,0.5); // Dim ground color
+
+          // Directional light
+          const dirLight = new BABYLON.DirectionalLight("dirLight", new BABYLON.Vector3(-1, -1.5, -1).normalize(), bjsScene); // Direction vector
+          dirLight.intensity = 0.8;
+          dirLight.diffuse = new BABYLON.Color3(1,1,1);
+          // dirLight.position = new BABYLON.Vector3(10, 10, 10); // Position can affect shadows if enabled, but not primary for direction
+      }
+
+      // ---------- VR Support (BabylonJS way) ----------
+      if (bjsScene) {
+          // Asynchronously create the XR experience helper
+          bjsScene.createDefaultXRExperienceAsync({
+              // floorMeshes: [/* an optional array of meshes to be used as floor */]
+              disableTeleportation: false, // Allow teleportation
+          }).then((xrHelper) => {
+              console.log("BabylonJS XR experience initialized.", xrHelper);
+              // You can interact with xrHelper here, e.g., xrHelper.enterXRButton
+          }).catch(error => {
+              console.error("Failed to initialize BabylonJS XR experience:", error);
+          });
+      } else {
+          console.error("BabylonJS scene not available for XR setup!");
+      }
 
       // ---------- Frame Camera ----------
-      setTimeout(() => graph.zoomToFit(1000, 40), 500);
+      // zoomToFit is a method of 3d-force-graph and should work
+      setTimeout(() => graph.zoomToFit(1000, 40), 1500); // Increased delay slightly for texture/scene init
+
+      // Optional: BabylonJS Inspector for debugging
+      // window.addEventListener("keydown", function (evt) {
+      //     if (evt.key === "i") { // Press 'i' to toggle inspector
+      //         if (bjsScene) {
+      //             if (bjsScene.debugLayer.isVisible()) {
+      //                 bjsScene.debugLayer.hide();
+      //             } else {
+      //                 bjsScene.debugLayer.show({ embedMode: true });
+      //             }
+      //         }
+      //     }
+      // });
+
   </script>
 </body>
 </html>
