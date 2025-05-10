@@ -96,39 +96,69 @@
               const scale = baseSize * rMultiplier;
 
               // --- High Detail Level (Textured Cube) ---
-              // Visible from distance 0 up to `distanceHighToMedium`
               const highDetailMesh = new THREE.Mesh(highDetailBoxGeometry, sharedCubeMaterials);
               highDetailMesh.scale.set(scale, scale, scale);
-              // Ensure the object's matrix is updated after scaling for correct LOD behavior
               highDetailMesh.updateMatrix();
-              highDetailMesh.matrixAutoUpdate = false; // Optimization if 3d-force-graph updates matrix directly
+              highDetailMesh.matrixAutoUpdate = false;
               lod.addLevel(highDetailMesh, 0);
 
               // --- Medium Detail Level (Solid Color Cube) ---
-              // Visible from `distanceHighToMedium` up to `distanceMediumToLow`
               const mediumDetailMaterial = new THREE.MeshBasicMaterial({color: node.color});
-              const mediumDetailMesh = new THREE.Mesh(highDetailBoxGeometry, mediumDetailMaterial); // Reuse box geometry
-              mediumDetailMesh.scale.set(scale * 0.9, scale * 0.9, scale * 0.9); // Slightly smaller
+              const mediumDetailMesh = new THREE.Mesh(highDetailBoxGeometry, mediumDetailMaterial);
+              mediumDetailMesh.scale.set(scale * 0.5, scale * 0.5, scale * 0.5);
               mediumDetailMesh.updateMatrix();
               mediumDetailMesh.matrixAutoUpdate = false;
-
-
               lod.addLevel(mediumDetailMesh, 60); // Adjust this distance as needed
 
               // --- Low Detail Level (Solid Color Sphere) ---
-              // Visible from `distanceMediumToLow` onwards
               const lowDetailMaterial = new THREE.MeshBasicMaterial({color: node.color});
               const lowDetailMesh = new THREE.Mesh(lowDetailSphereGeometry, lowDetailMaterial);
-              lowDetailMesh.scale.set(scale * 0.7, scale * 0.7, scale * 0.7); // Smaller sphere
+              lowDetailMesh.scale.set(scale * 0.3, scale * 0.3, scale * 0.3);
               lowDetailMesh.updateMatrix();
               lowDetailMesh.matrixAutoUpdate = false;
               lod.addLevel(lowDetailMesh, 120); // Adjust this distance as needed
 
-              // It's important that the LOD object itself can be positioned by the graph.
-              // 3d-force-graph will update lod.position.x, .y, .z.
-              // THREE.LOD will then pick the appropriate child based on camera distance.
               return lod;
           });
+
+      // ---------- Force Engine Tuning ----------
+      // These settings help optimize performance, especially when nodes move after initial stabilization.
+
+      // 1. Tune the Charge Force (Repulsion)
+      const chargeForce = graph.d3Force('charge');
+      if (chargeForce) {
+          chargeForce
+              .strength(-60) // Adjust repulsion strength. Default is -30. More negative = stronger repulsion.
+              // Experiment with this value in conjunction with theta.
+              .theta(1.2);   // Increase Barnes-Hut approximation. Default is 0.9.
+                             // Values > 1 make distant node interactions less precise but faster.
+                             // This helps "far nodes care less" computationally.
+      }
+
+      // 2. Adjust Link Force (Springs between connected nodes) - Optional
+      // const linkForce = graph.d3Force('link');
+      // if (linkForce) {
+      //     linkForce
+      //         .distance(40) // Desired link length. Default is 30.
+      //         .strength(0.05); // Link stiffness. Default is auto-calculated based on node degree.
+      //                        // You might need to set an explicit, possibly lower, strength.
+      // }
+
+      // 3. Reduce Centering Force Strength
+      // The centering force pulls the whole graph towards the origin.
+      // A strong centering force can cause widespread movement if the graph's balance shifts.
+      const centerForce = graph.d3Force('center');
+      if (centerForce) {
+          centerForce.strength(0.05); // Default is 1. Try a much smaller value to reduce global "pull."
+      }
+
+      // 4. Make the Simulation Cool Down Faster
+      graph.d3AlphaDecay(0.04); // Default is ~0.0228. Higher values mean faster decay.
+                                // This reduces the number of simulation ticks after a disturbance.
+
+      // 5. Increase Friction (Optional)
+      // graph.d3VelocityDecay(0.5); // Default is 0.4. Higher values (0 to 1) mean more friction.
+      // Nodes will stop moving sooner.
 
       // ---------- Lighting ----------
       graph.scene().add(new THREE.AmbientLight(0xffffff, 0.6));
