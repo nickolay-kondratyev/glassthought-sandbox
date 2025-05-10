@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
-  <title>3‑D Force Graph · Textured Cubes · Quest 3 VR</title>
+  <title>3‑D Force Graph · LOD Textured Cubes · Quest 3 VR</title>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <style>
       html, body {
@@ -27,61 +27,132 @@
 
   <script>
       // ---------- Graph Data ----------
-      const N = 60;
+      const N = 10000; // Increased node count
       const nodes = [...Array(N).keys()].map(i => ({
           id: String(i),
           name: `Node ${i}`,
           val: 3 + Math.random() * 12,
           color: `hsl(${Math.random() * 360},70%,60%)`,
-          group: Math.floor(Math.random() * 5)   // group 0 gets cube
+          group: Math.floor(Math.random() * 5)   // group 0 gets custom LOD cube
       }));
 
       const links = [];
-      nodes.forEach(({id}) => {
-          for (let k = 1; k <= 2; k++) links.push({source: id, target: String((+id + k) % N), value: 2});
-          if (Math.random() > 0.7) links.push({source: id, target: String(Math.floor(Math.random() * N)), value: 1});
+      nodes.forEach(({id, group}) => {
+          // Create fewer links for a large graph to maintain performance
+          const numLinks = Math.random() < 0.1 ? 2 : 1; // Average 1.1 links per node
+          for (let k = 1; k <= numLinks; k++) {
+              if (Math.random() < 0.5) { // Reduce density further
+                  links.push({source: id, target: String((+id + k) % N), value: Math.random() * 2 + 0.5});
+              }
+          }
+          if (Math.random() > 0.9) { // Reduce random cross-links
+              links.push({source: id, target: String(Math.floor(Math.random() * N)), value: Math.random() + 0.2});
+          }
       });
+      console.log(`Generated ${nodes.length} nodes and ${links.length} links.`);
 
       // ---------- Load Texture ----------
       const texLoader = new THREE.TextureLoader();
       texLoader.crossOrigin = 'anonymous';
       const nodeTexture = texLoader.load('https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/PNG_transparency_demonstration_1.png/640px-PNG_transparency_demonstration_1.png');
 
-      const rMultiplier = 5;
+      // ---------- Shared Geometries & Materials for LOD ----------
+      const rMultiplier = 5; // Keep this for scaling consistency
+
+      // High Detail (Textured Cube)
+      const highDetailBoxGeometry = new THREE.BoxGeometry(1, 1, 1); // Unit cube, will be scaled
+      const sharedCubeMaterials = Array(6).fill().map(() => new THREE.MeshBasicMaterial({
+          map: nodeTexture,
+          transparent: true, // Texture has transparency
+          alphaTest: 0.1     // Avoid rendering fully transparent pixels, helps with sorting
+      }));
+
+      // Medium Detail (Solid Color Cube - reuses highDetailBoxGeometry)
+      // Material will be created per node due to unique color
+
+      // Low Detail (Solid Color Sphere)
+      const lowDetailSphereGeometry = new THREE.SphereGeometry(1, 8, 6); // Unit sphere, will be scaled
+
       // ---------- Create Graph ----------
       const graph = ForceGraph3D({
           extraRendererConfig: {antialias: true, alpha: true, xr: {enabled: true}}
       })(document.getElementById('graph'))
           .backgroundColor('#111133')
           .graphData({nodes, links})
-          .linkWidth(l => l.value)
+          .linkWidth(l => l.value * 0.5) // Adjusted for potentially more links
           .nodeLabel(n => n.name)
-          .linkDirectionalParticles(2)
-          .linkDirectionalParticleWidth(link => link.value * 0.6)
-          .nodeThreeObjectExtend(false)
+          .linkDirectionalParticles(1) // Reduced particles for performance
+          .linkDirectionalParticleWidth(link => link.value * 0.3) // Adjusted
+          .nodeThreeObjectExtend(false) // We provide the full object
           .nodeThreeObject(node => {
-              if (node.group !== 0) return undefined;
+              if (node.group !== 0) {
+                  // For nodes not in group 0, let 3d-force-graph use its default sphere.
+                  // You could also define a different, simpler LOD or non-LOD object here.
+                  return undefined;
+              }
 
-              const r = Math.cbrt(node.val);
-              const geometry = new THREE.BoxGeometry(r * rMultiplier, r * rMultiplier, r * rMultiplier);
+              const lod = new THREE.LOD();
+              const baseSize = Math.cbrt(node.val); // Base size factor from node.val
+              const scale = baseSize * rMultiplier;
 
-              // Apply the same texture to all six cube faces
-              const materials = Array(6).fill().map(() => new THREE.MeshBasicMaterial({map: nodeTexture}));
+              // --- High Detail Level (Textured Cube) ---
+              // Visible from distance 0 up to `distanceHighToMedium`
+              const highDetailMesh = new THREE.Mesh(highDetailBoxGeometry, sharedCubeMaterials);
+              highDetailMesh.scale.set(scale, scale, scale);
+              // Ensure the object's matrix is updated after scaling for correct LOD behavior
+              highDetailMesh.updateMatrix();
+              highDetailMesh.matrixAutoUpdate = false; // Optimization if 3d-force-graph updates matrix directly
+              lod.addLevel(highDetailMesh, 0);
 
-              return new THREE.Mesh(geometry, materials);
+              // --- Medium Detail Level (Solid Color Cube) ---
+              // Visible from `distanceHighToMedium` up to `distanceMediumToLow`
+              const mediumDetailMaterial = new THREE.MeshBasicMaterial({color: node.color});
+              const mediumDetailMesh = new THREE.Mesh(highDetailBoxGeometry, mediumDetailMaterial); // Reuse box geometry
+              mediumDetailMesh.scale.set(scale * 0.9, scale * 0.9, scale * 0.9); // Slightly smaller
+              mediumDetailMesh.updateMatrix();
+              mediumDetailMesh.matrixAutoUpdate = false;
+
+
+              lod.addLevel(mediumDetailMesh, 60); // Adjust this distance as needed
+
+              // --- Low Detail Level (Solid Color Sphere) ---
+              // Visible from `distanceMediumToLow` onwards
+              const lowDetailMaterial = new THREE.MeshBasicMaterial({color: node.color});
+              const lowDetailMesh = new THREE.Mesh(lowDetailSphereGeometry, lowDetailMaterial);
+              lowDetailMesh.scale.set(scale * 0.7, scale * 0.7, scale * 0.7); // Smaller sphere
+              lowDetailMesh.updateMatrix();
+              lowDetailMesh.matrixAutoUpdate = false;
+              lod.addLevel(lowDetailMesh, 120); // Adjust this distance as needed
+
+              // It's important that the LOD object itself can be positioned by the graph.
+              // 3d-force-graph will update lod.position.x, .y, .z.
+              // THREE.LOD will then pick the appropriate child based on camera distance.
+              return lod;
           });
 
       // ---------- Lighting ----------
       graph.scene().add(new THREE.AmbientLight(0xffffff, 0.6));
       const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
-      dirLight.position.set(1, 1, 1);
+      dirLight.position.set(50, 50, 50); // Position light further for larger graph
       graph.scene().add(dirLight);
 
       // ---------- VR Support ----------
       document.body.appendChild(VRButton.createButton(graph.renderer()));
 
       // ---------- Frame Camera ----------
-      setTimeout(() => graph.zoomToFit(1000, 40), 500);
+      // Adjust zoomToFit parameters for a larger graph.
+      // The padding might need to be larger, or zoom slightly more out.
+      setTimeout(() => graph.zoomToFit(1000, 150), 1500); // Increased padding and delay for layout
+
+      // Optional: Add camera controls for easier debugging of LOD distances
+      // import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'; // if you were using modules
+      // const controls = new OrbitControls(graph.camera(), graph.renderer().domElement);
+      // controls.enableDamping = true;
+      // function animate() {
+      //    controls.update();
+      //    requestAnimationFrame(animate);
+      // }
+      // if (typeof OrbitControls !== 'undefined') animate(); // Check if OrbitControls is available
   </script>
 </body>
 </html>

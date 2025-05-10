@@ -5,6 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4a1b8b7c-d37b-405c-bf40-3761af1fd6ae" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -64,7 +65,7 @@
     "Kotlin.MainKt (1).executor": "Run",
     "Kotlin.MainKt.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "vr-try-3-image-texture",
+    "git-widget-placeholder": "vr-three-js-try3",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "/Users/nickolaykondratyev/git_repos/glassthought-sandbox",
     "node.js.detected.package.eslint": "true",
