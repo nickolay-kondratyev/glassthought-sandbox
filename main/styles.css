@@ -1,7 +1,8 @@
 /*Make parent element a flex container*/
 ul {
     display: flex; /*or inline-flex*/
-    list-style: none
+    flex-direction: row; /* this is the same as default value */
+    list-style: none;
 }
 
 li {

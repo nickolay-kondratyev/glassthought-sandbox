@@ -4,11 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4a1b8b7c-d37b-405c-bf40-3761af1fd6ae" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/main/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/main/styles.css" afterDir="false" />
-    </list>
+    <list default="true" id="4a1b8b7c-d37b-405c-bf40-3761af1fd6ae" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -67,7 +63,7 @@
     "Kotlin.MainKt.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "html-css-flexbox",
+    "git-widget-placeholder": "sandbox-commit-870edcc21fa6ffb73d26",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "/Users/nickolaykondratyev/git_repos/glassthought-sandbox",
     "node.js.detected.package.eslint": "true",
