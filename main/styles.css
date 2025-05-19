@@ -1,13 +1,21 @@
 /*Make parent element a flex container*/
-ul {
+.parent {
+    border: 1px solid #000;
     display: flex; /*or inline-flex*/
     flex-direction: row; /* this is the same as default value */
+    justify-content: flex-start;
     list-style: none;
 }
 
-li {
-    width: 25px;
-    height: 25px;
+.child {
+    /* Allows the child to grow and fill remaining space */
+    flex-grow: 1;
+    /* Allows the child to shrink if there's not enough space */
+    flex-shrink: 1;
+    /* Starts with no base size; enables flexible resizing */
+    flex-basis: 0;
+
+
     background-color: #8cacea;
-    margin: 8px;
+    margin: 5px;
 }
