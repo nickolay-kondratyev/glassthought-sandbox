@@ -1,12 +1,12 @@
 /*Make parent element a flex container*/
 ul {
     display: flex; /*or inline-flex*/
-    list-style: none;
+    list-style: none
 }
 
 li {
-    width: 100px;
-    height: 100px;
+    width: 25px;
+    height: 25px;
     background-color: #8cacea;
     margin: 8px;
 }
