@@ -1,5 +1,8 @@
 package com.example.demo
 
+import kotlin.js.JsExport
+
+@JsExport
 class Greeting {
     private val platform = getPlatform()
 

@@ -20,10 +20,20 @@ kotlin {
     
     jvm("desktop")
     
+    js(IR) {
+        browser {
+            commonWebpackConfig {
+                outputFileName = "composeApp.js"
+            }
+        }
+        binaries.executable()
+    }
+    
     sourceSets {
         val desktopMain by getting
         
         androidMain.dependencies {
+            implementation(project.dependencies.platform("androidx.compose:compose-bom:2024.09.00"))
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
         }
@@ -39,6 +49,11 @@ kotlin {
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+        }
+        val jsMain by getting {
+            dependencies {
+                // Add any JS-specific dependencies if needed
+            }
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
@@ -88,4 +103,9 @@ compose.desktop {
             packageVersion = "1.0.0"
         }
     }
+}
+
+tasks.register("copyJsOutput", Copy::class) {
+    from(tasks.named("jsBrowserDevelopmentWebpack", org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpack::class).map { it.mainOutputFile })
+    into(layout.projectDirectory.dir("public"))
 }
