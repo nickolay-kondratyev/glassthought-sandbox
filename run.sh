@@ -1,1 +1,3 @@
-echo TODO-ADD-RUN-COMMAND
+cd ${GT_SANDBOX_REPO:?}/demo
+./run.sh
+
