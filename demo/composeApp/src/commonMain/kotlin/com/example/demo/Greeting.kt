@@ -7,6 +7,6 @@ class Greeting {
     private val platform = getPlatform()
 
     fun greet(): String {
-        return "Hello, ${platform.name}! [This is written in Kotlin]"
+        return "Hello, ${platform.name}! [This is written in Kotlin-1]"
     }
 }
