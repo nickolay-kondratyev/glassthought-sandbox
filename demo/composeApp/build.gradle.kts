@@ -19,11 +19,22 @@ kotlin {
     }
     
     jvm("desktop")
+
+    js(IR) { // Add JS target with IR compiler
+        browser {
+            // Configures webpack for browser environment
+            commonWebpackConfig {
+                outputFileName = "composeApp.js" // Name of the generated JS file
+            }
+        }
+        binaries.executable() // Generates an executable JS file
+    }
     
     sourceSets {
         val desktopMain by getting
         
         androidMain.dependencies {
+            implementation(project.dependencies.platform("androidx.compose:compose-bom:2024.09.00"))
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
         }
@@ -39,6 +50,11 @@ kotlin {
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+        }
+        val jsMain by getting { // Define jsMain source set
+            dependencies {
+                // Add any JS-specific dependencies if needed
+            }
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
@@ -88,4 +104,10 @@ compose.desktop {
             packageVersion = "1.0.0"
         }
     }
+}
+
+// Optional: Add a task to copy JS output to a more accessible location for testing
+tasks.register("copyJsOutput", Copy::class) {
+    from(tasks.named("jsBrowserDevelopmentWebpack", org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpack::class).map { it.mainOutputFile })
+    into(layout.projectDirectory.dir("public")) // Example: copy to a 'public' directory in composeApp
 }

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Kotlin/JS in Compose App</title>
+</head>
+<body>
+    <h1>Exposing commonMain to JavaScript</h1>
+    <p>Output from Kotlin:</p>
+    <div id="kotlin-output"></div>
+
+    <!-- Include the generated JavaScript file -->
+    <script src="composeApp.js"></script>
+
+    <script>
+        // The exported Kotlin code is available under a module name.
+        // By default, with `binaries.executable()`, this is often the Gradle project name (e.g., "composeApp").
+        // The fully qualified name of your exported class is then appended.
+        try {
+            // Assuming your root package is com.example.demo
+            // and the module name derived from the project is 'composeApp' (or 'demo_composeApp' or similar)
+            // The exact global object name can sometimes be tricky.
+            // Check your generated JS or experiment.
+            // Common patterns:
+            // 1. Directly on window: `window.com.example.demo.Greeting` (less common with IR)
+            // 2. Under a module object: `composeApp.com.example.demo.Greeting`
+            //    (where 'composeApp' is the module name, often derived from the subproject name)
+            //    The default module name for the `demo-composeApp` project might be `demo_composeApp`.
+            //    Let's try with `composeApp` as per `outputFileName` (though webpack output name doesn't always dictate module name)
+            //    or the project name.
+
+            let greetingInstance;
+            if (typeof composeApp !== 'undefined' && composeApp.com && composeApp.com.example.demo && composeApp.com.example.demo.Greeting) {
+                greetingInstance = new composeApp.com.example.demo.Greeting();
+            } else if (typeof demo_composeApp !== 'undefined' && demo_composeApp.com && demo_composeApp.com.example.demo && demo_composeApp.com.example.demo.Greeting) {
+                // If your project is named 'demo' and subproject 'composeApp', it might be 'demo_composeApp'
+                greetingInstance = new demo_composeApp.com.example.demo.Greeting();
+            } else if (com && com.example && com.example.demo && com.example.demo.Greeting) {
+                // Fallback if it's directly under `com`
+                greetingInstance = new com.example.demo.Greeting();
+            } else {
+                throw new Error("Kotlin module or Greeting class not found. Check module name in generated JS.");
+            }
+            
+            const message = greetingInstance.greet();
+            document.getElementById('kotlin-output').textContent = message;
+            console.log(message);
+
+        } catch (e) {
+            document.getElementById('kotlin-output').textContent = "Error: " + e.message;
+            console.error("Error accessing Kotlin/JS code:", e);
+        }
+    </script>
+</body>
+</html>
