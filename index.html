@@ -1,1 +1,125 @@
-Hello world!
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pull Quote Examples</title>
+  <style>
+      body {
+          background-color: #2d2d2d; /* Dark grey background similar to image */
+          color: #e0e0e0;       /* Light grey text */
+          font-family: Arial, Helvetica, sans-serif;
+          line-height: 1.6;
+          margin: 0;
+          padding: 20px; /* Overall page padding */
+      }
+
+      .container {
+          max-width: 600px; /* Constrain content width for readability */
+          margin: 0 auto;   /* Center the content block */
+      }
+
+      .question-text {
+          color: #e0e0e0; /* Main text color */
+          margin-bottom: 10px; /* Space below the question */
+      }
+
+      h2 {
+          font-size: 1.1em;
+          font-weight: bold;
+          color: #f0f0f0; /* Brighter for headings */
+          margin-top: 30px;
+          margin-bottom: 15px;
+          border-bottom: 1px solid #555;
+          padding-bottom: 5px;
+      }
+
+      /* Common style for emphasis within quotes if not on blockquote directly */
+      blockquote em {
+          font-style: italic;
+      }
+
+      /* Version 1: As Is (Replicating the image) */
+      .quote-as-is {
+          border-left: 4px solid #777777; /* The grey vertical bar */
+          margin-left: 0px;          /* Indents the entire blockquote (bar + text) from the left */
+          padding-left: 12px;         /* Indents the quote text from its bar */
+          font-style: italic;         /* Italicizes the quote text */
+          color: #cccccc;             /* Slightly dimmer color for the quote text */
+          margin-top: 5px;            /* Space above the blockquote */
+          margin-bottom: 5px;         /* Space below the blockquote */
+      }
+
+      /* Version 2: With Hanging Pull Quote Principle */
+      /* This container defines the main text column and provides a "gutter" for hanging elements. */
+      .text-column-container {
+          padding-left: 20px; /* Creates a 20px gutter on the left. Text will start after this. */
+      }
+
+      /* The question text inside the column container aligns with the start of the column. */
+      .text-column-container .question-text {
+          margin-left: 0;
+      }
+
+      .quote-hanging {
+          margin-left: 0; /* The quote text aligns with the start of the text column */
+          position: relative; /* Needed for positioning the ::before pseudo-element */
+          font-style: italic;
+          color: #cccccc;
+          padding-left: 0; /* Text starts right at the edge of the blockquote box (which is aligned) */
+          margin-top: 5px;
+          margin-bottom: 5px;
+      }
+
+      .quote-hanging::before {
+          content: ''; /* Necessary for pseudo-elements */
+          position: absolute;
+          left: -12px; /* Hangs the bar 12px into the .text-column-container's padding-left.
+                            The bar is 4px wide, so it will occupy space from -12px to -8px
+                            relative to the text's starting alignment. */
+          top: 0;
+          bottom: 0;
+          width: 4px; /* Width of the hanging bar */
+          background-color: #777777; /* Color of the hanging bar */
+      }
+
+      .explanation {
+          font-size: 0.9em;
+          color: #aaa;
+          margin-top: 20px;
+          border-top: 1px dashed #555;
+          padding-top: 10px;
+      }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <h2>Version 1: As Is</h2>
+    <p class="question-text">What does "hang pull quotes" mean? what does "pull quotes" mean?</p>
+
+    <blockquote class="quote-as-is">
+      <em>Unless there is some extraordinary overriding consideration, always hang pull quotes.</em>
+    </blockquote>
+
+    <h2>Version 2: With Hanging Pull Quote Principle</h2>
+    <div class="text-column-container">
+      <!-- The question text is repeated here to show its alignment within the text column -->
+      <p class="question-text">What does "hang pull quotes" mean? what does "pull quotes" mean?</p>
+      <blockquote class="quote-hanging">
+        <em>Unless there is some extraordinary overriding consideration, always hang pull quotes.</em>
+      </blockquote>
+    </div>
+
+    <div class="explanation">
+      <p><strong>Note on Version 1 ("As Is"):</strong> The quote block (bar and text) is indented from the preceding text.</p>
+      <p><strong>Note on Version 2 ("Hanging"):</strong>
+        A <code>.text-column-container</code> creates a defined text column with a left gutter (padding).
+        Both the question text and the quote's text align to the start of this column.
+        The quote's vertical bar (<code>::before</code> pseudo-element) is then positioned to "hang" into that left gutter, to the left of the aligned text.
+        This demonstrates the principle of aligning by the text edge and letting other elements (like quotation marks or decorative bars) hang.
+      </p>
+    </div>
+  </div>
+</body>
+</html>
