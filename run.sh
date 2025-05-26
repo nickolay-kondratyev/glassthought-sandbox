@@ -1,1 +1,1 @@
-echo TODO-ADD-RUN-COMMAND
+chrome index.html

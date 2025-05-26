@@ -1,5 +1,5 @@
 main() {
-  gt.snapshot "TODO_ADD_COMMAND_TO_RUN"
+  gt.snapshot "chrome index.html"
 }
 
 main "${@}" || exit 1
