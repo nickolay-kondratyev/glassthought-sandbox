@@ -19,7 +19,47 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.window.showInformationMessage('Hello World from glassthought-sandbox!');
 	});
 
-	context.subscriptions.push(disposable);
+	const showSystemInfo = vscode.commands.registerCommand('glassthought-sandbox.showSystemInfo', () => {
+		const osInfo = `OS: ${process.platform} ${process.arch}\nNode: ${process.version}\nVSCode: ${vscode.version}`;
+		vscode.window.showInformationMessage(`System Information:\n${osInfo}`, { modal: true });
+	});
+
+	const showProjectStats = vscode.commands.registerCommand('glassthought-sandbox.showProjectStats', () => {
+		const workspaceFolders = vscode.workspace.workspaceFolders;
+		const folderCount = workspaceFolders ? workspaceFolders.length : 0;
+		const openEditors = vscode.window.visibleTextEditors.length;
+		
+		vscode.window.showInformationMessage(
+			`Project Statistics:\n• Workspace folders: ${folderCount}\n• Open editors: ${openEditors}`,
+			{ modal: true }
+		);
+	});
+
+	const showQuickTip = vscode.commands.registerCommand('glassthought-sandbox.showQuickTip', () => {
+		const tips = [
+			"💡 Use Ctrl+Shift+P to open the Command Palette",
+			"💡 Press F5 to start debugging your extension",
+			"💡 Use Ctrl+` to toggle the integrated terminal",
+			"💡 Press Ctrl+B to toggle the sidebar visibility",
+			"💡 Use Alt+Click for multi-cursor editing"
+		];
+		const randomTip = tips[Math.floor(Math.random() * tips.length)];
+		vscode.window.showInformationMessage(randomTip);
+	});
+
+	const showAbout = vscode.commands.registerCommand('glassthought-sandbox.showAbout', () => {
+		vscode.window.showInformationMessage(
+			'Glassthought Sandbox Extension v0.0.1\n\nA demonstration extension showcasing VSCode menu contributions.',
+			'OK',
+			'View Documentation'
+		).then(selection => {
+			if (selection === 'View Documentation') {
+				vscode.env.openExternal(vscode.Uri.parse('https://code.visualstudio.com/api'));
+			}
+		});
+	});
+
+	context.subscriptions.push(disposable, showSystemInfo, showProjectStats, showQuickTip, showAbout);
 }
 
 // This method is called when your extension is deactivated

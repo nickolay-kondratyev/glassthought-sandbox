@@ -16,6 +16,55 @@
       {
         "command": "glassthought-sandbox.helloWorld",
         "title": "Hello World"
+      },
+      {
+        "command": "glassthought-sandbox.showSystemInfo",
+        "title": "Show System Info"
+      },
+      {
+        "command": "glassthought-sandbox.showProjectStats",
+        "title": "Show Project Stats"
+      },
+      {
+        "command": "glassthought-sandbox.showQuickTip",
+        "title": "Show Quick Tip"
+      },
+      {
+        "command": "glassthought-sandbox.showAbout",
+        "title": "About Glassthought"
+      }
+    ],
+    "menus": {
+      "menuBar/help": [
+        {
+          "submenu": "glassthought.menu",
+          "group": "2_glassthought"
+        }
+      ],
+      "glassthought.menu": [
+        {
+          "command": "glassthought-sandbox.showSystemInfo",
+          "group": "1_info@1"
+        },
+        {
+          "command": "glassthought-sandbox.showProjectStats",
+          "group": "1_info@2"
+        },
+        {
+          "command": "glassthought-sandbox.showQuickTip",
+          "group": "2_help@1"
+        },
+        {
+          "command": "glassthought-sandbox.showAbout",
+          "group": "3_about@1"
+        }
+      ]
+    },
+    "submenus": [
+      {
+        "id": "glassthought.menu",
+        "label": "Glassthought",
+        "icon": "$(lightbulb)"
       }
     ]
   },
