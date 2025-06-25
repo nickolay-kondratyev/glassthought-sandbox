@@ -35,13 +35,14 @@
       }
     ],
     "menus": {
-      "menuBar/help": [
+      "menuBar": [
         {
-          "submenu": "glassthought.menu",
-          "group": "2_glassthought"
+          "id": "glassthought.topMenu",
+          "label": "Glassthought",
+          "group": "5_glassthought"
         }
       ],
-      "glassthought.menu": [
+      "menuBar/glassthought.topMenu": [
         {
           "command": "glassthought-sandbox.showSystemInfo",
           "group": "1_info@1"
@@ -59,14 +60,7 @@
           "group": "3_about@1"
         }
       ]
-    },
-    "submenus": [
-      {
-        "id": "glassthought.menu",
-        "label": "Glassthought",
-        "icon": "$(lightbulb)"
-      }
-    ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
