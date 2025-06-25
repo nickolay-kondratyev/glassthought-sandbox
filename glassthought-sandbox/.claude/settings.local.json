@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(./release-install.sh:*)"
+      "Bash(./release-install.sh:*)",
+      "WebFetch(domain:code.visualstudio.com)"
     ],
     "deny": []
   }

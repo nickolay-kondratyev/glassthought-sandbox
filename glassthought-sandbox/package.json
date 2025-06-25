@@ -35,14 +35,25 @@
       }
     ],
     "menus": {
-      "menuBar": [
+      "menuBar/edit": [
         {
-          "id": "glassthought.topMenu",
-          "label": "Glassthought",
-          "group": "5_glassthought"
+          "submenu": "glassthought.submenu",
+          "group": "9_glassthought"
         }
       ],
-      "menuBar/glassthought.topMenu": [
+      "menuBar/view": [
+        {
+          "submenu": "glassthought.submenu",
+          "group": "9_glassthought"
+        }
+      ],
+      "editor/title": [
+        {
+          "submenu": "glassthought.submenu",
+          "group": "navigation"
+        }
+      ],
+      "glassthought.submenu": [
         {
           "command": "glassthought-sandbox.showSystemInfo",
           "group": "1_info@1"
@@ -60,7 +71,14 @@
           "group": "3_about@1"
         }
       ]
-    }
+    },
+    "submenus": [
+      {
+        "id": "glassthought.submenu",
+        "label": "Glassthought",
+        "icon": "$(lightbulb)"
+      }
+    ]
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
