@@ -9,13 +9,13 @@ main() {
     eai code --install-extension "${vsix}"
     echo.green "Installed ${vsix}. "
 
-    echo ""
-    echo "Opening VSCode in 2 seconds..."
-    echo ""
-    echo.bold "📣 Reload VSCode to see the changes. 📣"
-
-    sleep 2
-    code --reuse-window
+#    echo ""
+#    echo "Opening VSCode in 2 seconds..."
+#    echo ""
+#    echo.bold "📣 Reload VSCode to see the changes. 📣"
+#
+#   #  sleep 2
+#    # code --reuse-window
 }
 
 main "${@}" || exit 1
