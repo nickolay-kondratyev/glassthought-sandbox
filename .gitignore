@@ -1,0 +1,31 @@
+.idea
+out
+dist
+node_modules
+.vscode-test/
+*.vsix
+
+# We are going to place the new JAR server here during packaging,
+# but we should NOT commit the JAR file
+/server/**
+
+# TypeScript build artifacts
+*.d.ts
+*.d.ts.map
+*.tsbuildinfo
+thorg-core-ts/dist/
+thorg-presentation/dist/
+
+# Test coverage reports
+coverage/
+
+*storybook.log
+
+# Storybook
+storybook-static
+.storybook/cache
+*.sb-common-assets.log
+*.sb-server-errors.log
+
+# Exclude ./dev_out related files.
+.dev_out
